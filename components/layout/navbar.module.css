@@ -1,0 +1,457 @@
+.nav {
+  background-color: #a6e8e4;
+  border-bottom: 2px solid #8dd4cf;
+}
+
+.navContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  gap: 2rem;
+}
+
+.desktopNav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: flex;
+    gap: 2.5rem;
+  }
+}
+
+.navLink {
+  color: #1f2937;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  border-radius: 0.5rem;
+  font-family: var(--font-twinkle);
+  letter-spacing: 0.05em;
+}
+
+.navLink:hover {
+  background-color: #8dd4cf;
+  color: #111827;
+  transform: translateY(-2px);
+}
+
+.searchContainer {
+  flex: 1;
+  max-width: 28rem;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .searchContainer {
+    display: block;
+  }
+}
+
+.searchWrapper {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.25rem;
+  width: 1.25rem;
+  color: #6b7280;
+}
+
+.searchInput {
+  width: 100%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border: 2px solid #8dd4cf;
+  border-radius: 1.5rem;
+  background-color: white;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #5eb8b3;
+  box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.3);
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.iconButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconButton {
+  padding: 0.5rem;
+  color: #1f2937;
+  transition: all 0.3s;
+  position: relative;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  background-color: #8dd4cf;
+  transform: translateY(-2px);
+}
+
+.cartBadge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border: 2px solid #a6e8e4;
+  padding: 0 0.25rem;
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.mobileMenuButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  color: #1f2937;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1001;
+}
+
+@media (min-width: 768px) {
+  .mobileMenuButton {
+    display: none;
+  }
+}
+
+/* Animación del botón hamburguesa */
+.hamburgerLine {
+  width: 1.5rem;
+  height: 2px;
+  background-color: #1f2937;
+  transition: all 0.3s ease;
+  position: absolute;
+}
+
+.hamburgerLine:nth-child(1) {
+  transform: translateY(-6px);
+}
+
+.hamburgerLine:nth-child(3) {
+  transform: translateY(6px);
+}
+
+.mobileMenuButton.open .hamburgerLine:nth-child(1) {
+  transform: rotate(45deg) translateY(0);
+}
+
+.mobileMenuButton.open .hamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.mobileMenuButton.open .hamburgerLine:nth-child(3) {
+  transform: rotate(-45deg) translateY(0);
+}
+
+/* Menú móvil fullscreen */
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobileMenu.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .mobileMenu {
+    display: none;
+  }
+}
+
+.mobileMenuContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 20rem;
+  margin-top: 4rem;
+}
+
+.mobileMenuLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  font-family: var(--font-twinkle);
+  transition: all 0.3s;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  animation: slideInUp 0.5s ease backwards;
+}
+
+.mobileMenuLink:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.mobileMenuLink:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.mobileMenuLink:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.mobileMenuLink:hover {
+  background-color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+}
+
+.mobileMenuLink:active {
+  transform: scale(0.98);
+}
+
+/* Barra de búsqueda móvil */
+.mobileSearchWrapper {
+  width: 100%;
+  max-width: 20rem;
+  margin-bottom: 2rem;
+  position: relative;
+  animation: slideInUp 0.5s ease backwards;
+  animation-delay: 0s;
+}
+
+.mobileSearchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.25rem;
+  width: 1.25rem;
+  color: #6b7280;
+}
+
+.mobileSearchInput {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.mobileSearchInput:focus {
+  outline: none;
+  border-color: #ffffff;
+  background-color: #ffffff;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+}
+
+.mobileSearchInput::placeholder {
+  color: #9ca3af;
+}
+
+/* Botón de cerrar decorativo */
+.closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transition: all 0.3s;
+  animation: fadeIn 0.5s ease;
+}
+
+.closeButton:hover {
+  background-color: #ffffff;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+}
+
+.closeIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #1f2937;
+}
+
+/* Decoración del menú */
+.menuDecoration {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 4rem;
+  opacity: 0.3;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Ajustes cuando el header está scrolled */
+:global(.scrolled) .nav {
+  border-bottom: 1px solid #8dd4cf;
+}
+
+:global(.scrolled) .navContent {
+  height: 3.5rem;
+}
+
+:global(.scrolled) .navLink {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+:global(.scrolled) .searchInput {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+:global(.scrolled) .iconButton {
+  padding: 0.375rem;
+}
+
+@media (min-width: 768px) {
+  :global(.scrolled) .navContent {
+    height: 3rem;
+  }
+}
+
+.mobileCartButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #a6e8e4;
+  border-radius: 1rem;
+  font-family: var(--font-twinkle);
+  transition: all 0.3s;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  animation: slideInUp 0.5s ease backwards;
+  animation-delay: 0.4s;
+  margin-top: 1rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.mobileCartButton:hover {
+  background-color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+}
+
+.mobileCartBadge {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid white;
+  padding: 0 0.375rem;
+}

@@ -1,0 +1,351 @@
+.filters {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Desktop - sticky sin scroll */
+@media (min-width: 1024px) {
+  .filters {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+/* Estilos para móvil */
+@media (max-width: 1023px) {
+  .filters {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 85%;
+    max-width: 400px;
+    z-index: 1000;
+    border-radius: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filtersOpen {
+    transform: translateX(0);
+  }
+}
+
+/* Botón flotante para abrir filtros en móvil */
+.mobileFilterButton {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .mobileFilterButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: fixed;
+    bottom: 2rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+    color: #1f2937;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 3rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: all 0.3s ease;
+    font-family: var(--font-twinkle);
+  }
+
+  .mobileFilterButton:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .mobileFilterButton:active {
+    transform: translateY(-2px);
+  }
+}
+
+/* Badge indicador de filtros activos */
+.filterBadge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Overlay oscuro para móvil */
+.overlay {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+}
+
+/* Botón de cerrar en móvil */
+.mobileCloseButton {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .mobileCloseButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    z-index: 10;
+  }
+
+  .mobileCloseButton:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+@media (max-width: 1023px) {
+  .header {
+    margin-top: 3rem;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  font-family: var(--font-twinkle);
+}
+
+.clearButton {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clearButton:hover {
+  color: #dc2626;
+  text-decoration: underline;
+}
+
+.section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-family: var(--font-twinkle);
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-size: 1rem;
+  color: #6b7280;
+  width: 100%;
+}
+
+.categoryItem:hover {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.categoryItemActive {
+  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
+  border-color: #8dd4cf;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.categoryIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.categoryName {
+  flex: 1;
+}
+
+.priceInputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.priceInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.priceInput:focus {
+  outline: none;
+  border-color: #a6e8e4;
+  box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.1);
+}
+
+.priceInput::-webkit-outer-spin-button,
+.priceInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.priceInput[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.priceSeparator {
+  color: #9ca3af;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.applyButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+  color: #1f2937;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-twinkle);
+}
+
+.applyButton:hover {
+  background: linear-gradient(135deg, #8dd4cf, #a6e8e4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.priceRanges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.priceRangeButton {
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.priceRangeButton:hover {
+  background: #f9fafb;
+  border-color: #a6e8e4;
+  color: #1f2937;
+}
+
+.infoBox {
+  background: linear-gradient(135deg, rgba(166, 232, 228, 0.1), rgba(141, 212, 207, 0.1));
+  border: 2px solid rgba(166, 232, 228, 0.3);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+.infoIcon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.infoText {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

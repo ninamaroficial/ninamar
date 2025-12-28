@@ -1,0 +1,15 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: #a6e8e4;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 5rem;
+  gap: 2rem;
+}

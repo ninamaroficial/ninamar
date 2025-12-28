@@ -1,0 +1,99 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  cursor: pointer;
+  font-family: var(--font-twinkle);
+  letter-spacing: 0.05em;
+}
+
+.button:focus {
+  outline: none;
+  ring: 3px;
+  ring-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Variants */
+.primary {
+  background-color: #a6e8e4;
+  color: #1f2937;
+  border: 2px solid #8dd4cf;
+}
+
+.primary:hover {
+  background-color: #8dd4cf;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+}
+
+.primary:focus {
+  ring-color: #a6e8e4;
+}
+
+.secondary {
+  background-color: #1f2937;
+  color: #a6e8e4;
+  border: 2px solid #1f2937;
+}
+
+.secondary:hover {
+  background-color: #111827;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+}
+
+.secondary:focus {
+  ring-color: #1f2937;
+}
+
+.outline {
+  border: 2px solid #a6e8e4;
+  color: #1f2937;
+  background-color: transparent;
+}
+
+.outline:hover {
+  background-color: #c5f2ef;
+  transform: translateY(-2px);
+}
+
+.outline:focus {
+  ring-color: #a6e8e4;
+}
+
+.ghost {
+  color: #1f2937;
+  background-color: transparent;
+}
+
+.ghost:hover {
+  background-color: #c5f2ef;
+}
+
+.ghost:focus {
+  ring-color: #a6e8e4;
+}
+
+/* Sizes */
+.sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.md {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
