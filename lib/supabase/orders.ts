@@ -1,5 +1,6 @@
 import { createClient } from './server'
 import type { CreateOrderData, Order, OrderItem } from '@/types/order.types'
+import { createAdminClient } from './admin'
 
 export async function createOrder(data: CreateOrderData) {
   const supabase = await createClient()
@@ -102,26 +103,53 @@ export async function updateOrderPaymentStatus(
   paymentStatus: 'approved' | 'rejected',
   paymentMethod: string
 ) {
-  const supabase = await createClient()
+  // ⚠️ Usar admin client para bypasear RLS
+  // Esto es seguro porque solo se llama desde el webhook (servidor)
+  const supabase = createAdminClient()
   
   const updateData: any = {
     payment_id: paymentId,
     payment_status: paymentStatus,
-    payment_method: paymentMethod
+    payment_method: paymentMethod,
+    updated_at: new Date().toISOString()
   }
   
   if (paymentStatus === 'approved') {
     updateData.status = 'paid'
     updateData.paid_at = new Date().toISOString()
+  } else if (paymentStatus === 'rejected') {
+    updateData.status = 'cancelled'
   }
+
+  console.log('========================================')
+  console.log('📝 UPDATING ORDER (Admin Client)')
+  console.log('Order ID:', orderId)
+  console.log('Payment Status:', paymentStatus)
+  console.log('Update Data:', updateData)
+  console.log('========================================')
   
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('orders')
     .update(updateData)
     .eq('id', orderId)
+    .select()
   
   if (error) {
-    console.error('Error updating order payment:', error)
-    throw new Error('No se pudo actualizar el estado del pago')
+    console.error('========================================')
+    console.error('❌ SUPABASE ADMIN UPDATE ERROR')
+    console.error('Error:', error)
+    console.error('========================================')
+    throw new Error(`Failed to update order: ${error.message}`)
   }
+
+  if (!data || data.length === 0) {
+    console.error('⚠️ No order found with ID:', orderId)
+    throw new Error('Order not found')
+  }
+
+  console.log('✅ Order updated successfully')
+  console.log('Updated data:', data)
+  console.log('========================================')
+  
+  return data
 }
