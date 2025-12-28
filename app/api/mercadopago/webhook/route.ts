@@ -2,17 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { MercadoPagoConfig, Payment } from 'mercadopago'
 import { updateOrderPaymentStatus } from '@/lib/supabase/orders'
 
-const client = new MercadoPagoConfig({ 
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!
-})
-
-const payment = new Payment(client)
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
     console.log('Webhook received:', body)
+
+    if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {
+      throw new Error('MERCADOPAGO_ACCESS_TOKEN no está configurado')
+    }
+
+    const client = new MercadoPagoConfig({ 
+      accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN
+    })
+
+    const payment = new Payment(client)
 
     // MercadoPago envía notificaciones de tipo "payment"
     if (body.type === 'payment') {
@@ -28,20 +32,22 @@ export async function POST(request: NextRequest) {
       const paymentMethod = paymentInfo.payment_method_id
 
       // Actualizar estado de la orden
-      if (status === 'approved') {
-        await updateOrderPaymentStatus(
-          orderId!,
-          paymentId.toString(),
-          'approved',
-          paymentMethod!
-        )
-      } else if (status === 'rejected') {
-        await updateOrderPaymentStatus(
-          orderId!,
-          paymentId.toString(),
-          'rejected',
-          paymentMethod!
-        )
+      if (orderId) {
+        if (status === 'approved') {
+          await updateOrderPaymentStatus(
+            orderId,
+            paymentId.toString(),
+            'approved',
+            paymentMethod || 'unknown'
+          )
+        } else if (status === 'rejected') {
+          await updateOrderPaymentStatus(
+            orderId,
+            paymentId.toString(),
+            'rejected',
+            paymentMethod || 'unknown'
+          )
+        }
       }
     }
 
