@@ -6,7 +6,7 @@ export default function Logo() {
   return (
     <Link href="/" className={styles.logo}>
       <Image 
-        src="/images/logo.png" 
+        src="/images/logo2.png" 
         alt="Niñamar" 
         width={150} 
         height={60}

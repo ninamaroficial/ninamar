@@ -62,7 +62,7 @@ export default function Header() {
           <Link href="/" className={styles.logo}>
             <div className={styles.logoImage}>
               <Image
-                src="/images/logo.png"  // O "/logo.svg" si usas SVG
+                src="/images/logo2.png"  // O "/logo.svg" si usas SVG
                 alt="Niñamar"
                 width={100}
                 height={100}
