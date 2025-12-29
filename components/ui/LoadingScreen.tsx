@@ -1,13 +1,28 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import styles from './LoadingScreen.module.css'
 import Image from 'next/image'
+import styles from './LoadingScreen.module.css'
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true)
+  const [particles, setParticles] = useState<Array<{
+    left: string
+    top: string
+    delay: string
+    duration: string
+  }>>([])
 
   useEffect(() => {
+    // Generar partículas solo en el cliente
+    const generatedParticles = [...Array(20)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 3}s`,
+      duration: `${3 + Math.random() * 4}s`
+    }))
+    setParticles(generatedParticles)
+
     // Simular carga mínima
     const timer = setTimeout(() => {
       setIsLoading(false)
@@ -25,16 +40,18 @@ export default function LoadingScreen() {
         <div className={styles.logoContainer}>
           <div className={styles.logo3d}>
             <div className={styles.logoFace}>
+              {/* Opción 1: Con tu logo (descomenta cuando tengas el logo) */}
               <Image
                 src="/images/logo.png"
                 alt="Niña Mar"
-                width={80}
-                height={80}
+                width={120}
+                height={120}
                 className={styles.logoImage}
               />
+              
             </div>
           </div>
-
+          
           {/* Círculo giratorio */}
           <svg className={styles.circle} viewBox="0 0 100 100">
             <defs>
@@ -59,7 +76,7 @@ export default function LoadingScreen() {
         <div className={styles.textContainer}>
           <h2 className={styles.title}>Niña Mar</h2>
           <p className={styles.subtitle}>Estamos cargando la información para ti</p>
-
+          
           {/* Puntos animados */}
           <div className={styles.dots}>
             <span className={styles.dot}></span>
@@ -74,17 +91,23 @@ export default function LoadingScreen() {
         </div>
       </div>
 
-      {/* Partículas de fondo */}
-      <div className={styles.particles}>
-        {[...Array(20)].map((_, i) => (
-          <div key={i} className={styles.particle} style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 3}s`,
-            animationDuration: `${3 + Math.random() * 4}s`
-          }}></div>
-        ))}
-      </div>
+      {/* Partículas de fondo - solo después de montar en el cliente */}
+      {particles.length > 0 && (
+        <div className={styles.particles}>
+          {particles.map((particle, i) => (
+            <div 
+              key={i} 
+              className={styles.particle} 
+              style={{
+                left: particle.left,
+                top: particle.top,
+                animationDelay: particle.delay,
+                animationDuration: particle.duration
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
