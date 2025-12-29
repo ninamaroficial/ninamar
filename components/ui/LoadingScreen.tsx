@@ -26,7 +26,7 @@ export default function LoadingScreen() {
           <div className={styles.logo3d}>
             <div className={styles.logoFace}>
               <Image
-                src="/logo.png"
+                src="/images/logo.png"
                 alt="Niña Mar"
                 width={80}
                 height={80}
