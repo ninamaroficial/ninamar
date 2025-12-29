@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import CartDrawer from '@/components/cart/CartDrawer'
 
 export interface CartItem {
   id: string
@@ -116,6 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       closeCart
     }}>
       {children}
+      <CartDrawer />
     </CartContext.Provider>
   )
 }
