@@ -171,7 +171,7 @@ export default function Footer() {
               <span className={styles.paymentText}>Aceptamos:</span>
               <div className={styles.paymentIcon} title="Visa">💳</div>
               <div className={styles.paymentIcon} title="Mastercard">💳</div>
-              <div className={styles.paymentIcon} title="PayPal">💰</div>
+              <div className={styles.paymentIcon} title="PSE">💰</div>
               <div className={styles.paymentIcon} title="Transferencia">🏦</div>
             </div>
           </div>

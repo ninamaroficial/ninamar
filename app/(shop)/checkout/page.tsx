@@ -7,10 +7,12 @@ import Container from "@/components/ui/Container"
 import { ShoppingBag, CreditCard, MapPin, User, Phone, Mail, FileText } from "lucide-react"
 import Image from "next/image"
 import styles from "./page.module.css"
+import LocationSelector from '@/components/checkout/LocationSelector'
+import { calculateShipping, getShippingMessage, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping/rates'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { items, totalPrice, clearCart } = useCart()
+  const { items, clearCart } = useCart()
   const [isProcessing, setIsProcessing] = useState(false)
 
   // Formulario
@@ -27,6 +29,26 @@ export default function CheckoutPage() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Calcular subtotal del carrito
+  const subtotal = items.reduce((sum, item) => sum + (item.totalPrice), 0)
+
+  // Estado para shipping cost
+  const [shippingCost, setShippingCost] = useState(0)
+
+  // Calcular envío cuando cambie el departamento o el subtotal
+  // Calcular envío cuando cambie el departamento, ciudad o el subtotal
+  useEffect(() => {
+    if (formData.shipping_state) {
+      const cost = calculateShipping(formData.shipping_state, formData.shipping_city, subtotal)
+      setShippingCost(cost)
+    } else {
+      setShippingCost(0)
+    }
+  }, [formData.shipping_state, formData.shipping_city, subtotal])
+
+  // Total final
+  const total = subtotal + shippingCost
 
   // Redirigir si el carrito está vacío
   useEffect(() => {
@@ -101,7 +123,19 @@ export default function CheckoutPage() {
     try {
       // 1. Crear la orden en Supabase
       const orderData = {
-        ...formData,
+        customer_name: formData.customer_name,
+        customer_email: formData.customer_email,
+        customer_phone: formData.customer_phone,
+        customer_document: formData.customer_document,
+        shipping_address: formData.shipping_address,
+        shipping_city: formData.shipping_city,
+        shipping_state: formData.shipping_state,
+        shipping_zip: formData.shipping_zip || null,
+        shipping_country: 'Colombia',
+        subtotal: subtotal,
+        shipping_cost: shippingCost,
+        total: total,
+        customer_notes: formData.customer_notes || null,
         items: items.map(item => ({
           product_id: item.productId,
           product_name: item.productName,
@@ -142,7 +176,7 @@ export default function CheckoutPage() {
             quantity: item.quantity,
             unit_price: item.totalPrice / item.quantity,
             customization_summary: item.selectedOptions
-              .map(opt => `${opt.optionName}: ${opt.valueName}`)
+              .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
               .join(', ')
           })),
           payer: {
@@ -153,7 +187,7 @@ export default function CheckoutPage() {
             address: formData.shipping_address,
             zip_code: formData.shipping_zip
           },
-          total: totalPrice
+          total: total
         })
       })
 
@@ -277,71 +311,47 @@ export default function CheckoutPage() {
                   <h2 className={styles.sectionTitle}>Dirección de Envío</h2>
                 </div>
 
-                <div className={styles.formGrid}>
-                  <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                    <label className={styles.label}>
-                      Dirección completa *
-                    </label>
-                    <input
-                      type="text"
-                      name="shipping_address"
-                      value={formData.shipping_address}
-                      onChange={handleInputChange}
-                      className={`${styles.input} ${errors.shipping_address ? styles.inputError : ''}`}
-                      placeholder="Calle 123 # 45-67, Apto 101"
-                    />
-                    {errors.shipping_address && (
-                      <span className={styles.error}>{errors.shipping_address}</span>
-                    )}
-                  </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    Dirección *
+                  </label>
+                  <input
+                    type="text"
+                    name="shipping_address"
+                    value={formData.shipping_address}
+                    onChange={handleInputChange}
+                    placeholder="Calle 123 #45-67"
+                    className={`${styles.input} ${errors.shipping_address ? styles.inputError : ''}`}
+                  />
+                  {errors.shipping_address && (
+                    <p className={styles.error}>{errors.shipping_address}</p>
+                  )}
+                </div>
 
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>
-                      Ciudad *
-                    </label>
-                    <input
-                      type="text"
-                      name="shipping_city"
-                      value={formData.shipping_city}
-                      onChange={handleInputChange}
-                      className={`${styles.input} ${errors.shipping_city ? styles.inputError : ''}`}
-                      placeholder="Bogotá"
-                    />
-                    {errors.shipping_city && (
-                      <span className={styles.error}>{errors.shipping_city}</span>
-                    )}
-                  </div>
+                {/* Location Selector Component */}
+                <LocationSelector
+                  selectedState={formData.shipping_state}
+                  selectedCity={formData.shipping_city}
+                  onStateChange={(state) => setFormData(prev => ({ ...prev, shipping_state: state }))}
+                  onCityChange={(city) => setFormData(prev => ({ ...prev, shipping_city: city }))}
+                  errors={{
+                    state: errors.shipping_state,
+                    city: errors.shipping_city
+                  }}
+                />
 
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>
-                      Departamento *
-                    </label>
-                    <input
-                      type="text"
-                      name="shipping_state"
-                      value={formData.shipping_state}
-                      onChange={handleInputChange}
-                      className={`${styles.input} ${errors.shipping_state ? styles.inputError : ''}`}
-                      placeholder="Cundinamarca"
-                    />
-                    {errors.shipping_state && (
-                      <span className={styles.error}>{errors.shipping_state}</span>
-                    )}
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>
-                      Código postal (opcional)
-                    </label>
-                    <input
-                      type="text"
-                      name="shipping_zip"
-                      value={formData.shipping_zip}
-                      onChange={handleInputChange}
-                      className={styles.input}
-                      placeholder="110111"
-                    />
-                  </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    Código Postal (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    name="shipping_zip"
+                    value={formData.shipping_zip}
+                    onChange={handleInputChange}
+                    placeholder="110111"
+                    className={styles.input}
+                  />
                 </div>
               </div>
 
@@ -412,7 +422,7 @@ export default function CheckoutPage() {
                     <div className={styles.itemDetails}>
                       <h3 className={styles.itemName}>{item.productName}</h3>
                       <p className={styles.itemQuantity}>Cantidad: {item.quantity}</p>
-                      {item.selectedOptions.map((opt) => (
+                      {item.selectedOptions.map((opt: any) => (
                         <p key={opt.optionId} className={styles.itemOption}>
                           {opt.optionName}: {opt.valueName}
                         </p>
@@ -430,18 +440,38 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              <div className={styles.summaryTotals}>
+              {/* Totals */}
+              <div className={styles.totals}>
                 <div className={styles.totalRow}>
                   <span>Subtotal</span>
-                  <span>{formatPrice(totalPrice)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
+
                 <div className={styles.totalRow}>
                   <span>Envío</span>
-                  <span className={styles.free}>Gratis</span>
+                  <span>
+                    {shippingCost === 0
+                      ? (subtotal >= FREE_SHIPPING_THRESHOLD ? '¡GRATIS!' : 'Por calcular')
+                      : formatPrice(shippingCost)
+                    }
+                  </span>
                 </div>
+
+                {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && formData.shipping_state && (
+                  <div className={styles.shippingMessage}>
+                    {getShippingMessage(formData.shipping_state, formData.shipping_city, subtotal)}
+                  </div>
+                )}
+
+                {subtotal >= FREE_SHIPPING_THRESHOLD && (
+                  <div className={styles.freeShippingBanner}>
+                    ✨ ¡Felicidades! Tienes envío gratis
+                  </div>
+                )}
+
                 <div className={`${styles.totalRow} ${styles.totalFinal}`}>
                   <span>Total</span>
-                  <span>{formatPrice(totalPrice)}</span>
+                  <span>{formatPrice(total)}</span>
                 </div>
               </div>
 

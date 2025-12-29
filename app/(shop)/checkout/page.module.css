@@ -4,6 +4,19 @@
   padding: 2rem 0 4rem;
 }
 
+.shippingMessage {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+  border: 2px solid #fbbf24;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem; /* Más pequeño */
+  font-weight: 700; /* Negrita */
+  color: #92400e;
+  text-align: center; /* Centrado */
+  margin-top: 0.75rem;
+  line-height: 1.4;
+}
+
 .header {
   text-align: center;
   margin-bottom: 3rem;
