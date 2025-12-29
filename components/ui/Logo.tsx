@@ -7,7 +7,7 @@ export default function Logo() {
     <Link href="/" className={styles.logo}>
       <Image 
         src="/images/logo.png" 
-        alt="Niña Mar" 
+        alt="Niñamar" 
         width={150} 
         height={60}
         priority

@@ -40,12 +40,16 @@ export interface OrderItem {
 export interface CreateOrderData {
   customer_name: string
   customer_email: string
-  customer_phone?: string
-  customer_document?: string
+  customer_phone: string  // ← Cambiado a requerido (sin ?)
+  customer_document: string  // ← Cambiado a requerido (sin ?)
   shipping_address: string
   shipping_city: string
   shipping_state: string
   shipping_zip?: string
+  shipping_country?: string  // ← Agregado (opcional, default 'Colombia')
+  subtotal: number  // ← Agregado
+  shipping_cost: number  // ← Agregado
+  total: number  // ← Agregado
   customer_notes?: string
   items: {
     product_id: string

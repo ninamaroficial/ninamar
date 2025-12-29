@@ -38,7 +38,7 @@ export default function Footer() {
             <div className={styles.brandSection}>
               <Link href="/" className={styles.logo}>
 
-                <span className={styles.logoText}>Niña Mar</span>
+                <span className={styles.logoText}>Niñamar</span>
               </Link>
               
               <p className={styles.brandDescription}>
@@ -162,7 +162,7 @@ export default function Footer() {
         <Container>
           <div className={styles.bottomContent}>
             <div className={styles.copyright}>
-              <span>© {currentYear} Niña Mar.</span>
+              <span>© {currentYear} Niñamar.</span>
               <span>Hecho con <span className={styles.heart}>♥</span> en Colombia</span>
             </div>
 

@@ -5,10 +5,17 @@ import { createAdminClient } from './admin'
 export async function createOrder(data: CreateOrderData) {
   const supabase = await createClient()
   
-  // Calcular totales
-  const subtotal = data.items.reduce((sum, item) => sum + item.total_price, 0)
-  const shipping_cost = 0 // Por ahora gratis, después puedes calcularlo
-  const total = subtotal + shipping_cost
+  // Usar los valores que vienen del checkout (ya calculados)
+  const subtotal = data.subtotal
+  const shipping_cost = data.shipping_cost
+  const total = data.total
+  
+  console.log('📝 Creating order with:', {
+    subtotal,
+    shipping_cost,
+    total,
+    items_count: data.items.length
+  })
   
   // Generar número de orden
   const { data: orderNumberData, error: orderNumberError } = await supabase
@@ -18,6 +25,8 @@ export async function createOrder(data: CreateOrderData) {
     console.error('Error generating order number:', orderNumberError)
     throw new Error('No se pudo generar el número de orden')
   }
+  
+  console.log('✅ Order number generated:', orderNumberData)
   
   // Crear orden
   const { data: order, error: orderError } = await supabase
@@ -32,7 +41,7 @@ export async function createOrder(data: CreateOrderData) {
       shipping_city: data.shipping_city,
       shipping_state: data.shipping_state,
       shipping_zip: data.shipping_zip,
-      shipping_country: 'Colombia',
+      shipping_country: data.shipping_country || 'Colombia',
       subtotal: subtotal,
       shipping_cost: shipping_cost,
       total: total,
@@ -44,9 +53,11 @@ export async function createOrder(data: CreateOrderData) {
     .single()
   
   if (orderError) {
-    console.error('Error creating order:', orderError)
+    console.error('❌ Error creating order:', orderError)
     throw new Error('No se pudo crear la orden')
   }
+  
+  console.log('✅ Order created:', order.id)
   
   // Crear items de la orden
   const orderItems = data.items.map(item => ({
@@ -68,11 +79,13 @@ export async function createOrder(data: CreateOrderData) {
     .insert(orderItems)
   
   if (itemsError) {
-    console.error('Error creating order items:', itemsError)
+    console.error('❌ Error creating order items:', itemsError)
     // Intentar borrar la orden si falla
     await supabase.from('orders').delete().eq('id', order.id)
     throw new Error('No se pudieron agregar los productos a la orden')
   }
+  
+  console.log('✅ Order items created:', orderItems.length)
   
   return order as Order
 }

@@ -236,6 +236,7 @@
   gap: 0.75rem;
   text-decoration: none;
   transition: transform 0.3s ease;
+  margin-bottom: -10px;
 }
 
 .logo:hover {

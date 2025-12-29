@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
         <div className={styles.loginBox}>
           <div className={styles.header}>
             <h1 className={styles.title}>Panel de Administración</h1>
-            <p className={styles.subtitle}>Niña Mar</p>
+            <p className={styles.subtitle}>Niñamar</p>
           </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>

@@ -6,7 +6,7 @@ import ProductsFilters from "@/components/products/ProductsFilters"
 import styles from "./page.module.css"
 
 export const metadata = {
-  title: "Productos - Niña Mar",
+  title: "Productos - Niñamar",
   description: "Explora nuestra colección de joyas personalizables"
 }
 

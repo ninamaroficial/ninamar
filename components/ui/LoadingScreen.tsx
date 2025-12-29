@@ -43,7 +43,7 @@ export default function LoadingScreen() {
               {/* Opción 1: Con tu logo (descomenta cuando tengas el logo) */}
               <Image
                 src="/images/logo.png"
-                alt="Niña Mar"
+                alt="Niñamar"
                 width={120}
                 height={120}
                 className={styles.logoImage}
@@ -74,7 +74,7 @@ export default function LoadingScreen() {
 
         {/* Texto */}
         <div className={styles.textContainer}>
-          <h2 className={styles.title}>Niña Mar</h2>
+          <h2 className={styles.title}>Niñamar</h2>
           <p className={styles.subtitle}>Estamos cargando la información para ti</p>
           
           {/* Puntos animados */}

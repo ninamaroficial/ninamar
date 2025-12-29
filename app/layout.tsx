@@ -14,7 +14,7 @@ const twinkleStar = Twinkle_Star({
 })
 
 export const metadata: Metadata = {
-  title: "Niña Mar - Joyas Personalizadas",
+  title: "Niñamar - Joyas Personalizadas",
   description: "Crea joyas únicas diseñadas especialmente para ti",
 }
 

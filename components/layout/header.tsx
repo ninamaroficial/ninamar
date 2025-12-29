@@ -63,14 +63,14 @@ export default function Header() {
             <div className={styles.logoImage}>
               <Image
                 src="/images/logo.png"  // O "/logo.svg" si usas SVG
-                alt="Niña Mar"
-                width={80}
-                height={80}
+                alt="Niñamar"
+                width={100}
+                height={100}
                 className={styles.logoImg}
                 priority
               />
             </div>
-            <span className={styles.logoText}>Niña Mar</span>
+            <span className={styles.logoText}>Niñamar</span>
           </Link>
 
           {/* Desktop Navigation */}
