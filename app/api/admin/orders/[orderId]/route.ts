@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderDetails, updateOrderStatus } from '@/lib/supabase/admin-orders'
+import { sendOrderStatusUpdateEmail } from '@/lib/email/resend'
 
 export async function GET(
   request: NextRequest,
@@ -62,7 +63,26 @@ export async function PATCH(
       )
     }
 
+    // Actualizar estado
     const order = await updateOrderStatus(orderId, status)
+
+    console.log('✅ Order status updated:', {
+      orderId,
+      oldStatus: currentOrder.status,
+      newStatus: status
+    })
+
+    // 🆕 Enviar email de actualización de estado (solo para ciertos estados)
+    if (status === 'processing' || status === 'shipped' || status === 'delivered') {
+      sendOrderStatusUpdateEmail(
+        currentOrder.order_number,
+        currentOrder.customer_name,
+        currentOrder.customer_email,
+        status as 'processing' | 'shipped' | 'delivered'
+      ).catch(err => {
+        console.error('Failed to send status update email:', err)
+      })
+    }
 
     return NextResponse.json(order)
   } catch (error) {
