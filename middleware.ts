@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
     if (token) {
       try {
         await jwtVerify(token, JWT_SECRET)
-        return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+        return NextResponse.redirect(new URL('/admin', request.url))
       } catch (error) {
         // Token inválido, permitir acceso a login
         return NextResponse.next()

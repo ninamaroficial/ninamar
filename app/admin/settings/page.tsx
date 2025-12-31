@@ -68,7 +68,7 @@ export default function AdminSettingsPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <Link href="/admin/dashboard" className={styles.backButton}>
+          <Link href="/admin" className={styles.backButton}>
             <ArrowLeft size={20} />
             Volver al Dashboard
           </Link>

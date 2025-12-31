@@ -82,7 +82,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
     } catch (error) {
       console.error('Error loading order:', error)
       alert('Error al cargar la orden')
-      router.push('/admin/dashboard')
+      router.push('/admin')
     } finally {
       setIsLoading(false)
     }
@@ -170,7 +170,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <Link href="/admin/dashboard" className={styles.backButton}>
+          <Link href="/admin" className={styles.backButton}>
             <ArrowLeft size={20} />
             Volver al Dashboard
           </Link>

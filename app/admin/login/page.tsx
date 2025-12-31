@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
       }
 
       // Redirigir al dashboard
-      router.push('/admin/dashboard')
+      router.push('/admin')
     } catch (error) {
       setError('Error de conexión')
       setIsLoading(false)

@@ -186,7 +186,7 @@ export default function NewOrderAdminEmail({
             {/* Action Buttons */}
             <Section style={actionsSection}>
               <Link
-                href={`${process.env.NEXT_PUBLIC_URL}/admin/dashboard`}
+                href={`${process.env.NEXT_PUBLIC_URL}/admin`}
                 style={primaryButton}
               >
                 Ver en Panel Admin
@@ -226,7 +226,7 @@ export default function NewOrderAdminEmail({
               Esta es una notificación automática del sistema Niña Mar
             </Text>
             <Text style={footerText}>
-              <Link href={`${process.env.NEXT_PUBLIC_URL}/admin/dashboard`} style={footerLink}>
+              <Link href={`${process.env.NEXT_PUBLIC_URL}/admin`} style={footerLink}>
                 Panel de Administración
               </Link>
             </Text>
