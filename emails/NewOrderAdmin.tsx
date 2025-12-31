@@ -4,6 +4,7 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -30,6 +31,8 @@ interface NewOrderAdminEmailProps {
   shipping_state: string
 }
 
+const LOGO_URL = 'https://xn--niamar-xwa.com/logo.png'
+
 export default function NewOrderAdminEmail({
   orderNumber,
   customerName,
@@ -51,85 +54,190 @@ export default function NewOrderAdminEmail({
 
   return (
     <Html>
-      <Head />
-      <Preview>Nueva orden recibida: {orderNumber}</Preview>
+      <Head>
+        <meta name="color-scheme" content="light dark" />
+        <meta name="supported-color-schemes" content="light dark" />
+      </Head>
+      <Preview>🔔 Nueva orden {orderNumber} de {customerName} - Total: {formatPrice(total)}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Header */}
+          {/* Header Admin */}
           <Section style={header}>
-            <Heading style={h1}>🔔 Nueva Orden Recibida</Heading>
+            <Row>
+              <Column style={logoCol}>
+                <Img
+                  src={LOGO_URL}
+                  width="60"
+                  height="60"
+                  alt="Niña Mar Logo"
+                  style={logo}
+                />
+              </Column>
+              <Column style={headerTextCol}>
+                <Heading style={headerTitle}>Nueva Orden Recibida</Heading>
+                <Text style={headerSubtitle}>Panel de Administración</Text>
+              </Column>
+            </Row>
+          </Section>
+
+          {/* Alert Badge */}
+          <Section style={alertBadge}>
+            <div style={alertIcon}>🔔</div>
+            <Heading style={alertTitle}>¡Nuevo Pedido!</Heading>
+            <Text style={alertOrderNumber}>{orderNumber}</Text>
+            <Text style={alertTotal}>{formatPrice(total)}</Text>
           </Section>
 
           {/* Content */}
           <Section style={content}>
-            <Heading style={h2}>Orden {orderNumber}</Heading>
-            
-            {/* Customer Info */}
-            <Section style={infoSection}>
-              <Heading style={h3}>Información del Cliente</Heading>
-              <Text style={text}>
-                <strong>Nombre:</strong> {customerName}<br />
-                <strong>Email:</strong> {customerEmail}<br />
-                <strong>Teléfono:</strong> {customerPhone}
-              </Text>
+            {/* Customer Info Card */}
+            <Section style={infoCard}>
+              <div style={cardHeader}>
+                <div style={cardIcon}>👤</div>
+                <Heading style={cardTitle}>Información del Cliente</Heading>
+              </div>
+              <div style={cardBody}>
+                <Row style={infoRow}>
+                  <Column style={infoLabel}>
+                    <Text style={infoLabelText}>Nombre:</Text>
+                  </Column>
+                  <Column>
+                    <Text style={infoValue}>{customerName}</Text>
+                  </Column>
+                </Row>
+                <Row style={infoRow}>
+                  <Column style={infoLabel}>
+                    <Text style={infoLabelText}>Email:</Text>
+                  </Column>
+                  <Column>
+                    <Link href={`mailto:${customerEmail}`} style={infoLink}>
+                      {customerEmail}
+                    </Link>
+                  </Column>
+                </Row>
+                <Row style={infoRow}>
+                  <Column style={infoLabel}>
+                    <Text style={infoLabelText}>Teléfono:</Text>
+                  </Column>
+                  <Column>
+                    <Link href={`tel:${customerPhone}`} style={infoLink}>
+                      {customerPhone}
+                    </Link>
+                  </Column>
+                </Row>
+              </div>
             </Section>
 
-            {/* Items */}
-            <Section style={itemsSection}>
-              <Heading style={h3}>Productos ({items.length})</Heading>
-              {items.map((item, index) => (
-                <div key={index} style={itemContainer}>
-                  <Text style={itemText}>
-                    <strong>{item.product_name}</strong> x{item.quantity}
-                  </Text>
-                  {item.customization_details && Array.isArray(item.customization_details) && (
-                    <Text style={customText}>
-                      {item.customization_details.map((custom: any) => 
-                        `${custom.optionName}: ${custom.valueName}`
-                      ).join(', ')}
+            {/* Products Card */}
+            <Section style={infoCard}>
+              <div style={cardHeader}>
+                <div style={cardIcon}>📦</div>
+                <Heading style={cardTitle}>Productos ({items.length})</Heading>
+              </div>
+              <div style={cardBody}>
+                {items.map((item, index) => (
+                  <div key={index} style={productItem}>
+                    <Text style={productName}>
+                      <strong>{item.product_name}</strong> × {item.quantity}
                     </Text>
-                  )}
-                  {item.engraving && (
-                    <Text style={engravingText}>
-                      ✍️ Grabado: "{item.engraving}"
-                    </Text>
-                  )}
-                </div>
-              ))}
+                    
+                    {item.customization_details && Array.isArray(item.customization_details) && item.customization_details.length > 0 && (
+                      <div style={customizationsContainer}>
+                        {item.customization_details.map((custom: any, idx: number) => (
+                          <span key={idx} style={customBadge}>
+                            {custom.optionName}: {custom.valueName}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {item.engraving && (
+                      <div style={engravingContainer}>
+                        <Text style={engravingText}>
+                          ✍️ Grabado: <strong>"{item.engraving}"</strong>
+                        </Text>
+                      </div>
+                    )}
+                    
+                    {index < items.length - 1 && <Hr style={productDivider} />}
+                  </div>
+                ))}
+              </div>
             </Section>
 
-            {/* Shipping */}
-            <Section style={shippingSection}>
-              <Heading style={h3}>Dirección de Envío</Heading>
-              <Text style={text}>
-                {shipping_address}<br />
-                {shipping_city}, {shipping_state}<br />
-                Colombia
-              </Text>
+            {/* Shipping Card */}
+            <Section style={infoCard}>
+              <div style={cardHeader}>
+                <div style={cardIcon}>🚚</div>
+                <Heading style={cardTitle}>Dirección de Envío</Heading>
+              </div>
+              <div style={cardBody}>
+                <Text style={shippingAddress}>
+                  {shipping_address}<br />
+                  {shipping_city}, {shipping_state}<br />
+                  Colombia
+                </Text>
+              </div>
             </Section>
 
-            {/* Total */}
-            <Section style={totalSection}>
-              <Text style={finalTotal}>
-                Total: {formatPrice(total)}
-              </Text>
+            {/* Total Card */}
+            <Section style={totalCard}>
+              <Row>
+                <Column>
+                  <Text style={totalLabel}>Total del Pedido</Text>
+                </Column>
+                <Column style={totalValueCol}>
+                  <Text style={totalValue}>{formatPrice(total)}</Text>
+                </Column>
+              </Row>
             </Section>
 
-            {/* Admin Panel Button */}
-            <Section style={buttonSection}>
+            {/* Action Buttons */}
+            <Section style={actionsSection}>
               <Link
                 href={`${process.env.NEXT_PUBLIC_URL}/admin/dashboard`}
-                style={button}
+                style={primaryButton}
               >
-                Ver en Panel de Admin
+                Ver en Panel Admin
               </Link>
+              <Link
+                href={`mailto:${customerEmail}`}
+                style={secondaryButton}
+              >
+                Contactar Cliente
+              </Link>
+            </Section>
+
+            {/* Quick Actions */}
+            <Section style={quickActionsSection}>
+              <Text style={quickActionsTitle}>Acciones Rápidas</Text>
+              <div style={quickActionsGrid}>
+                <div style={quickAction}>
+                  <div style={quickActionIcon}>✅</div>
+                  <Text style={quickActionText}>Marcar como Procesando</Text>
+                </div>
+                <div style={quickAction}>
+                  <div style={quickActionIcon}>📋</div>
+                  <Text style={quickActionText}>Imprimir Orden</Text>
+                </div>
+                <div style={quickAction}>
+                  <div style={quickActionIcon}>📧</div>
+                  <Text style={quickActionText}>Enviar Email al Cliente</Text>
+                </div>
+              </div>
             </Section>
           </Section>
 
           {/* Footer */}
-          <Section style={footerSection}>
+          <Section style={footer}>
+            <Hr style={footerDivider} />
             <Text style={footerText}>
               Esta es una notificación automática del sistema Niña Mar
+            </Text>
+            <Text style={footerText}>
+              <Link href={`${process.env.NEXT_PUBLIC_URL}/admin/dashboard`} style={footerLink}>
+                Panel de Administración
+              </Link>
             </Text>
           </Section>
         </Container>
@@ -138,145 +246,346 @@ export default function NewOrderAdminEmail({
   )
 }
 
-// Estilos
+// ==================== ESTILOS ====================
+
 const main = {
-  backgroundColor: '#f6f9fc',
+  backgroundColor: '#f5f5f5',
   fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 }
 
 const container = {
   backgroundColor: '#ffffff',
   margin: '0 auto',
-  padding: '20px 0 48px',
-  marginBottom: '64px',
+  marginBottom: '32px',
   maxWidth: '600px',
+  borderRadius: '12px',
+  overflow: 'hidden' as const,
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
 }
 
+// Header
 const header = {
-  padding: '32px 48px',
-  textAlign: 'center' as const,
-  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  padding: '32px',
 }
 
-const h1 = {
+const logoCol = {
+  width: '70px',
+  verticalAlign: 'middle' as const,
+}
+
+const logo = {
+  borderRadius: '50%',
+  border: '3px solid rgba(255, 255, 255, 0.3)',
+}
+
+const headerTextCol = {
+  verticalAlign: 'middle' as const,
+  paddingLeft: '16px',
+}
+
+const headerTitle = {
   color: '#ffffff',
-  fontSize: '28px',
-  fontWeight: '900',
-  margin: '0',
-  padding: '0',
-}
-
-const content = {
-  padding: '0 48px',
-}
-
-const h2 = {
-  color: '#0f172a',
   fontSize: '24px',
-  fontWeight: '700',
-  margin: '32px 0 16px',
+  fontWeight: '900',
+  margin: '0 0 4px',
 }
 
-const h3 = {
-  color: '#0f172a',
-  fontSize: '18px',
-  fontWeight: '600',
-  margin: '24px 0 12px',
+const headerSubtitle = {
+  color: 'rgba(255, 255, 255, 0.9)',
+  fontSize: '14px',
+  fontWeight: '500',
+  margin: '0',
 }
 
-const text = {
-  color: '#525f7f',
-  fontSize: '16px',
-  lineHeight: '24px',
+// Alert Badge
+const alertBadge = {
+  padding: '32px',
+  textAlign: 'center' as const,
+  background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+  borderBottom: '3px solid #f59e0b',
+}
+
+const alertIcon = {
+  fontSize: '48px',
+  marginBottom: '12px',
+}
+
+const alertTitle = {
+  color: '#78350f',
+  fontSize: '24px',
+  fontWeight: '800',
   margin: '0 0 12px',
 }
 
-const infoSection = {
-  margin: '24px 0',
-  padding: '20px',
-  backgroundColor: '#f8fafc',
-  borderRadius: '8px',
-}
-
-const itemsSection = {
-  margin: '24px 0',
-  padding: '20px',
-  backgroundColor: '#f1f5f9',
-  borderRadius: '8px',
-}
-
-const itemContainer = {
-  marginBottom: '16px',
-  paddingBottom: '16px',
-  borderBottom: '1px solid #e2e8f0',
-}
-
-const itemText = {
+const alertOrderNumber = {
+  color: '#92400e',
+  fontSize: '20px',
+  fontWeight: '700',
   margin: '0 0 8px',
+  fontFamily: 'monospace',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  padding: '8px 16px',
+  borderRadius: '6px',
+  display: 'inline-block',
+}
+
+const alertTotal = {
+  color: '#065f46',
+  fontSize: '32px',
+  fontWeight: '900',
+  margin: '0',
+}
+
+// Content
+const content = {
+  padding: '32px',
+}
+
+// Info Cards
+const infoCard = {
+  marginBottom: '24px',
+  border: '2px solid #e2e8f0',
+  borderRadius: '12px',
+  overflow: 'hidden' as const,
+}
+
+const cardHeader = {
+  backgroundColor: '#f8fafc',
+  padding: '16px 20px',
+  borderBottom: '2px solid #e2e8f0',
+  display: 'flex',
+  alignItems: 'center',
+}
+
+const cardIcon = {
+  width: '36px',
+  height: '36px',
+  borderRadius: '8px',
+  backgroundColor: '#667eea',
+  color: '#ffffff',
+  fontSize: '18px',
+  lineHeight: '36px',
+  textAlign: 'center' as const,
+  marginRight: '12px',
+  flexShrink: 0,
+}
+
+const cardTitle = {
+  fontSize: '16px',
+  fontWeight: '700',
+  color: '#0f172a',
+  margin: '0',
+}
+
+const cardBody = {
+  padding: '20px',
+}
+
+const infoRow = {
+  marginBottom: '12px',
+}
+
+const infoLabel = {
+  width: '100px',
+}
+
+const infoLabelText = {
+  fontSize: '14px',
+  fontWeight: '600',
+  color: '#64748b',
+  margin: '0',
+}
+
+const infoValue = {
+  fontSize: '14px',
+  color: '#0f172a',
+  margin: '0',
+}
+
+const infoLink = {
+  fontSize: '14px',
+  color: '#3b82f6',
+  textDecoration: 'underline',
+}
+
+// Products
+const productItem = {
+  marginBottom: '16px',
+}
+
+const productName = {
   fontSize: '15px',
   color: '#0f172a',
+  margin: '0 0 8px',
 }
 
-const customText = {
-  margin: '0 0 4px',
-  fontSize: '13px',
-  color: '#64748b',
+const customizationsContainer = {
+  marginTop: '8px',
+  marginBottom: '8px',
+}
+
+const customBadge = {
+  display: 'inline-block',
+  padding: '4px 10px',
+  backgroundColor: '#dbeafe',
+  color: '#1e40af',
+  borderRadius: '12px',
+  fontSize: '12px',
+  fontWeight: '600',
+  marginRight: '6px',
+  marginBottom: '4px',
+}
+
+const engravingContainer = {
+  marginTop: '8px',
+  padding: '10px 12px',
+  backgroundColor: '#f3e8ff',
+  borderRadius: '6px',
+  borderLeft: '3px solid #8b5cf6',
 }
 
 const engravingText = {
-  margin: '0',
   fontSize: '13px',
-  color: '#8b5cf6',
-  fontStyle: 'italic' as const,
-}
-
-const shippingSection = {
-  margin: '24px 0',
-  padding: '20px',
-  backgroundColor: '#fef3c7',
-  borderRadius: '8px',
-  borderLeft: '4px solid #f59e0b',
-}
-
-const totalSection = {
-  margin: '24px 0',
-  padding: '20px',
-  textAlign: 'center' as const,
-  backgroundColor: '#d1fae5',
-  borderRadius: '8px',
-}
-
-const finalTotal = {
+  color: '#6b21a8',
   margin: '0',
-  fontSize: '24px',
-  color: '#065f46',
-  fontWeight: '900',
 }
 
-const buttonSection = {
-  margin: '32px 0',
-  textAlign: 'center' as const,
+const productDivider = {
+  borderColor: '#e2e8f0',
+  margin: '16px 0',
 }
 
-const button = {
-  backgroundColor: '#667eea',
-  borderRadius: '8px',
-  color: '#ffffff',
+const shippingAddress = {
+  fontSize: '14px',
+  color: '#0f172a',
+  lineHeight: '1.8',
+  margin: '0',
+}
+
+// Total Card
+const totalCard = {
+  backgroundColor: '#d1fae5',
+  padding: '24px',
+  borderRadius: '12px',
+  marginBottom: '24px',
+  border: '2px solid #10b981',
+}
+
+const totalLabel = {
   fontSize: '16px',
   fontWeight: '700',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  display: 'inline-block',
-  padding: '14px 32px',
+  color: '#065f46',
+  margin: '0',
 }
 
-const footerSection = {
-  padding: '24px 48px',
+const totalValueCol = {
+  textAlign: 'right' as const,
+}
+
+const totalValue = {
+  fontSize: '28px',
+  fontWeight: '900',
+  color: '#047857',
+  margin: '0',
+}
+
+// Action Buttons
+const actionsSection = {
   textAlign: 'center' as const,
+  marginBottom: '24px',
+}
+
+const primaryButton = {
+  backgroundColor: '#667eea',
+  color: '#ffffff',
+  padding: '14px 32px',
+  borderRadius: '8px',
+  textDecoration: 'none',
+  fontWeight: '700',
+  fontSize: '15px',
+  display: 'inline-block',
+  marginRight: '12px',
+  marginBottom: '12px',
+  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+}
+
+const secondaryButton = {
+  backgroundColor: '#f8fafc',
+  color: '#667eea',
+  padding: '14px 32px',
+  borderRadius: '8px',
+  textDecoration: 'none',
+  fontWeight: '700',
+  fontSize: '15px',
+  display: 'inline-block',
+  border: '2px solid #667eea',
+  marginBottom: '12px',
+}
+
+// Quick Actions
+const quickActionsSection = {
+  padding: '20px',
+  backgroundColor: '#f8fafc',
+  borderRadius: '12px',
+  marginBottom: '24px',
+}
+
+const quickActionsTitle = {
+  fontSize: '14px',
+  fontWeight: '700',
+  color: '#64748b',
+  margin: '0 0 16px',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.5px',
+}
+
+const quickActionsGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: '12px',
+}
+
+const quickAction = {
+  textAlign: 'center' as const,
+  padding: '12px',
+  backgroundColor: '#ffffff',
+  borderRadius: '8px',
+  border: '1px solid #e2e8f0',
+}
+
+const quickActionIcon = {
+  fontSize: '24px',
+  marginBottom: '8px',
+}
+
+const quickActionText = {
+  fontSize: '11px',
+  color: '#64748b',
+  fontWeight: '600',
+  margin: '0',
+  lineHeight: '1.4',
+}
+
+// Footer
+const footer = {
+  padding: '24px 32px',
+  textAlign: 'center' as const,
+  backgroundColor: '#f8fafc',
+}
+
+const footerDivider = {
+  borderColor: '#e2e8f0',
+  margin: '0 0 16px',
 }
 
 const footerText = {
-  color: '#8898aa',
   fontSize: '12px',
-  margin: '0',
+  color: '#64748b',
+  margin: '0 0 8px',
+}
+
+const footerLink = {
+  color: '#3b82f6',
+  textDecoration: 'underline',
 }
