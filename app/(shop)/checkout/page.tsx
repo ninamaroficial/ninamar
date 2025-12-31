@@ -3,17 +3,18 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useCart } from "@/lib/context/CartContext"
-import Container from "@/components/ui/Container"
 import { ShoppingBag, CreditCard, MapPin, User, Phone, Mail, FileText } from "lucide-react"
 import Image from "next/image"
 import styles from "./page.module.css"
 import LocationSelector from '@/components/checkout/LocationSelector'
 import { calculateShipping, getShippingMessage, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping/rates'
+import Link from "next/link"
 
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, clearCart } = useCart()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isRedirecting, setIsRedirecting] = useState(false) // ← NUEVO
 
   // Formulario
   const [formData, setFormData] = useState({
@@ -28,7 +29,13 @@ export default function CheckoutPage() {
     customer_notes: ''
   })
 
+
+  
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // ← AGREGAR ESTOS ESTADOS NUEVOS
+  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false)
 
   // Calcular subtotal del carrito
   const subtotal = items.reduce((sum, item) => sum + (item.totalPrice), 0)
@@ -118,9 +125,32 @@ const handleSubmit = async (e: React.FormEvent) => {
     return
   }
 
+    // ← AGREGAR VALIDACIÓN DE TÉRMINOS
+  if (!acceptTerms) {
+    alert('Debes aceptar los términos y condiciones para continuar')
+    return
+  }
+
   setIsProcessing(true)
 
-  try {
+    try {
+    // Newsletter subscription
+    if (subscribeNewsletter) {
+      try {
+        await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.customer_email,
+            name: formData.customer_name,
+            source: 'checkout'
+          })
+        })
+      } catch (error) {
+        console.error('Error subscribing to newsletter:', error)
+      }
+    }
+
     // 1. Crear la orden en Supabase
     const orderData = {
       customer_name: formData.customer_name,
@@ -205,25 +235,14 @@ const handleSubmit = async (e: React.FormEvent) => {
     // 3. Limpiar carrito ANTES de redirigir
     clearCart()
 
-    // 4. REDIRECCIÓN MEJORADA PARA MÓVILES
+    // 4. Mostrar pantalla de redirección
+    setIsProcessing(false)
+    console.log('🟢 Activando overlay de redirección') // ← AGREGAR ESTA LÍNEA
+    setIsRedirecting(true) // ← ACTIVAR OVERLAY
+
+    // 5. Redirigir a MercadoPago
     console.log('🔄 Redirecting to payment...')
     
-    // Método 1: Crear un enlace temporal y hacer click programático
-    // Este método funciona mejor en móviles porque simula un click real del usuario
-    const link = document.createElement('a')
-    link.href = initPoint
-    link.target = '_self' // Abrir en la misma ventana
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    
-    // Método 2: window.location.replace (no guarda en historial del navegador)
-    // Esto evita que el usuario pueda volver atrás y duplicar la orden
-    setTimeout(() => {
-      window.location.replace(initPoint)
-    }, 100)
-    
-    // Método 3: Fallback final con window.location.href
     setTimeout(() => {
       window.location.href = initPoint
     }, 500)
@@ -231,6 +250,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   } catch (error) {
     console.error('Error processing checkout:', error)
     setIsProcessing(false)
+    setIsRedirecting(false)
     alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.')
   }
 }
@@ -240,6 +260,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   return (
+        <>
     <div className={styles.page}>
       <div className={styles.container}>
         <div className={styles.header}>
@@ -399,6 +420,48 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </div>
               </div>
 
+              {/* Términos y Newsletter */}
+              <div className={styles.section}>
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={acceptTerms}
+                      onChange={(e) => setAcceptTerms(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      Acepto los{' '}
+                      <Link href="/terminos" target="_blank" className={styles.link}>
+                        Términos y Condiciones
+                      </Link>{' '}
+                      y la{' '}
+                      <Link href="/privacidad" target="_blank" className={styles.link}>
+                        Política de Privacidad
+                      </Link>
+                      <span className={styles.required}> *</span>
+                    </span>
+                  </label>
+
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={subscribeNewsletter}
+                      onChange={(e) => setSubscribeNewsletter(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span className={styles.checkboxText}>
+                      Quiero recibir novedades, ofertas exclusivas y tips sobre joyas por email
+                    </span>
+                  </label>
+                </div>
+
+                {!acceptTerms && (
+                  <p className={styles.termsWarning}>
+                    * Debes aceptar los términos para continuar
+                  </p>
+                )}
+              </div>  
               {/* Botón de envío */}
               <button
                 type="submit"
@@ -508,5 +571,24 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       </div>
     </div>
+
+          {/* Overlay de redirección - FUERA del div.page */}
+      {isRedirecting && (
+        <div className={styles.redirectOverlay}>
+          <div className={styles.redirectContent}>
+            <div className={styles.redirectSpinner}></div>
+            <h2 className={styles.redirectTitle}>Redirigiendo a MercadoPago...</h2>
+            <p className={styles.redirectText}>
+              Por favor espera mientras te redirigimos a la pasarela de pago segura
+            </p>
+            <div className={styles.redirectIcons}>
+              <span>💳</span>
+              <span>🔒</span>
+              <span>✨</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

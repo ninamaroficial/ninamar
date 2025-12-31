@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MercadoPagoConfig, Payment } from 'mercadopago'
-import { updateOrderPaymentStatus } from '@/lib/supabase/orders'
+import { updateOrderPaymentStatus, getOrderById } from '@/lib/supabase/orders'
+import { sendOrderConfirmationEmail, sendNewOrderAdminEmail } from '@/lib/email/resend'
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,14 +26,12 @@ export async function POST(request: NextRequest) {
 
     const payment = new Payment(client)
 
-    // MercadoPago envía notificaciones de tipo "payment"
     if (body.type === 'payment' && body.data && body.data.id) {
       const paymentId = body.data.id
 
       console.log('💳 Processing payment ID:', paymentId)
 
       try {
-        // Obtener información completa del pago
         console.log('📡 Fetching payment info from MercadoPago...')
         const paymentInfo = await payment.get({ id: paymentId })
 
@@ -63,7 +62,7 @@ export async function POST(request: NextRequest) {
         console.log('📦 Updating order:', orderId)
         console.log('Payment status:', status)
 
-        // Actualizar estado de la orden según el estado del pago
+        // Actualizar estado según el pago
         if (status === 'approved') {
           console.log('✅ Payment APPROVED - Updating order to PAID')
           try {
@@ -74,6 +73,44 @@ export async function POST(request: NextRequest) {
               paymentMethod || 'unknown'
             )
             console.log('✅ Order updated successfully in database')
+
+            // ✅ ENVIAR EMAILS SOLO CUANDO EL PAGO SEA APROBADO
+            try {
+              console.log('📧 Fetching order details for emails...')
+              const order = await getOrderById(orderId)
+
+              if (order) {
+                console.log('📧 Sending confirmation emails...')
+                
+                const emailData = {
+                  orderNumber: order.order_number,
+                  customerName: order.customer_name,
+                  customerEmail: order.customer_email,
+                  customerPhone: order.customer_phone,
+                  items: order.order_items,
+                  subtotal: order.subtotal,
+                  shipping_cost: order.shipping_cost,
+                  total: order.total,
+                  shipping_address: order.shipping_address,
+                  shipping_city: order.shipping_city,
+                  shipping_state: order.shipping_state,
+                }
+
+                // Enviar ambos emails
+                await Promise.all([
+                  sendOrderConfirmationEmail(emailData),
+                  sendNewOrderAdminEmail(emailData)
+                ])
+
+                console.log('✅ Confirmation emails sent successfully')
+              } else {
+                console.error('❌ Order not found for email:', orderId)
+              }
+            } catch (emailError) {
+              console.error('❌ Error sending confirmation emails:', emailError)
+              // No fallar el webhook si el email falla
+            }
+
           } catch (dbError) {
             console.error('❌ Database update error:', dbError)
             throw dbError

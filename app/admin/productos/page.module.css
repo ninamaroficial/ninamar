@@ -22,7 +22,7 @@
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 0.5rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .subtitle {
@@ -268,7 +268,7 @@
   font-weight: 800;
   color: #0f766e;
   margin: 0;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .description {

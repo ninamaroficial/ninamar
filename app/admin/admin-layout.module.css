@@ -27,7 +27,7 @@
   font-weight: 900;
   color: #0f172a;
   margin: 0;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

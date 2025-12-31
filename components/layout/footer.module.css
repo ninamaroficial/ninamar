@@ -17,7 +17,45 @@
   background-size: 200% 100%;
   animation: shimmer 3s linear infinite;
 }
+/* Newsletter Messages */
+.newsletterMessage {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}
 
+.messageSuccess {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+.messageError {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.privacyNote {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.privacyLink {
+  color: #a6e8e4;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.privacyLink:hover {
+  color: #8dd4cf;
+}
 .footer::after {
   content: '🌊';
   position: absolute;
@@ -80,14 +118,14 @@
   color: #1f2937;
   font-weight: bold;
   font-size: 1.5rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .logoText {
   font-size: 1.5rem;
   font-weight: bold;
   color: #ffffff;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   letter-spacing: 0.05em;
 }
 
@@ -142,7 +180,7 @@
   font-weight: 700;
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   position: relative;
   display: inline-block;
 }
@@ -246,7 +284,7 @@
   font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   box-shadow: 0 4px 12px rgba(166, 232, 228, 0.3);
 }
 

@@ -41,7 +41,7 @@
   font-size: 1.75rem;
   font-weight: bold;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .container {
@@ -70,7 +70,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .form {

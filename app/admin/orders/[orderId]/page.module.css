@@ -51,7 +51,7 @@
   font-size: 1.75rem;
   font-weight: bold;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .loading,
@@ -102,7 +102,7 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 /* Status Update */
@@ -345,7 +345,7 @@
 
 .totalFinal span {
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 /* Sidebar */
@@ -529,7 +529,7 @@
   font-weight: 700;
   color: #991b1b;
   margin-bottom: 0.5rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .blockedText {

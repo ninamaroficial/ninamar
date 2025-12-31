@@ -1,0 +1,26 @@
+// app/fonts.ts
+import localFont from 'next/font/local'
+
+export const titleFont = localFont({
+  src: [
+    {
+      path: '../public/fonts/Helmison Notes.otf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-title',
+  display: 'swap',
+})
+
+export const bodyFont = localFont({
+  src: [
+    {
+      path: '../public/fonts/corbel-light.ttf',
+      weight: '200',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-body',
+  display: 'swap',
+})

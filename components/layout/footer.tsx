@@ -1,9 +1,16 @@
+"use client"
+
+import { useState } from 'react'
 import Container from "@/components/ui/Container"
 import Link from "next/link"
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, CreditCard } from "lucide-react"
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
 import styles from "./footer.module.css"
 
 export default function Footer() {
+  const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+
   const footerLinks = {
     company: [
       { name: "Acerca de Nosotros", href: "/acerca" },
@@ -26,6 +33,42 @@ export default function Footer() {
     ],
   }
 
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!email) {
+      setMessage({ type: 'error', text: 'Por favor ingresa tu email' })
+      return
+    }
+
+    setIsSubmitting(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          source: 'footer'
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al suscribirse')
+      }
+
+      setMessage({ type: 'success', text: data.message })
+      setEmail('')
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const currentYear = new Date().getFullYear()
 
   return (
@@ -37,7 +80,6 @@ export default function Footer() {
             {/* Sección de la Marca */}
             <div className={styles.brandSection}>
               <Link href="/" className={styles.logo}>
-
                 <span className={styles.logoText}>Niñamar</span>
               </Link>
               
@@ -141,17 +183,39 @@ export default function Footer() {
               <p className={styles.newsletterText}>
                 Suscríbete para recibir ofertas exclusivas y novedades sobre nuestras colecciones.
               </p>
-              <form className={styles.newsletterForm}>
+              <form onSubmit={handleNewsletterSubmit} className={styles.newsletterForm}>
                 <input
                   type="email"
                   placeholder="tu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className={styles.newsletterInput}
                   required
+                  disabled={isSubmitting}
                 />
-                <button type="submit" className={styles.newsletterButton}>
-                  Suscribirme ✨
+                <button 
+                  type="submit" 
+                  className={styles.newsletterButton}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Enviando...' : 'Suscribirme ✨'}
                 </button>
               </form>
+              
+              {message && (
+                <p className={`${styles.newsletterMessage} ${
+                  message.type === 'success' ? styles.messageSuccess : styles.messageError
+                }`}>
+                  {message.text}
+                </p>
+              )}
+              
+              <p className={styles.privacyNote}>
+                Al suscribirte, aceptas nuestra{' '}
+                <Link href="/privacidad" className={styles.privacyLink}>
+                  política de privacidad
+                </Link>
+              </p>
             </div>
           </div>
         </Container>

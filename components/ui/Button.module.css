@@ -6,7 +6,7 @@
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   letter-spacing: 0.05em;
 }
 

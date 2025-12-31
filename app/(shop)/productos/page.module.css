@@ -1,62 +1,56 @@
 .page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: #ffffff;
 }
 
+/* Hero minimalista y elegante */
 .hero {
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
-  padding: 4rem 0 3rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::after {
-  content: '💎';
-  position: absolute;
-  bottom: -2rem;
-  right: 5%;
-  font-size: 8rem;
-  opacity: 0.1;
-  animation: float 6s ease-in-out infinite;
+  background: linear-gradient(180deg, #f8fafa 0%, #ffffff 100%);
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .heroContent {
   text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .heroTitle {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 1rem;
-  font-family: var(--font-twinkle);
-  letter-spacing: 0.05em;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-title);
+  letter-spacing: 0.02em;
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
-  color: #374151;
+  font-size: 1.125rem;
+  color: #64748b;
+  font-weight: 300;
+  letter-spacing: 0.01em;
 }
 
+/* Products Section */
 .productsSection {
   padding: 3rem 0 6rem;
 }
 
-
 .layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
-  position: relative;
+  gap: 3rem;
 }
 
 @media (min-width: 1024px) {
   .layout {
-    grid-template-columns: 280px 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 260px 1fr;
+    gap: 4rem;
   }
 }
 
+/* Sidebar */
 .sidebar {
   display: none;
 }
@@ -64,29 +58,63 @@
 @media (min-width: 1024px) {
   .sidebar {
     display: block;
+    position: sticky;
+    top: 6rem;
+    height: fit-content;
   }
 }
 
+/* Main Content */
 .mainContent {
   width: 100%;
 }
 
-.resultsHeader {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e5e7eb;
+/* Search Header */
+.searchHeader {
+  margin-bottom: 1.5rem;
 }
 
-.resultsCount {
-  font-size: 1rem;
-  color: #6b7280;
+.searchInfo {
+  font-size: 0.9375rem;
+  color: #64748b;
+  font-weight: 300;
+}
+
+.searchTerm {
+  color: #0f172a;
   font-weight: 500;
 }
 
+/* Results Header */
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.resultsTitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #0f172a;
+  font-family: var(--font-title);
+  letter-spacing: 0.01em;
+}
+
+.resultsCount {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 300;
+  text-transform: lowercase;
+}
+
+/* Products Grid - Más espacioso y elegante */
 .productsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 3rem 2rem;
 }
 
 @media (min-width: 640px) {
@@ -97,62 +125,64 @@
 
 @media (min-width: 1024px) {
   .productsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem 2.5rem;
   }
 }
 
-.emptyState {
-  text-align: center;
-  padding: 6rem 2rem;
+@media (min-width: 1280px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem 3rem;
+  }
 }
 
-.emptyIcon {
-  font-size: 5rem;
-  display: block;
-  margin-bottom: 1.5rem;
-  opacity: 0.5;
+/* Empty State */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 4rem 2rem;
+}
+
+.emptyContent {
+  text-align: center;
+  max-width: 400px;
 }
 
 .emptyTitle {
-  font-size: 1.75rem;
-  font-weight: bold;
-  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #0f172a;
   margin-bottom: 0.75rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .emptyText {
-  font-size: 1.125rem;
-  color: #6b7280;
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 300;
+  line-height: 1.6;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(10deg);
-  }
-}
-
+/* Responsive */
 @media (max-width: 768px) {
   .heroTitle {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
   
   .heroSubtitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
-}
 
-.searchInfo {
-  font-size: 1rem;
-  color: #374151;
-  margin-top: 1rem;
-  font-weight: 500;
-}
+  .resultsHeader {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
 
-.searchInfo strong {
-  color: #1f2937;
-  font-weight: 700;
+  .resultsTitle {
+    font-size: 1.25rem;
+  }
 }

@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --font-inter: 'Inter', system-ui, sans-serif;
-  --font-twinkle: 'Twinkle Star', cursive;
   --color-primary: #a6e8e4;
   --color-primary-dark: #8dd4cf;
   --color-primary-light: #c5f2ef;
+  --font-title: 'Helmison Notes', cursive;
+  --font-body: 'Corbel', system-ui, sans-serif;
 }
 
 body {
-  font-family: var(--font-inter);
+  font-family: var(--font-body);
+  font-weight: 800;  /* ← Cambiar de 200 a 400 */
 }
 
 .font-title {
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }

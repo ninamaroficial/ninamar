@@ -303,7 +303,7 @@ export default function EditarPersonalizacionPage() {
       <div className={styles.container}>
         <div className={styles.error}>
           <h2>Opción no encontrada</h2>
-          <Link href="/admin/personalizaciones" className={styles.backButton}>
+          <Link href="/admin/customizations" className={styles.backButton}>
             Volver a Personalizaciones
           </Link>
         </div>
@@ -314,7 +314,7 @@ export default function EditarPersonalizacionPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/admin/personalizaciones" className={styles.backButton}>
+        <Link href="/admin/customizations" className={styles.backButton}>
           <ArrowLeft size={20} />
           Volver a Personalizaciones
         </Link>

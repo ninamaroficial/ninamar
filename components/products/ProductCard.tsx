@@ -4,8 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import type { ProductWithDetails } from "@/lib/supabase/queries"
-import { getProductCustomizations } from "@/lib/supabase/queries-client" // ← Cambiar aquí
+import { getProductCustomizations } from "@/lib/supabase/queries-client"
 import CustomizationModal from "./CustomizationModal"
+import ImageGalleryModal from "./ImageGalleryModal"
 import styles from "./ProductCard.module.css"
 
 interface ProductCardProps {
@@ -15,10 +16,20 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false)
   const [customizationOptions, setCustomizationOptions] = useState<any[]>([])
   const [isLoadingOptions, setIsLoadingOptions] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   
-  const primaryImage = product.images?.find(img => img.is_primary) || product.images?.[0]
+  // Obtener imágenes del producto
+  const images = product.images && product.images.length > 0 
+    ? product.images 
+    : product.image_url 
+      ? [{ image_url: product.image_url, alt_text: product.name, is_primary: true }]
+      : []
+
+  const primaryImage = images.find(img => img.is_primary) || images[0]
+  
   const discount = product.original_price 
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0
@@ -31,38 +42,67 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     }).format(price)
   }
 
-const handleCustomizeClick = async (e: React.MouseEvent) => {
-  e.preventDefault()
-  e.stopPropagation()
-  
-  // Cargar opciones de personalización si aún no las tenemos
-  if (customizationOptions.length === 0) {
-    setIsLoadingOptions(true)
-    try {
-      const options = await getProductCustomizations(product.id)
-      console.log('Opciones cargadas:', options) // Para debugging
-      setCustomizationOptions(options)
-    } catch (error) {
-      console.error('Error loading customization options:', error)
-    } finally {
-      setIsLoadingOptions(false)
+  const handleCustomizeClick = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (customizationOptions.length === 0) {
+      setIsLoadingOptions(true)
+      try {
+        const options = await getProductCustomizations(product.id)
+        setCustomizationOptions(options)
+      } catch (error) {
+        console.error('Error loading customization options:', error)
+      } finally {
+        setIsLoadingOptions(false)
+      }
+    }
+    
+    setIsModalOpen(true)
+  }
+
+  const handleImageClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (images.length > 0) {
+      setIsGalleryOpen(true)
     }
   }
-  
-  setIsModalOpen(true)
-}
+
+  // Cambiar imagen en hover (solo si hay múltiples imágenes)
+  const handleMouseEnter = () => {
+    if (images.length > 1) {
+      setCurrentImageIndex(1)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setCurrentImageIndex(0)
+  }
+
+  const currentImage = images[currentImageIndex] || primaryImage
+
   return (
     <>
-      <Link href={`/productos/${product.slug}`} className={styles.card}>
-        <div className={styles.imageWrapper}>
-          {primaryImage ? (
-            <Image
-              src={primaryImage.image_url}
-              alt={primaryImage.alt_text || product.name}
-              fill
-              className={styles.image}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
+      <article className={styles.card}>
+        {/* Imagen con hover y click para galería */}
+        <div 
+          className={styles.imageWrapper}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleImageClick}
+        >
+          {currentImage ? (
+            <>
+              <Image
+                src={currentImage.image_url}
+                alt={currentImage.alt_text || product.name}
+                fill
+                className={styles.image}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={index < 6}
+              />
+            </>
           ) : (
             <div className={styles.imagePlaceholder}>
               <span className={styles.placeholderIcon}>💎</span>
@@ -82,7 +122,8 @@ const handleCustomizeClick = async (e: React.MouseEvent) => {
           )}
         </div>
 
-        <div className={styles.content}>
+        {/* Contenido */}
+        <Link href={`/productos/${product.slug}`} className={styles.content}>
           {product.category && (
             <p className={styles.category}>{product.category.name}</p>
           )}
@@ -101,35 +142,19 @@ const handleCustomizeClick = async (e: React.MouseEvent) => {
               </span>
             )}
           </div>
+        </Link>
 
-          <div className={styles.footer}>
-            <div className={styles.rating}>
-              <span className={styles.stars}>⭐⭐⭐⭐⭐</span>
-            </div>
-            
-            <button 
-              onClick={handleCustomizeClick}
-              className={styles.customizeButton}
-              disabled={isLoadingOptions || product.stock === 0}
-            >
-              <span className={styles.buttonSparkle}>
-                {isLoadingOptions ? '⏳' : '✨'}
-              </span>
-              <span className={styles.buttonText}>
-                {isLoadingOptions ? 'Cargando...' : 'Personalizar'}
-              </span>
-              {!isLoadingOptions && (
-                <>
-                  <span className={styles.buttonGlow}></span>
-                  <span className={styles.buttonParticle}></span>
-                  <span className={styles.buttonParticle}></span>
-                  <span className={styles.buttonParticle}></span>
-                </>
-              )}
-            </button>
-          </div>
+        {/* Footer con botón */}
+        <div className={styles.footer}>
+          <button 
+            onClick={handleCustomizeClick}
+            className={styles.customizeButton}
+            disabled={isLoadingOptions || product.stock === 0}
+          >
+            {isLoadingOptions ? 'Cargando...' : 'Personalizar'}
+          </button>
         </div>
-      </Link>
+      </article>
 
       {/* Modal de personalización */}
       {isModalOpen && (
@@ -138,6 +163,16 @@ const handleCustomizeClick = async (e: React.MouseEvent) => {
           onClose={() => setIsModalOpen(false)}
           product={product}
           options={customizationOptions}
+        />
+      )}
+
+      {/* Modal de galería */}
+      {isGalleryOpen && (
+        <ImageGalleryModal
+          images={images}
+          productName={product.name}
+          isOpen={isGalleryOpen}
+          onClose={() => setIsGalleryOpen(false)}
         />
       )}
     </>

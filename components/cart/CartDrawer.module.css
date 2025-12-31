@@ -72,7 +72,7 @@
   font-size: 1.25rem;
   font-weight: bold;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -152,7 +152,7 @@
   font-weight: bold;
   color: #1f2937;
   margin-bottom: 0.5rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 @media (min-width: 640px) {
@@ -184,7 +184,7 @@
   font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 @media (min-width: 640px) {
@@ -296,7 +296,7 @@
   font-size: 0.9375rem;
   font-weight: 600;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -544,7 +544,7 @@
   font-size: 1.375rem;
   font-weight: bold;
   color: #1f2937;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   text-align: right;
   word-break: break-word;
 }
@@ -565,7 +565,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   text-align: center;
   text-decoration: none;
   display: block;

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createOrder } from '@/lib/supabase/orders'
 import type { CreateOrderData } from '@/types/order.types'
-import { sendOrderConfirmationEmail, sendNewOrderAdminEmail } from '@/lib/email/resend'
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,33 +100,6 @@ export async function POST(request: NextRequest) {
       id: order.id,
       order_number: order.order_number,
       total: order.total
-    })
-
-    // 🆕 Enviar emails (de forma asíncrona, no bloquea la respuesta)
-    const emailData = {
-      orderNumber: order.order_number,
-      customerName: body.customer_name,
-      customerEmail: body.customer_email,
-      customerPhone: body.customer_phone,
-      items: body.items,
-      subtotal: body.subtotal,
-      shipping_cost: body.shipping_cost,
-      total: body.total,
-      shipping_address: body.shipping_address,
-      shipping_city: body.shipping_city,
-      shipping_state: body.shipping_state,
-    }
-
-    // Enviar emails sin esperar (no bloquear la respuesta)
-    Promise.all([
-      sendOrderConfirmationEmail(emailData).catch(err => {
-        console.error('Failed to send confirmation email:', err)
-      }),
-      sendNewOrderAdminEmail(emailData).catch(err => {
-        console.error('Failed to send admin email:', err)
-      })
-    ]).catch(err => {
-      console.error('Failed to send emails:', err)
     })
 
     return NextResponse.json(order)

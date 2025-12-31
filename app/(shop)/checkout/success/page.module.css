@@ -39,7 +39,7 @@
   font-weight: bold;
   color: #1f2937;
   margin-bottom: 1rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .subtitle {
@@ -86,7 +86,7 @@
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 1rem;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
 }
 
 .stepsList {
@@ -135,7 +135,7 @@
   font-size: 1rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  font-family: var(--font-twinkle);
+  font-family: var(--font-title);
   display: inline-block;
 }
 

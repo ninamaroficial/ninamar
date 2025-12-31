@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Loader2, Trash2, Plus } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Trash2, Plus, Edit2 } from 'lucide-react'
 import styles from './page.module.css'
 
 interface Category {
@@ -55,6 +55,13 @@ export default function EditarProductoPage() {
   const [newImageAlt, setNewImageAlt] = useState('')
   const [isAddingImage, setIsAddingImage] = useState(false)
 
+  // Estados para personalizaciones
+  const [customizationOptions, setCustomizationOptions] = useState<any[]>([])
+  const [productCustomizations, setProductCustomizations] = useState<any[]>([])
+  const [isLoadingCustomizations, setIsLoadingCustomizations] = useState(true)
+  const [selectedOptionId, setSelectedOptionId] = useState('')
+  const [isAssigning, setIsAssigning] = useState(false)
+
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -73,11 +80,13 @@ export default function EditarProductoPage() {
     if (productId) {
       fetchProduct()
       fetchImages()
+      fetchProductCustomizations()
     }
   }, [productId])
 
   useEffect(() => {
     fetchCategories()
+    fetchCustomizationOptions()
   }, [])
 
   const fetchImages = async () => {
@@ -106,6 +115,33 @@ export default function EditarProductoPage() {
       console.error('Error loading categories:', error)
     } finally {
       setIsLoadingCategories(false)
+    }
+  }
+
+  const fetchCustomizationOptions = async () => {
+    try {
+      const response = await fetch('/api/admin/customizations')
+      if (response.ok) {
+        const data = await response.json()
+        setCustomizationOptions(data)
+      }
+    } catch (error) {
+      console.error('Error loading customization options:', error)
+    }
+  }
+
+  const fetchProductCustomizations = async () => {
+    setIsLoadingCustomizations(true)
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/customizations`)
+      if (response.ok) {
+        const data = await response.json()
+        setProductCustomizations(data)
+      }
+    } catch (error) {
+      console.error('Error loading product customizations:', error)
+    } finally {
+      setIsLoadingCustomizations(false)
     }
   }
 
@@ -208,6 +244,87 @@ export default function EditarProductoPage() {
     } catch (error) {
       console.error('Error:', error)
       alert('Error al eliminar imagen')
+    }
+  }
+
+  const handleAssignCustomization = async () => {
+    if (!selectedOptionId) {
+      alert('Selecciona una opción de personalización')
+      return
+    }
+
+    const alreadyAssigned = productCustomizations.some(
+      pc => pc.customization_options?.id === selectedOptionId
+    )
+
+    if (alreadyAssigned) {
+      alert('Esta opción ya está asignada al producto')
+      return
+    }
+
+    setIsAssigning(true)
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/customizations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          option_id: selectedOptionId,
+          is_required: false,
+          display_order: productCustomizations.length,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Error al asignar personalización')
+
+      setSelectedOptionId('')
+      await fetchProductCustomizations()
+      alert('Personalización asignada exitosamente')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al asignar personalización')
+    } finally {
+      setIsAssigning(false)
+    }
+  }
+
+  const handleToggleRequired = async (customizationId: string, currentRequired: boolean) => {
+    try {
+      const response = await fetch(
+        `/api/admin/products/${productId}/customizations/${customizationId}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_required: !currentRequired }),
+        }
+      )
+
+      if (!response.ok) throw new Error('Error al actualizar')
+
+      await fetchProductCustomizations()
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al actualizar personalización')
+    }
+  }
+
+  const handleRemoveCustomization = async (customizationId: string, optionName: string) => {
+    if (!confirm(`¿Remover "${optionName}" de este producto?`)) return
+
+    try {
+      const response = await fetch(
+        `/api/admin/products/${productId}/customizations/${customizationId}`,
+        {
+          method: 'DELETE',
+        }
+      )
+
+      if (!response.ok) throw new Error('Error al remover')
+
+      await fetchProductCustomizations()
+      alert('Personalización removida')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al remover personalización')
     }
   }
 
@@ -485,6 +602,124 @@ export default function EditarProductoPage() {
                           type="button"
                           onClick={() => handleDeleteImage(image.id)}
                           className={styles.deleteImageButton}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* NUEVA SECCIÓN: Personalizaciones */}
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Opciones de Personalización</h2>
+
+              <div className={styles.addCustomizationForm}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Agregar Opción de Personalización</label>
+                  <div className={styles.customizationSelectRow}>
+                    <select
+                      value={selectedOptionId}
+                      onChange={(e) => setSelectedOptionId(e.target.value)}
+                      className={styles.input}
+                      disabled={isAssigning}
+                    >
+                      <option value="">Selecciona una opción...</option>
+                      {customizationOptions
+                        .filter(opt => !productCustomizations.some(
+                          pc => pc.customization_options?.id === opt.id
+                        ))
+                        .map(option => (
+                          <option key={option.id} value={option.id}>
+                            {option.display_name} ({option.type})
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleAssignCustomization}
+                      disabled={isAssigning || !selectedOptionId}
+                      className={styles.addCustomizationButton}
+                    >
+                      {isAssigning ? (
+                        <>
+                          <Loader2 size={18} className={styles.spinner} />
+                          Asignando...
+                        </>
+                      ) : (
+                        <>
+                          <Plus size={18} />
+                          Asignar
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.customizationsList}>
+                {isLoadingCustomizations ? (
+                  <div className={styles.loadingCustomizations}>
+                    <div className={styles.spinner}></div>
+                    <p>Cargando personalizaciones...</p>
+                  </div>
+                ) : productCustomizations.length === 0 ? (
+                  <div className={styles.noCustomizations}>
+                    <p>No hay personalizaciones asignadas. Agrega una arriba.</p>
+                  </div>
+                ) : (
+                  productCustomizations.map((pc) => (
+                    <div key={pc.id} className={styles.customizationCard}>
+                      <div className={styles.customizationCardContent}>
+                        <div className={styles.customizationInfo}>
+                          <h4 className={styles.customizationName}>
+                            {pc.customization_options?.display_name}
+                          </h4>
+                          <p className={styles.customizationType}>
+                            Tipo: {pc.customization_options?.type}
+                          </p>
+                          {pc.customization_options?.description && (
+                            <p className={styles.customizationDescription}>
+                              {pc.customization_options.description}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className={styles.customizationMeta}>
+                          <label className={styles.customizationCheckbox}>
+                            <input
+                              type="checkbox"
+                              checked={pc.is_required}
+                              onChange={() => handleToggleRequired(pc.id, pc.is_required)}
+                              className={styles.checkbox}
+                            />
+                            Requerido
+                          </label>
+                          <span className={styles.orderBadge}>
+                            Orden: {pc.display_order}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={styles.customizationActions}>
+                        <Link
+                          href={`/admin/customizations/${pc.customization_options?.id}`}
+                          className={styles.editCustomizationButton}
+                          title="Editar opción"
+                          target="_blank"
+                        >
+                          <Edit2 size={16} />
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCustomization(
+                            pc.id,
+                            pc.customization_options?.display_name
+                          )}
+                          className={styles.removeCustomizationButton}
+                          title="Remover de este producto"
                         >
                           <Trash2 size={16} />
                         </button>

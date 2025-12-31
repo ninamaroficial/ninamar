@@ -165,3 +165,23 @@ export async function updateOrderPaymentStatus(
   
   return data
 }
+
+export async function getOrderById(orderId: string) {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (*)
+    `)
+    .eq('id', orderId)
+    .single()
+
+  if (error) {
+    console.error('Error fetching order:', error)
+    throw error
+  }
+
+  return data
+}

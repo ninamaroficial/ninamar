@@ -224,25 +224,35 @@ export async function deleteCustomizationValue(valueId: string) {
 // Obtener opciones de un producto
 export async function getProductCustomizations(productId: string) {
   const supabase = createAdminClient()
-  
+
   const { data, error } = await supabase
     .from('product_customizations')
     .select(`
-      *,
-      option:customization_options(*)
+      id,
+      product_id,
+      option_id,
+      is_required,
+      display_order,
+      created_at,
+      customization_options!inner (
+        id,
+        name,
+        display_name,
+        type,
+        description
+      )
     `)
     .eq('product_id', productId)
     .order('display_order', { ascending: true })
-  
+
   if (error) {
     console.error('Error fetching product customizations:', error)
     throw error
   }
-  
-  return data
+
+  return data || []
 }
 
-// Asignar opción a producto
 export async function assignCustomizationToProduct(
   productId: string,
   optionId: string,
@@ -250,7 +260,24 @@ export async function assignCustomizationToProduct(
   displayOrder: number = 0
 ) {
   const supabase = createAdminClient()
-  
+
+  // Verificar que no esté ya asignada
+  const { data: existing, error: checkError } = await supabase
+    .from('product_customizations')
+    .select('id')
+    .eq('product_id', productId)
+    .eq('option_id', optionId)
+    .maybeSingle()  // ← Cambiado de .single() a .maybeSingle()
+
+  // Si checkError y no es por que no existe, lanzar error
+  if (checkError && checkError.code !== 'PGRST116') {
+    throw checkError
+  }
+
+  if (existing) {
+    throw new Error('Esta opción ya está asignada al producto')
+  }
+
   const { data, error } = await supabase
     .from('product_customizations')
     .insert({
@@ -261,32 +288,65 @@ export async function assignCustomizationToProduct(
     })
     .select()
     .single()
-  
+
   if (error) {
     console.error('Error assigning customization:', error)
     throw error
   }
-  
+
   return data
 }
 
-// Desasignar opción de producto
 export async function removeCustomizationFromProduct(
   productId: string,
-  optionId: string
+  customizationId: string
 ) {
   const supabase = createAdminClient()
-  
+
   const { error } = await supabase
     .from('product_customizations')
     .delete()
+    .eq('id', customizationId)
     .eq('product_id', productId)
-    .eq('option_id', optionId)
-  
+
   if (error) {
     console.error('Error removing customization:', error)
     throw error
   }
-  
-  return true
+}
+
+// ← AGREGAR AL FINAL DEL ARCHIVO
+
+export async function getNewsletterSubscribers() {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('newsletter_subscribers')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching newsletter subscribers:', error)
+    throw error
+  }
+
+  return data || []
+}
+
+export async function unsubscribeFromNewsletter(email: string) {
+  const supabase = createAdminClient()
+
+  const { error } = await supabase
+    .from('newsletter_subscribers')
+    .update({
+      is_active: false,
+      unsubscribed_at: new Date().toISOString()
+    })
+    .eq('email', email)
+
+  if (error) {
+    console.error('Error unsubscribing:', error)
+    throw error
+  }
 }

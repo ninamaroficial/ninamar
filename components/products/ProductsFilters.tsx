@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { X, Filter } from "lucide-react"
+import { X, SlidersHorizontal } from "lucide-react"
 import type { Category } from "@/types/database.types"
 import styles from "./ProductsFilters.module.css"
 
@@ -17,8 +17,8 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
   const [isOpen, setIsOpen] = useState(false)
   
   const [priceRange, setPriceRange] = useState({
-    min: '',
-    max: ''
+    min: searchParams.get('min') || '',
+    max: searchParams.get('max') || ''
   })
 
   const handleCategoryClick = (slug: string) => {
@@ -30,7 +30,8 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
       params.set('categoria', slug)
     }
     
-    router.push(`/productos?${params.toString()}`)
+    router.push(`/productos?${params.toString()}`, { scroll: false }) // ← AGREGADO
+    setIsOpen(false)
   }
 
   const handlePriceFilter = () => {
@@ -48,23 +49,27 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
       params.delete('max')
     }
     
-    router.push(`/productos?${params.toString()}`)
-    setIsOpen(false) // Cerrar en móvil después de aplicar
+    router.push(`/productos?${params.toString()}`, { scroll: false }) // ← AGREGADO
+    setIsOpen(false)
   }
 
   const handlePriceRangeClick = (min: string, max: string) => {
     setPriceRange({ min, max })
     const params = new URLSearchParams(searchParams.toString())
+    
     if (min) params.set('min', min)
+    else params.delete('min')
+    
     if (max) params.set('max', max)
     else params.delete('max')
-    router.push(`/productos?${params.toString()}`)
-    setIsOpen(false) // Cerrar en móvil después de aplicar
+    
+    router.push(`/productos?${params.toString()}`, { scroll: false }) // ← AGREGADO
+    setIsOpen(false)
   }
 
   const clearFilters = () => {
     setPriceRange({ min: '', max: '' })
-    router.push('/productos')
+    router.push('/productos', { scroll: false }) // ← AGREGADO
     setIsOpen(false)
   }
 
@@ -78,7 +83,7 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
         className={styles.mobileFilterButton}
         aria-label="Abrir filtros"
       >
-        <Filter size={20} />
+        <SlidersHorizontal size={20} />
         <span>Filtros</span>
         {hasActiveFilters && <span className={styles.filterBadge}></span>}
       </button>
@@ -117,27 +122,22 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
           <div className={styles.categoryList}>
             <button
               onClick={() => {
-                router.push('/productos')
+                router.push('/productos', { scroll: false }) // ← AGREGADO
                 setIsOpen(false)
               }}
               className={`${styles.categoryItem} ${!currentCategory ? styles.categoryItemActive : ''}`}
             >
-              <span className={styles.categoryIcon}>✨</span>
               <span className={styles.categoryName}>Todas</span>
             </button>
             
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => {
-                  handleCategoryClick(category.slug)
-                  setIsOpen(false)
-                }}
+                onClick={() => handleCategoryClick(category.slug)}
                 className={`${styles.categoryItem} ${
                   currentCategory === category.slug ? styles.categoryItemActive : ''
                 }`}
               >
-                <span className={styles.categoryIcon}>💎</span>
                 <span className={styles.categoryName}>{category.name}</span>
               </button>
             ))}
@@ -147,6 +147,7 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
         {/* Rango de Precio */}
         <div className={styles.section}>
           <h4 className={styles.sectionTitle}>Precio</h4>
+          
           <div className={styles.priceInputs}>
             <input
               type="number"
@@ -164,14 +165,12 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
               className={styles.priceInput}
             />
           </div>
+
           <button onClick={handlePriceFilter} className={styles.applyButton}>
             Aplicar
           </button>
-        </div>
 
-        {/* Rangos de precio predefinidos */}
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>Rangos Populares</h4>
+          {/* Rangos predefinidos */}
           <div className={styles.priceRanges}>
             <button 
               onClick={() => handlePriceRangeClick('0', '30000')}
@@ -198,14 +197,6 @@ export default function ProductsFilters({ categories }: ProductsFiltersProps) {
               Más de $70.000
             </button>
           </div>
-        </div>
-
-        {/* Información adicional */}
-        <div className={styles.infoBox}>
-          <span className={styles.infoIcon}>✨</span>
-          <p className={styles.infoText}>
-            Todos nuestros productos son personalizables. ¡Crea tu diseño único!
-          </p>
         </div>
       </div>
     </>
