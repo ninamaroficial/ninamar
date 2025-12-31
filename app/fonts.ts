@@ -3,6 +3,11 @@ import localFont from 'next/font/local'
 
 export const titleFont = localFont({
   src: [
+      {
+      path: '../public/fonts/Helmison Notes.woff2', // ← WOFF2 primero
+      weight: '400',
+      style: 'normal',
+    },
     {
       path: '../public/fonts/Helmison Notes.otf',
       weight: '400',
