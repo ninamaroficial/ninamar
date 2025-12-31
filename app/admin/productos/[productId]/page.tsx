@@ -3,8 +3,24 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Trash2, Plus } from 'lucide-react'
 import styles from './page.module.css'
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface ProductImage {
+  id: string
+  product_id: string
+  image_url: string
+  alt_text: string | null
+  is_primary: boolean
+  display_order: number
+  created_at: string
+}
 
 interface Product {
   id: string
@@ -17,6 +33,7 @@ interface Product {
   image_url: string | null
   stock: number
   sku: string | null
+  category_id: string | null
   is_active: boolean
   is_featured: boolean
 }
@@ -29,6 +46,15 @@ export default function EditarProductoPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [product, setProduct] = useState<Product | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+
+  const [images, setImages] = useState<ProductImage[]>([])
+  const [isLoadingImages, setIsLoadingImages] = useState(true)
+  const [newImageUrl, setNewImageUrl] = useState('')
+  const [newImageAlt, setNewImageAlt] = useState('')
+  const [isAddingImage, setIsAddingImage] = useState(false)
+
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -36,9 +62,9 @@ export default function EditarProductoPage() {
     short_description: '',
     base_price: '',
     original_price: '',
-    image_url: '',
     stock: '0',
     sku: '',
+    category_id: '',
     is_active: true,
     is_featured: false,
   })
@@ -46,8 +72,42 @@ export default function EditarProductoPage() {
   useEffect(() => {
     if (productId) {
       fetchProduct()
+      fetchImages()
     }
   }, [productId])
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchImages = async () => {
+    setIsLoadingImages(true)
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/images`)
+      if (response.ok) {
+        const data = await response.json()
+        setImages(data)
+      }
+    } catch (error) {
+      console.error('Error loading images:', error)
+    } finally {
+      setIsLoadingImages(false)
+    }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/admin/categories')
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error)
+    } finally {
+      setIsLoadingCategories(false)
+    }
+  }
 
   const fetchProduct = async () => {
     try {
@@ -62,8 +122,7 @@ export default function EditarProductoPage() {
 
       const data = await response.json()
       setProduct(data)
-      
-      // Llenar formulario
+
       setFormData({
         name: data.name || '',
         slug: data.slug || '',
@@ -71,9 +130,9 @@ export default function EditarProductoPage() {
         short_description: data.short_description || '',
         base_price: data.base_price?.toString() || '',
         original_price: data.original_price?.toString() || '',
-        image_url: data.image_url || '',
         stock: data.stock?.toString() || '0',
         sku: data.sku || '',
+        category_id: data.category_id || '',
         is_active: data.is_active ?? true,
         is_featured: data.is_featured ?? false,
       })
@@ -85,9 +144,78 @@ export default function EditarProductoPage() {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleAddImage = async () => {
+    if (!newImageUrl.trim()) {
+      alert('La URL de la imagen es requerida')
+      return
+    }
+
+    setIsAddingImage(true)
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/images`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_url: newImageUrl,
+          alt_text: newImageAlt || null,
+        }),
+      })
+
+      if (!response.ok) throw new Error('Error al agregar imagen')
+
+      setNewImageUrl('')
+      setNewImageAlt('')
+      await fetchImages()
+      alert('Imagen agregada exitosamente')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al agregar imagen')
+    } finally {
+      setIsAddingImage(false)
+    }
+  }
+
+  const handleSetPrimary = async (imageId: string) => {
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/images/${imageId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_primary: true }),
+      })
+
+      if (!response.ok) throw new Error('Error al establecer imagen primaria')
+
+      await fetchImages()
+      alert('Imagen primaria establecida')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al establecer imagen primaria')
+    }
+  }
+
+  const handleDeleteImage = async (imageId: string) => {
+    if (!confirm('¿Estás seguro de eliminar esta imagen?')) return
+
+    try {
+      const response = await fetch(`/api/admin/products/${productId}/images/${imageId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) throw new Error('Error al eliminar imagen')
+
+      await fetchImages()
+      alert('Imagen eliminada')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al eliminar imagen')
+    }
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked
       setFormData(prev => ({ ...prev, [name]: checked }))
@@ -117,9 +245,9 @@ export default function EditarProductoPage() {
           short_description: formData.short_description || null,
           base_price: parseFloat(formData.base_price),
           original_price: formData.original_price ? parseFloat(formData.original_price) : null,
-          image_url: formData.image_url || null,
           stock: parseInt(formData.stock) || 0,
           sku: formData.sku || null,
+          category_id: formData.category_id || null,
           is_active: formData.is_active,
           is_featured: formData.is_featured,
         }),
@@ -131,7 +259,7 @@ export default function EditarProductoPage() {
       }
 
       alert('Producto actualizado exitosamente')
-      fetchProduct() // Recargar datos
+      fetchProduct()
     } catch (error: any) {
       console.error('Error:', error)
       alert(error.message || 'Error al actualizar producto')
@@ -186,7 +314,6 @@ export default function EditarProductoPage() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <Link href="/admin/productos" className={styles.backButton}>
           <ArrowLeft size={20} />
@@ -201,7 +328,6 @@ export default function EditarProductoPage() {
         </div>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGrid}>
           {/* Columna Izquierda */}
@@ -275,24 +401,96 @@ export default function EditarProductoPage() {
             </div>
 
             <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Imagen</h2>
+              <h2 className={styles.sectionTitle}>Galería de Imágenes</h2>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  URL de la Imagen
-                </label>
-                <input
-                  type="url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  className={styles.input}
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-                {formData.image_url && (
-                  <div className={styles.imagePreview}>
-                    <img src={formData.image_url} alt="Preview" />
+              <div className={styles.addImageForm}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>URL de la Imagen</label>
+                  <input
+                    type="url"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    className={styles.input}
+                    placeholder="https://ejemplo.com/imagen.jpg"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Texto Alternativo (Opcional)</label>
+                  <input
+                    type="text"
+                    value={newImageAlt}
+                    onChange={(e) => setNewImageAlt(e.target.value)}
+                    className={styles.input}
+                    placeholder="Descripción de la imagen"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleAddImage}
+                  disabled={isAddingImage || !newImageUrl.trim()}
+                  className={styles.addImageButton}
+                >
+                  {isAddingImage ? (
+                    <>
+                      <Loader2 size={18} className={styles.spinner} />
+                      Agregando...
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={18} />
+                      Agregar Imagen
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className={styles.imageGallery}>
+                {isLoadingImages ? (
+                  <div className={styles.loadingImages}>
+                    <div className={styles.spinner}></div>
+                    <p>Cargando imágenes...</p>
                   </div>
+                ) : images.length === 0 ? (
+                  <div className={styles.noImages}>
+                    <p>No hay imágenes. Agrega la primera imagen arriba.</p>
+                  </div>
+                ) : (
+                  images.map((image) => (
+                    <div key={image.id} className={styles.imageCard}>
+                      <div className={styles.imageCardPreview}>
+                        <img src={image.image_url} alt={image.alt_text || 'Producto'} />
+                        {image.is_primary && (
+                          <div className={styles.primaryBadge}>Primaria</div>
+                        )}
+                      </div>
+
+                      <div className={styles.imageCardInfo}>
+                        {image.alt_text && <p className={styles.imageAlt}>{image.alt_text}</p>}
+                        <p className={styles.imageOrder}>Orden: {image.display_order}</p>
+                      </div>
+
+                      <div className={styles.imageCardActions}>
+                        {!image.is_primary && (
+                          <button
+                            type="button"
+                            onClick={() => handleSetPrimary(image.id)}
+                            className={styles.setPrimaryButton}
+                          >
+                            Hacer Primaria
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteImage(image.id)}
+                          className={styles.deleteImageButton}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
@@ -324,9 +522,7 @@ export default function EditarProductoPage() {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  Precio Original (Opcional)
-                </label>
+                <label className={styles.label}>Precio Original (Opcional)</label>
                 <div className={styles.inputGroup}>
                   <span className={styles.inputPrefix}>$</span>
                   <input
@@ -340,16 +536,11 @@ export default function EditarProductoPage() {
                     step="0.01"
                   />
                 </div>
-                <span className={styles.hint}>
-                  Para mostrar descuento
-                </span>
+                <span className={styles.hint}>Para mostrar descuento</span>
               </div>
 
-
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  Stock
-                </label>
+                <label className={styles.label}>Stock</label>
                 <input
                   type="number"
                   name="stock"
@@ -359,6 +550,28 @@ export default function EditarProductoPage() {
                   placeholder="0"
                   min="0"
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Categoría</label>
+                {isLoadingCategories ? (
+                  <div className={styles.loadingSelect}>Cargando categorías...</div>
+                ) : (
+                  <select
+                    name="category_id"
+                    value={formData.category_id}
+                    onChange={handleChange}
+                    className={styles.input}
+                  >
+                    <option value="">Sin categoría</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                <span className={styles.hint}>Opcional - Ayuda a organizar tus productos</span>
               </div>
             </div>
 
@@ -394,16 +607,11 @@ export default function EditarProductoPage() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className={styles.actions}>
           <Link href="/admin/productos" className={styles.cancelButton}>
             Cancelar
           </Link>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={styles.submitButton}
-          >
+          <button type="submit" disabled={isSubmitting} className={styles.submitButton}>
             {isSubmitting ? (
               <>
                 <Loader2 size={20} className={styles.spinner} />

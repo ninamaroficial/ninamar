@@ -235,6 +235,16 @@
   color: #475569;
 }
 
+.loadingSelect {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
 .submitButton {
   display: inline-flex;
   align-items: center;

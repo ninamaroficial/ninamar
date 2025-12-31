@@ -1,14 +1,23 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import styles from './page.module.css'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
 export default function NuevoProductoPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+  
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -17,13 +26,33 @@ export default function NuevoProductoPage() {
     base_price: '',
     original_price: '',
     image_url: '',
+    category_id: '',
     stock: '0',
-    sku: '',
     is_active: true,
     is_featured: false,
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/admin/categories')
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error)
+    } finally {
+      setIsLoadingCategories(false)
+    }
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target
     
     if (type === 'checkbox') {
@@ -56,8 +85,8 @@ export default function NuevoProductoPage() {
           base_price: parseFloat(formData.base_price),
           original_price: formData.original_price ? parseFloat(formData.original_price) : null,
           image_url: formData.image_url || null,
+          category_id: formData.category_id || null,
           stock: parseInt(formData.stock) || 0,
-          sku: formData.sku || null,
           is_active: formData.is_active,
           is_featured: formData.is_featured,
         }),
@@ -234,7 +263,6 @@ export default function NuevoProductoPage() {
                 </span>
               </div>
 
-
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   Stock
@@ -248,6 +276,34 @@ export default function NuevoProductoPage() {
                   placeholder="0"
                   min="0"
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  Categoría
+                </label>
+                {isLoadingCategories ? (
+                  <div className={styles.loadingSelect}>
+                    Cargando categorías...
+                  </div>
+                ) : (
+                  <select
+                    name="category_id"
+                    value={formData.category_id}
+                    onChange={handleChange}
+                    className={styles.input}
+                  >
+                    <option value="">Sin categoría</option>
+                    {categories.map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                <span className={styles.hint}>
+                  Opcional - Ayuda a organizar tus productos
+                </span>
               </div>
             </div>
 

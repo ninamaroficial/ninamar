@@ -26,7 +26,6 @@ export interface Database {
           stock: number
           category_id: string | null  // ← Mantener (es útil para filtrar por categoría)
           is_featured: boolean
-          is_active: boolean
           sku: string  // ← Ya no nullable, siempre se genera automáticamente
           image_url: string | null
           created_at: string

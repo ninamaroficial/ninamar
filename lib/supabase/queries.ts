@@ -26,7 +26,6 @@ export async function getProducts(filters?: {
       category:categories(*),
       images:product_images(*)
     `)
-    .eq('is_active', true)
 
   // Filtros
   if (filters?.categorySlug) {
