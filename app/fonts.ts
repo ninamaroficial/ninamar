@@ -4,7 +4,7 @@ import localFont from 'next/font/local'
 export const titleFont = localFont({
   src: [
       {
-      path: '../public/fonts/helmison-notes.woff2', // ← WOFF2 primero
+      path: '../public/fonts/helmison-notes.ttf',
       weight: '400',
       style: 'normal',
     },
