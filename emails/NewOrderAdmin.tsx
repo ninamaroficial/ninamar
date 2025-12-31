@@ -67,8 +67,8 @@ export default function NewOrderAdminEmail({
               <Column style={logoCol}>
                 <Img
                   src={LOGO_URL}
-                  width="60"
-                  height="60"
+                  width="90"
+                  height="90"
                   alt="Niña Mar Logo"
                   style={logo}
                 />
@@ -140,7 +140,7 @@ export default function NewOrderAdminEmail({
                     <Text style={productName}>
                       <strong>{item.product_name}</strong> × {item.quantity}
                     </Text>
-                    
+
                     {item.customization_details && Array.isArray(item.customization_details) && item.customization_details.length > 0 && (
                       <div style={customizationsContainer}>
                         {item.customization_details.map((custom: any, idx: number) => (
@@ -150,7 +150,7 @@ export default function NewOrderAdminEmail({
                         ))}
                       </div>
                     )}
-                    
+
                     {item.engraving && (
                       <div style={engravingContainer}>
                         <Text style={engravingText}>
@@ -158,7 +158,7 @@ export default function NewOrderAdminEmail({
                         </Text>
                       </div>
                     )}
-                    
+
                     {index < items.length - 1 && <Hr style={productDivider} />}
                   </div>
                 ))}
@@ -275,10 +275,15 @@ const logoCol = {
 }
 
 const logo = {
+  margin: '0 auto',
   borderRadius: '50%',
-  border: '3px solid rgba(255, 255, 255, 0.3)',
+  border: '3px solid #8e4603',
+  boxShadow: '0 4px 12px rgba(166, 232, 228, 0.3)',
+  display: 'block',
+  width: '90px',
+  height: '90px',
+  objectFit: 'cover' as const,
 }
-
 const headerTextCol = {
   verticalAlign: 'middle' as const,
   paddingLeft: '16px',

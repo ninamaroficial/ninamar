@@ -8,6 +8,7 @@ export interface Database {
           slug: string
           description: string | null
           image_url: string | null
+          is_active: boolean
           created_at: string
           updated_at: string
         }
@@ -20,12 +21,14 @@ export interface Database {
           description: string | null
           short_description: string | null
           price: number
+          base_price: number
           original_price: number | null
           stock: number
-          category_id: string | null
+          category_id: string | null  // ← Mantener (es útil para filtrar por categoría)
           is_featured: boolean
           is_active: boolean
-          sku: string | null
+          sku: string  // ← Ya no nullable, siempre se genera automáticamente
+          image_url: string | null
           created_at: string
           updated_at: string
         }
@@ -46,8 +49,12 @@ export interface Database {
           id: string
           name: string
           type: string
+          display_name: string
           description: string | null
+          is_required: boolean
+          display_order: number
           created_at: string
+          updated_at: string
         }
       }
       customization_values: {
@@ -55,9 +62,22 @@ export interface Database {
           id: string
           option_id: string
           value: string
+          display_name: string
           additional_price: number
           hex_color: string | null
           image_url: string | null
+          is_available: boolean
+          display_order: number
+          created_at: string
+        }
+      }
+      product_customizations: {
+        Row: {
+          id: string
+          product_id: string
+          option_id: string
+          is_required: boolean
+          display_order: number
           created_at: string
         }
       }
@@ -84,4 +104,5 @@ export type Category = Database['public']['Tables']['categories']['Row']
 export type ProductImage = Database['public']['Tables']['product_images']['Row']
 export type CustomizationOption = Database['public']['Tables']['customization_options']['Row']
 export type CustomizationValue = Database['public']['Tables']['customization_values']['Row']
+export type ProductCustomization = Database['public']['Tables']['product_customizations']['Row']
 export type Review = Database['public']['Tables']['reviews']['Row']

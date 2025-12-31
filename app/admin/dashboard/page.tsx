@@ -17,6 +17,7 @@ import {
   Filter
 } from 'lucide-react'
 import styles from './page.module.css'
+import AdminNav from '@/components/admin/AdminNav'
 
 interface Stats {
   total_orders: number
@@ -134,22 +135,6 @@ export default function AdminDashboardPage() {
 
   return (
     <div className={styles.page}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1 className={styles.headerTitle}>Panel de Administración</h1>
-          <div className={styles.headerActions}>
-            <Link href="/admin/settings" className={styles.settingsButton}>
-              <Settings size={20} />
-              Configuración
-            </Link>
-            <button onClick={handleLogout} className={styles.logoutButton}>
-              <LogOut size={20} />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </header>
 
       <div className={styles.container}>
         {/* Stats Cards */}

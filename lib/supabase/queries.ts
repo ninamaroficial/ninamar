@@ -49,6 +49,7 @@ export async function getProducts(filters?: {
     query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,short_description.ilike.%${filters.search}%`)
   }
 
+  // CAMBIO: Intentar filtrar por base_price primero, si no existe usar price
   if (filters?.minPrice !== undefined) {
     query = query.gte('price', filters.minPrice)
   }
@@ -70,7 +71,16 @@ export async function getProducts(filters?: {
     return []
   }
 
-  return data as ProductWithDetails[]
+  // NUEVO: Normalizar productos para asegurar compatibilidad
+  const normalizedData = (data || []).map(product => ({
+    ...product,
+    // Si base_price existe y price no, copiar base_price a price
+    price: product.price ?? product.base_price ?? 0,
+    // Si base_price no existe y price sí, copiar price a base_price
+    base_price: product.base_price ?? product.price ?? 0,
+  }))
+
+  return normalizedData as ProductWithDetails[]
 }
 
 // Obtener un producto por slug
@@ -101,8 +111,11 @@ export async function getProductBySlug(slug: string) {
     ? reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / reviewsCount
     : 0
 
+  // NUEVO: Normalizar precios
   return {
     ...data,
+    price: data.price ?? data.base_price ?? 0,
+    base_price: data.base_price ?? data.price ?? 0,
     reviews_avg: reviewsAvg,
     reviews_count: reviewsCount
   } as ProductWithDetails & { reviews_avg: number; reviews_count: number }
@@ -134,14 +147,19 @@ export async function getProductCustomizations(productId: string) {
     .select(`
       id,
       is_required,
+      display_order,
       customization_options!inner(
         id,
         name,
         type,
-        description
+        display_name,
+        description,
+        is_required,
+        display_order
       )
     `)
     .eq('product_id', productId)
+    .order('display_order', { ascending: true })
 
   if (error) {
     console.error('Error fetching customizations:', error)
@@ -157,8 +175,10 @@ export async function getProductCustomizations(productId: string) {
     data.map(async (item: any) => {
       const { data: values, error: valuesError } = await supabase
         .from('customization_values')
-        .select('id, value, additional_price, hex_color, image_url')
+        .select('id, value, display_name, additional_price, hex_color, image_url, is_available, display_order')
         .eq('option_id', item.customization_options.id)
+        .eq('is_available', true)  // NUEVO: Solo valores disponibles
+        .order('display_order', { ascending: true })
 
       if (valuesError) {
         console.error('Error fetching values:', valuesError)
@@ -168,7 +188,9 @@ export async function getProductCustomizations(productId: string) {
       return {
         id: item.customization_options.id,
         name: item.customization_options.name,
+        display_name: item.customization_options.display_name || item.customization_options.name,  // NUEVO
         type: item.customization_options.type,
+        description: item.customization_options.description,
         is_required: item.is_required,
         values: values || []
       }
@@ -178,9 +200,7 @@ export async function getProductCustomizations(productId: string) {
   return optionsWithValues.filter(Boolean)
 }
 
-
 // Obtener productos destacados
 export async function getFeaturedProducts(limit: number = 4) {
   return getProducts({ featured: true, limit })
 }
-

@@ -40,6 +40,9 @@ export default function CustomizationModal({
   const [currentStep, setCurrentStep] = useState(0)
   const [engraving, setEngraving] = useState("")
 
+  // NUEVO: Calcular total de pasos (opciones + paso final solo si hay grabado o siempre mostrar cantidad)
+  const totalSteps = options.length + 1 // Siempre hay paso final para cantidad
+
   // Prevenir scroll cuando el modal está abierto
   useEffect(() => {
     if (isOpen) {
@@ -64,7 +67,6 @@ export default function CustomizationModal({
         total += value.additional_price
       }
     })
-
     return total * quantity
   }
 
@@ -117,7 +119,7 @@ export default function CustomizationModal({
       productImage: primaryImage?.image_url || '',
       basePrice: product.price,
       selectedOptions: selectedOptionsDetails,
-      engraving: engraving,
+      engraving: engraving.trim() || undefined, // NUEVO: Solo incluir si tiene texto
       quantity: quantity,
       totalPrice: calculateTotalPrice()
     }
@@ -153,11 +155,11 @@ export default function CustomizationModal({
           <div className={styles.progressBar}>
             <div 
               className={styles.progressFill}
-              style={{ width: `${((currentStep + 1) / (options.length + 1)) * 100}%` }}
+              style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
             />
           </div>
           <p className={styles.progressText}>
-            Paso {currentStep + 1} de {options.length + 1}
+            Paso {currentStep + 1} de {totalSteps}
           </p>
         </div>
 
@@ -206,12 +208,6 @@ export default function CustomizationModal({
                       </div>
                     )
                   })}
-                  {engraving && (
-                    <div className={styles.selectedItem}>
-                      <span className={styles.selectedLabel}>Grabado:</span>
-                      <span className={styles.selectedValue}>"{engraving}"</span>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -259,26 +255,10 @@ export default function CustomizationModal({
                 </div>
               </div>
             ) : (
-              // Último paso - Grabado y cantidad
+              // Último paso - Grabado (solo si está permitido) y Cantidad
               <div className={styles.finalStep}>
                 <h3 className={styles.optionTitle}>Detalles Finales</h3>
-                
-                <div className={styles.engravingSection}>
-                  <label className={styles.label}>
-                    Grabado Personalizado (Opcional)
-                  </label>
-                  <input
-                    type="text"
-                    value={engraving}
-                    onChange={(e) => setEngraving(e.target.value)}
-                    placeholder="Ej: Mi amor eterno"
-                    maxLength={30}
-                    className={styles.engravingInput}
-                  />
-                  <p className={styles.hint}>
-                    Máximo 30 caracteres. {30 - engraving.length} restantes
-                  </p>
-                </div>
+            
 
                 <div className={styles.quantitySection}>
                   <label className={styles.label}>Cantidad</label>

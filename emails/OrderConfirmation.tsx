@@ -33,7 +33,7 @@ interface OrderConfirmationEmailProps {
   shipping_state: string
 }
 
-const LOGO_URL = process.env.NEXT_PUBLIC_URL 
+const LOGO_URL = process.env.NEXT_PUBLIC_URL
   ? `${process.env.NEXT_PUBLIC_URL}/logo.png`
   : 'https://xn--niamar-xwa.com/logo.png' // Actualiza con tu URL
 
@@ -69,8 +69,8 @@ export default function OrderConfirmationEmail({
           <Section style={header}>
             <Img
               src={LOGO_URL}
-              width="80"
-              height="80"
+              width="90"
+              height="90"
               alt="Niña Mar Logo"
               style={logo}
             />
@@ -112,7 +112,7 @@ export default function OrderConfirmationEmail({
               <Text style={timelineTitle}>Estado de tu pedido</Text>
               <div style={timeline}>
                 <div style={timelineStep}>
-                  <div style={{...timelineIcon, ...timelineIconActive}}>✓</div>
+                  <div style={{ ...timelineIcon, ...timelineIconActive }}>✓</div>
                   <Text style={timelineLabel}>Pedido Recibido</Text>
                 </div>
                 <div style={timelineLine}></div>
@@ -136,7 +136,7 @@ export default function OrderConfirmationEmail({
             {/* Order Items con diseño mejorado */}
             <Section style={itemsSection}>
               <Heading style={sectionTitle}>Tu Pedido</Heading>
-              
+
               {items.map((item, index) => (
                 <div key={index} style={itemCard}>
                   <Row>
@@ -299,6 +299,10 @@ const logo = {
   borderRadius: '50%',
   border: '4px solid rgba(255, 255, 255, 0.3)',
   boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)',
+  display: 'block',
+  width: '100px',
+  height: '100px',
+  objectFit: 'cover' as const,
 }
 
 const headerTitle = {

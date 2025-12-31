@@ -402,6 +402,27 @@
   box-shadow: none;
 }
 
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  background: #ffffff;
+  border-color: #a6e8e4;
+  color: #0f766e;
+}
+
 .settingsButton {
   display: flex;
   align-items: center;

@@ -9,6 +9,8 @@ import {
   Preview,
   Section,
   Text,
+  Row,
+  Column,
 } from '@react-email/components'
 
 interface OrderStatusUpdateEmailProps {
@@ -28,41 +30,56 @@ export default function OrderStatusUpdateEmail({
 }: OrderStatusUpdateEmailProps) {
   const statusConfig = {
     processing: {
-      emoji: '📦',
-      icon: '⚙️',
       title: 'Tu pedido está siendo procesado',
       message: 'Estamos preparando tu pedido con mucho cuidado y atención a cada detalle.',
       submessage: 'Te notificaremos cuando lo enviemos.',
       color: '#3b82f6',
       bgColor: '#dbeafe',
-      borderColor: '#3b82f6',
-      illustration: '🎨',
     },
     shipped: {
-      emoji: '🚚',
-      icon: '✈️',
       title: '¡Tu pedido está en camino!',
       message: 'Tu pedido ha salido de nuestras instalaciones y está viajando hacia ti.',
       submessage: 'Pronto lo tendrás en tus manos.',
       color: '#8b5cf6',
       bgColor: '#f3e8ff',
-      borderColor: '#8b5cf6',
-      illustration: '📮',
     },
     delivered: {
-      emoji: '🎉',
-      icon: '✅',
       title: '¡Tu pedido ha sido entregado!',
       message: '¡Felicidades! Tu pedido ha llegado a su destino.',
       submessage: 'Esperamos que disfrutes tu compra. ¡Gracias por confiar en nosotros!',
       color: '#10b981',
       bgColor: '#d1fae5',
-      borderColor: '#10b981',
-      illustration: '🎁',
     },
   }
 
   const config = statusConfig[status]
+
+  // Determinar qué pasos están completados
+  const steps = [
+    {
+      name: 'Pedido Recibido',
+      completed: true,
+      description: 'Tu pedido ha sido registrado'
+    },
+    {
+      name: 'Procesando',
+      completed: status === 'processing' || status === 'shipped' || status === 'delivered',
+      description: 'Preparando tu pedido',
+      current: status === 'processing'
+    },
+    {
+      name: 'Enviado',
+      completed: status === 'shipped' || status === 'delivered',
+      description: 'En camino a tu dirección',
+      current: status === 'shipped'
+    },
+    {
+      name: 'Entregado',
+      completed: status === 'delivered',
+      description: 'Pedido recibido',
+      current: status === 'delivered'
+    },
+  ]
 
   return (
     <Html>
@@ -79,32 +96,26 @@ export default function OrderStatusUpdateEmail({
           <Section style={header}>
             <Img
               src={LOGO_URL}
-              width="70"
-              height="70"
+              width="90"
+              height="90"
               alt="Niña Mar Logo"
               style={logo}
             />
             <Heading style={headerTitle}>Niña Mar</Heading>
           </Section>
 
-          {/* Status Hero Section */}
-          <Section style={{...heroSection, backgroundColor: config.bgColor, borderTopColor: config.borderColor}}>
-            <div style={{...statusIcon, backgroundColor: config.color}}>
-              {config.icon}
-            </div>
-            <Heading style={{...heroTitle, color: config.color}}>
+          {/* Status Banner */}
+          <Section style={{ ...statusBanner, backgroundColor: config.bgColor, borderLeftColor: config.color }}>
+            <Heading style={{ ...bannerTitle, color: config.color }}>
               {config.title}
             </Heading>
-            <div style={illustrationContainer}>
-              <span style={illustration}>{config.illustration}</span>
-            </div>
           </Section>
 
           {/* Content */}
           <Section style={content}>
             {/* Greeting */}
             <Heading style={greeting}>Hola {customerName},</Heading>
-            
+
             {/* Message */}
             <Text style={messageText}>
               {config.message}
@@ -119,84 +130,75 @@ export default function OrderStatusUpdateEmail({
               <Text style={orderCardNumber}>{orderNumber}</Text>
             </Section>
 
-            {/* Progress Bar */}
-            <Section style={progressSection}>
-              <Text style={progressTitle}>Progreso del Pedido</Text>
-              <div style={progressContainer}>
-                <div style={progressBar}>
-                  <div style={{
-                    ...progressFill,
-                    width: status === 'processing' ? '33%' : status === 'shipped' ? '66%' : '100%',
-                    backgroundColor: config.color,
-                  }}></div>
+            {/* NUEVA TIMELINE VERTICAL CLARA */}
+            <Section style={timelineSection}>
+              <Heading style={timelineTitle}>Estado de tu Pedido</Heading>
+
+              {steps.map((step, index) => (
+                <div key={index}>
+                  <Row style={timelineRow}>
+                    {/* Indicador (círculo) */}
+                    <Column style={indicatorCol}>
+                      <div style={{
+                        ...indicator,
+                        backgroundColor: step.completed ? config.color : '#e2e8f0',
+                        borderColor: step.current ? config.color : 'transparent',
+                      }}>
+                        {step.completed && (
+                          <span style={checkmark}>✓</span>
+                        )}
+                      </div>
+                      {/* Línea conectora */}
+                      {index < steps.length - 1 && (
+                        <div style={{
+                          ...connector,
+                          backgroundColor: step.completed ? config.color : '#e2e8f0',
+                        }}></div>
+                      )}
+                    </Column>
+
+                    {/* Contenido del paso */}
+                    <Column style={stepContentCol}>
+                      <div style={{
+                        ...stepCard,
+                        backgroundColor: step.current ? config.bgColor : '#ffffff',
+                        borderColor: step.current ? config.color : '#e2e8f0',
+                        borderWidth: step.current ? '3px' : '2px',
+                      }}>
+                        <Text style={{
+                          ...stepName,
+                          color: step.completed ? config.color : '#94a3b8',
+                          fontWeight: step.current ? '800' : '700',
+                        }}>
+                          {step.name}
+                        </Text>
+                        <Text style={{
+                          ...stepDescription,
+                          color: step.completed ? '#475569' : '#94a3b8',
+                        }}>
+                          {step.description}
+                        </Text>
+                        {step.current && (
+                          <div style={currentBadge}>
+                            <span style={currentBadgeText}>Estado Actual</span>
+                          </div>
+                        )}
+                      </div>
+                    </Column>
+                  </Row>
                 </div>
-              </div>
-              
-              <div style={milestonesContainer}>
-                <div style={milestone}>
-                  <div style={{
-                    ...milestoneIcon,
-                    backgroundColor: '#10b981',
-                    color: '#ffffff',
-                  }}>✓</div>
-                  <Text style={milestoneLabel}>Recibido</Text>
-                </div>
-                
-                <div style={milestone}>
-                  <div style={{
-                    ...milestoneIcon,
-                    backgroundColor: status === 'processing' || status === 'shipped' || status === 'delivered' ? '#3b82f6' : '#e2e8f0',
-                    color: status === 'processing' || status === 'shipped' || status === 'delivered' ? '#ffffff' : '#94a3b8',
-                  }}>
-                    {status === 'processing' || status === 'shipped' || status === 'delivered' ? '✓' : '⏳'}
-                  </div>
-                  <Text style={milestoneLabel}>Procesando</Text>
-                </div>
-                
-                <div style={milestone}>
-                  <div style={{
-                    ...milestoneIcon,
-                    backgroundColor: status === 'shipped' || status === 'delivered' ? '#8b5cf6' : '#e2e8f0',
-                    color: status === 'shipped' || status === 'delivered' ? '#ffffff' : '#94a3b8',
-                  }}>
-                    {status === 'shipped' || status === 'delivered' ? '✓' : '📦'}
-                  </div>
-                  <Text style={milestoneLabel}>Enviado</Text>
-                </div>
-                
-                <div style={milestone}>
-                  <div style={{
-                    ...milestoneIcon,
-                    backgroundColor: status === 'delivered' ? '#10b981' : '#e2e8f0',
-                    color: status === 'delivered' ? '#ffffff' : '#94a3b8',
-                  }}>
-                    {status === 'delivered' ? '✓' : '🏠'}
-                  </div>
-                  <Text style={milestoneLabel}>Entregado</Text>
-                </div>
-              </div>
+              ))}
             </Section>
 
             {/* Track Order Button */}
             <Section style={buttonSection}>
               <Link
                 href={trackingUrl || `${process.env.NEXT_PUBLIC_URL}/seguimiento`}
-                style={{...trackButton, backgroundColor: config.color}}
+                style={{ ...trackButton, backgroundColor: config.color }}
               >
                 {status === 'delivered' ? 'Ver Detalles del Pedido' : 'Rastrear mi Pedido'}
               </Link>
             </Section>
-
-            {/* Help Section */}
-            {status !== 'delivered' && (
-              <Section style={helpSection}>
-                <Text style={helpTitle}>📱 Mantente Informado</Text>
-                <Text style={helpText}>
-                  Te enviaremos actualizaciones por email en cada etapa del proceso.
-                  Puedes rastrear tu pedido en cualquier momento usando el botón de arriba.
-                </Text>
-              </Section>
-            )}
 
             {/* Thank You Section for Delivered */}
             {status === 'delivered' && (
@@ -205,9 +207,6 @@ export default function OrderStatusUpdateEmail({
                 <Text style={thanksText}>
                   Esperamos que estés encantada con tu joya personalizada.
                   Si tienes alguna pregunta o comentario, no dudes en contactarnos.
-                </Text>
-                <Text style={thanksText}>
-                  💝 Nos encantaría ver cómo luce tu joya. ¡Etiquétanos en redes sociales!
                 </Text>
               </Section>
             )}
@@ -278,8 +277,12 @@ const header = {
 const logo = {
   margin: '0 auto',
   borderRadius: '50%',
-  border: '3px solid #a6e8e4',
+  border: '3px solid #8e4603',
   boxShadow: '0 4px 12px rgba(166, 232, 228, 0.3)',
+  display: 'block',
+  width: '90px',
+  height: '90px',
+  objectFit: 'cover' as const,
 }
 
 const headerTitle = {
@@ -289,40 +292,18 @@ const headerTitle = {
   margin: '16px 0 0',
 }
 
-// Hero Section
-const heroSection = {
-  padding: '48px 32px',
+// Status Banner
+const statusBanner = {
+  padding: '32px',
   textAlign: 'center' as const,
-  borderTop: '4px solid',
-  position: 'relative' as const,
+  borderLeft: '6px solid',
 }
 
-const statusIcon = {
-  width: '80px',
-  height: '80px',
-  borderRadius: '50%',
-  color: '#ffffff',
-  fontSize: '40px',
-  lineHeight: '80px',
-  margin: '0 auto 24px',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-}
-
-const heroTitle = {
-  fontSize: '28px',
+const bannerTitle = {
+  fontSize: '26px',
   fontWeight: '900',
-  margin: '0 0 16px',
-  lineHeight: '1.2',
-}
-
-const illustrationContainer = {
-  marginTop: '24px',
-}
-
-const illustration = {
-  fontSize: '64px',
-  display: 'inline-block',
-  animation: 'bounce 2s ease-in-out infinite',
+  margin: '0',
+  lineHeight: '1.3',
 }
 
 // Content
@@ -349,7 +330,6 @@ const submessageText = {
   color: '#64748b',
   lineHeight: '1.6',
   margin: '0 0 32px',
-  fontStyle: 'italic' as const,
 }
 
 // Order Card
@@ -358,7 +338,7 @@ const orderCard = {
   padding: '20px',
   borderRadius: '12px',
   textAlign: 'center' as const,
-  marginBottom: '32px',
+  marginBottom: '40px',
   border: '2px solid #e2e8f0',
 }
 
@@ -379,66 +359,96 @@ const orderCardNumber = {
   fontFamily: 'monospace',
 }
 
-// Progress Section
-const progressSection = {
-  marginBottom: '32px',
+// NUEVA TIMELINE VERTICAL
+const timelineSection = {
+  marginBottom: '40px',
 }
 
-const progressTitle = {
-  fontSize: '16px',
+const timelineTitle = {
+  fontSize: '18px',
   fontWeight: '700',
   color: '#0f172a',
-  margin: '0 0 16px',
-  textAlign: 'center' as const,
+  margin: '0 0 32px',
 }
 
-const progressContainer = {
-  marginBottom: '24px',
+const timelineRow = {
+  marginBottom: '0',
+  position: 'relative' as const,
 }
 
-const progressBar = {
-  width: '100%',
-  height: '8px',
-  backgroundColor: '#e2e8f0',
-  borderRadius: '9999px',
-  overflow: 'hidden' as const,
-  boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+const indicatorCol = {
+  width: '50px',
+  position: 'relative' as const,
+  paddingRight: '0',
 }
 
-const progressFill = {
-  height: '100%',
-  borderRadius: '9999px',
-  transition: 'width 0.3s ease',
-  boxShadow: '0 0 8px rgba(59, 130, 246, 0.5)',
-}
-
-const milestonesContainer = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  marginTop: '16px',
-}
-
-const milestone = {
-  textAlign: 'center' as const,
-  flex: '1',
-}
-
-const milestoneIcon = {
-  width: '40px',
-  height: '40px',
+const indicator = {
+  width: '32px',
+  height: '32px',
   borderRadius: '50%',
-  fontSize: '18px',
-  lineHeight: '40px',
-  margin: '0 auto 8px',
-  fontWeight: 'bold',
-  transition: 'all 0.3s ease',
+  border: '4px solid',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative' as const,
+  zIndex: 2,
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
 }
 
-const milestoneLabel = {
-  fontSize: '11px',
-  color: '#64748b',
+const checkmark = {
+  color: '#ffffff',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  lineHeight: '1',
+}
+
+const connector = {
+  width: '4px',
+  height: '60px',
+  marginLeft: '14px',
+  marginTop: '4px',
+  borderRadius: '2px',
+}
+
+const stepContentCol = {
+  paddingLeft: '16px',
+  paddingBottom: '24px',
+}
+
+const stepCard = {
+  padding: '20px',
+  borderRadius: '12px',
+  border: '2px solid',
+  transition: 'all 0.3s ease',
+  position: 'relative' as const,
+}
+
+const stepName = {
+  fontSize: '16px',
+  margin: '0 0 6px',
+  lineHeight: '1.3',
+}
+
+const stepDescription = {
+  fontSize: '14px',
   margin: '0',
-  fontWeight: '600',
+  lineHeight: '1.5',
+}
+
+const currentBadge = {
+  marginTop: '12px',
+  display: 'inline-block',
+}
+
+const currentBadgeText = {
+  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+  color: '#1e40af',
+  padding: '6px 14px',
+  borderRadius: '20px',
+  fontSize: '12px',
+  fontWeight: '700',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.5px',
 }
 
 // Button Section
@@ -456,30 +466,6 @@ const trackButton = {
   fontSize: '16px',
   display: 'inline-block',
   boxShadow: '0 4px 14px rgba(0, 0, 0, 0.2)',
-  transition: 'transform 0.2s ease',
-}
-
-// Help Section
-const helpSection = {
-  backgroundColor: '#eff6ff',
-  padding: '20px',
-  borderRadius: '12px',
-  marginBottom: '24px',
-  border: '2px solid #bfdbfe',
-}
-
-const helpTitle = {
-  fontSize: '15px',
-  fontWeight: '700',
-  color: '#1e40af',
-  margin: '0 0 12px',
-}
-
-const helpText = {
-  fontSize: '14px',
-  color: '#1e40af',
-  lineHeight: '1.6',
-  margin: '0',
 }
 
 // Thanks Section
@@ -503,7 +489,7 @@ const thanksText = {
   fontSize: '15px',
   color: '#047857',
   lineHeight: '1.7',
-  margin: '0 0 12px',
+  margin: '0',
 }
 
 // Contact Section
