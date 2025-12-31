@@ -38,7 +38,6 @@ export default function CustomizationModal({
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({})
   const [quantity, setQuantity] = useState(1)
   const [currentStep, setCurrentStep] = useState(0)
-  const [engraving, setEngraving] = useState("")
 
   // NUEVO: Calcular total de pasos (opciones + paso final solo si hay grabado o siempre mostrar cantidad)
   const totalSteps = options.length + 1 // Siempre hay paso final para cantidad
@@ -119,7 +118,6 @@ export default function CustomizationModal({
       productImage: primaryImage?.image_url || '',
       basePrice: product.price,
       selectedOptions: selectedOptionsDetails,
-      engraving: engraving.trim() || undefined, // NUEVO: Solo incluir si tiene texto
       quantity: quantity,
       totalPrice: calculateTotalPrice()
     }

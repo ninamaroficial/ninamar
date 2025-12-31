@@ -17,7 +17,6 @@ export interface CartItem {
     valueName: string
     additionalPrice: number
   }[]
-  engraving: string
   quantity: number
   totalPrice: number
 }
