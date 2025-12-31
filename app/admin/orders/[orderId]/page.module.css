@@ -293,26 +293,6 @@
   font-size: 0.8125rem;
 }
 
-.engraving {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(166, 232, 228, 0.1);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.engravingLabel {
-  font-weight: 600;
-  color: #6b7280;
-}
-
-.engravingText {
-  color: #1f2937;
-  font-style: italic;
-}
-
 .itemPricing {
   display: flex;
   gap: 1rem;

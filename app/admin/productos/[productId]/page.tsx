@@ -19,8 +19,6 @@ interface Product {
   sku: string | null
   is_active: boolean
   is_featured: boolean
-  allow_engraving: boolean
-  engraving_price: number
 }
 
 export default function EditarProductoPage() {
@@ -43,8 +41,6 @@ export default function EditarProductoPage() {
     sku: '',
     is_active: true,
     is_featured: false,
-    allow_engraving: false,
-    engraving_price: '0',
   })
 
   useEffect(() => {
@@ -80,8 +76,6 @@ export default function EditarProductoPage() {
         sku: data.sku || '',
         is_active: data.is_active ?? true,
         is_featured: data.is_featured ?? false,
-        allow_engraving: data.allow_engraving ?? false,
-        engraving_price: data.engraving_price?.toString() || '0',
       })
     } catch (error) {
       console.error('Error:', error)
@@ -128,8 +122,6 @@ export default function EditarProductoPage() {
           sku: formData.sku || null,
           is_active: formData.is_active,
           is_featured: formData.is_featured,
-          allow_engraving: formData.allow_engraving,
-          engraving_price: formData.allow_engraving ? parseFloat(formData.engraving_price) : 0,
         }),
       })
 

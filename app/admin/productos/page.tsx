@@ -16,7 +16,6 @@ interface Product {
   image_url: string | null
   category_id: string | null
   is_active: boolean
-  allow_engraving: boolean
   stock: number
 }
 
@@ -202,11 +201,6 @@ export default function ProductosAdminPage() {
                   <span className={styles.metaItem}>
                     Stock: {product.stock}
                   </span>
-                  {product.allow_engraving && (
-                    <span className={styles.metaItem}>
-                      ✍️ Grabado
-                    </span>
-                  )}
                 </div>
               </div>
 

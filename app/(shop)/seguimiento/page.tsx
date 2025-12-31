@@ -15,7 +15,6 @@ interface OrderItem {
   unit_price: number
   total_price: number
   customization_details?: any
-  engraving?: string
 }
 
 interface OrderTracking {
@@ -322,14 +321,6 @@ export default function SeguimientoPage() {
                               )}
                             </span>
                           ))}
-                        </div>
-                      )}
-
-                      {/* Engraving */}
-                      {item.engraving && (
-                        <div className={styles.engraving}>
-                          <span className={styles.engravingIcon}>✍️</span>
-                          <span className={styles.engravingText}>"{item.engraving}"</span>
                         </div>
                       )}
 

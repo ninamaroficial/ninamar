@@ -324,7 +324,6 @@
 }
 
 /* Final Step */
-.engravingSection,
 .quantitySection {
   display: flex;
   flex-direction: column;
@@ -335,21 +334,6 @@
   font-size: 1rem;
   font-weight: 600;
   color: #1f2937;
-}
-
-.engravingInput {
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  font-family: var(--font-twinkle);
-}
-
-.engravingInput:focus {
-  outline: none;
-  border-color: #a6e8e4;
-  box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.2);
 }
 
 .hint {

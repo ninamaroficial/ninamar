@@ -29,7 +29,6 @@ interface OrderItem {
   unit_price: number
   total_price: number
   customization_details?: any
-  engraving?: string
 }
 
 interface Order {
@@ -423,14 +422,6 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
                               )}
                             </div>
                           ))}
-                        </div>
-                      )}
-
-                      {/* Engraving */}
-                      {item.engraving && (
-                        <div className={styles.engraving}>
-                          <span className={styles.engravingLabel}>Grabado:</span>
-                          <span className={styles.engravingText}>"{item.engraving}"</span>
                         </div>
                       )}
 

@@ -23,7 +23,6 @@ interface NewOrderAdminEmailProps {
     product_name: string
     quantity: number
     customization_details?: any
-    engraving?: string
   }>
   total: number
   shipping_address: string
@@ -148,14 +147,6 @@ export default function NewOrderAdminEmail({
                             {custom.optionName}: {custom.valueName}
                           </span>
                         ))}
-                      </div>
-                    )}
-
-                    {item.engraving && (
-                      <div style={engravingContainer}>
-                        <Text style={engravingText}>
-                          ✍️ Grabado: <strong>"{item.engraving}"</strong>
-                        </Text>
                       </div>
                     )}
 
@@ -440,20 +431,6 @@ const customBadge = {
   fontWeight: '600',
   marginRight: '6px',
   marginBottom: '4px',
-}
-
-const engravingContainer = {
-  marginTop: '8px',
-  padding: '10px 12px',
-  backgroundColor: '#f3e8ff',
-  borderRadius: '6px',
-  borderLeft: '3px solid #8b5cf6',
-}
-
-const engravingText = {
-  fontSize: '13px',
-  color: '#6b21a8',
-  margin: '0',
 }
 
 const productDivider = {

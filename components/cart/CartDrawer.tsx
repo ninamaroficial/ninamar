@@ -87,12 +87,6 @@ export default function CartDrawer() {
                           <span className={styles.optionValue}>{option.valueName}</span>
                         </div>
                       ))}
-                      {item.engraving && (
-                        <div className={styles.option}>
-                          <span className={styles.optionName}>Grabado:</span>
-                          <span className={styles.optionValue}>"{item.engraving}"</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Price and Quantity */}

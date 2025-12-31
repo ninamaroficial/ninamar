@@ -357,27 +357,6 @@
   font-weight: 700;
 }
 
-.engraving {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 0.875rem;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
-  border-left: 3px solid #a6e8e4;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: #1f2937;
-}
-
-.engravingIcon {
-  font-size: 1rem;
-}
-
-.engravingText {
-  font-style: italic;
-  font-weight: 500;
-}
-
 .itemPricing {
   display: flex;
   align-items: center;

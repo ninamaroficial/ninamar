@@ -31,7 +31,6 @@ export interface OrderItem {
   product_image?: string
   base_price: number
   customization_details?: any
-  engraving?: string
   quantity: number
   unit_price: number
   total_price: number
@@ -58,7 +57,6 @@ export interface CreateOrderData {
     product_image?: string
     base_price: number
     customization_details?: any
-    engraving?: string
     quantity: number
     unit_price: number
     total_price: number

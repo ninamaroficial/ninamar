@@ -23,7 +23,6 @@ interface OrderConfirmationEmailProps {
     unit_price: number
     total_price: number
     customization_details?: any
-    engraving?: string
   }>
   subtotal: number
   shipping_cost: number
@@ -153,11 +152,6 @@ export default function OrderConfirmationEmail({
                               {custom.optionName}: {custom.valueName}
                             </span>
                           ))}
-                        </div>
-                      )}
-                      {item.engraving && (
-                        <div style={engravingContainer}>
-                          <Text style={engravingText}>✍️ "{item.engraving}"</Text>
                         </div>
                       )}
                     </Column>
@@ -536,21 +530,6 @@ const customBadge = {
   fontWeight: '600',
   marginRight: '6px',
   marginBottom: '4px',
-}
-
-const engravingContainer = {
-  marginTop: '8px',
-  padding: '8px 12px',
-  backgroundColor: '#f3e8ff',
-  borderRadius: '6px',
-  borderLeft: '3px solid #8b5cf6',
-}
-
-const engravingText = {
-  fontSize: '13px',
-  color: '#6b21a8',
-  fontStyle: 'italic' as const,
-  margin: '0',
 }
 
 const itemPriceCol = {

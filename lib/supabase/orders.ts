@@ -68,7 +68,6 @@ export async function createOrder(data: CreateOrderData) {
     product_image: item.product_image,
     base_price: item.base_price,
     customization_details: item.customization_details,
-    engraving: item.engraving,
     quantity: item.quantity,
     unit_price: item.unit_price,
     total_price: item.total_price

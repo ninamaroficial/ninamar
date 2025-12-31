@@ -19,7 +19,6 @@ interface OrderEmailData {
     unit_price: number
     total_price: number
     customization_details?: any
-    engraving?: string
   }>
   subtotal: number
   shipping_cost: number

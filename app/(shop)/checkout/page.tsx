@@ -143,7 +143,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         product_image: item.productImage,
         base_price: item.basePrice,
         customization_details: item.selectedOptions,
-        engraving: item.engraving,
         quantity: item.quantity,
         unit_price: item.totalPrice / item.quantity,
         total_price: item.totalPrice
@@ -453,11 +452,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                           {opt.optionName}: {opt.valueName}
                         </p>
                       ))}
-                      {item.engraving && (
-                        <p className={styles.itemEngraving}>
-                          Grabado: "{item.engraving}"
-                        </p>
-                      )}
                     </div>
                     <div className={styles.itemPrice}>
                       {formatPrice(item.totalPrice)}

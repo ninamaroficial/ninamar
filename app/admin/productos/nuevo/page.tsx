@@ -21,8 +21,6 @@ export default function NuevoProductoPage() {
     sku: '',
     is_active: true,
     is_featured: false,
-    allow_engraving: false,
-    engraving_price: '0',
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -62,8 +60,6 @@ export default function NuevoProductoPage() {
           sku: formData.sku || null,
           is_active: formData.is_active,
           is_featured: formData.is_featured,
-          allow_engraving: formData.allow_engraving,
-          engraving_price: formData.allow_engraving ? parseFloat(formData.engraving_price) : 0,
         }),
       })
 
