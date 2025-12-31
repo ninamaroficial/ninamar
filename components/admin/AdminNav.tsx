@@ -24,32 +24,24 @@ export default function AdminNav() {
   return (
     <nav className={styles.nav}>
       <Link 
-        href="/admin/dashboard" 
-        className={`${styles.navLink} ${pathname === '/admin/dashboard' ? styles.navLinkActive : ''}`}
+        href="/admin" 
+        className={`${styles.navLink} ${pathname === '/admin' ? styles.navLinkActive : ''}`}
       >
         <LayoutDashboard size={20} />
         Dashboard
       </Link>
 
-      {/* <Link 
-        href="/admin/orders" 
-        className={`${styles.navLink} ${pathname?.startsWith('/admin/orders') ? styles.navLinkActive : ''}`}
-      >
-        <Package size={20} />
-        Órdenes
-      </Link> */}
-
       <Link 
         href="/admin/productos" 
         className={`${styles.navLink} ${pathname?.startsWith('/admin/productos') ? styles.navLinkActive : ''}`}
       >
-        <ShoppingBag size={20} />
+        <Package size={20} />
         Productos
       </Link>
 
-      <Link 
-        href="/admin/personalizaciones" 
-        className={`${styles.navLink} ${pathname?.startsWith('/admin/personalizaciones') ? styles.navLinkActive : ''}`}
+      <Link
+        href="/admin/customizations"
+        className={`${styles.navLink} ${pathname?.startsWith('/admin/customizations') ? styles.navLinkActive : ''}`}
       >
         <Sliders size={20} />
         Personalizaciones

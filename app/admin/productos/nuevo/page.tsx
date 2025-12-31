@@ -25,7 +25,6 @@ export default function NuevoProductoPage() {
     short_description: '',
     base_price: '',
     original_price: '',
-    image_url: '',
     category_id: '',
     stock: '0',
     is_active: true,
@@ -84,7 +83,6 @@ export default function NuevoProductoPage() {
           short_description: formData.short_description || null,
           base_price: parseFloat(formData.base_price),
           original_price: formData.original_price ? parseFloat(formData.original_price) : null,
-          image_url: formData.image_url || null,
           category_id: formData.category_id || null,
           stock: parseInt(formData.stock) || 0,
           is_active: formData.is_active,
@@ -98,7 +96,7 @@ export default function NuevoProductoPage() {
       }
 
       const product = await response.json()
-      alert('Producto creado exitosamente')
+      alert('Producto creado exitosamente. Ahora puedes agregar imágenes.')
       router.push(`/admin/productos/${product.id}`)
     } catch (error: any) {
       console.error('Error:', error)
@@ -110,7 +108,6 @@ export default function NuevoProductoPage() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <Link href="/admin/productos" className={styles.backButton}>
           <ArrowLeft size={20} />
@@ -119,7 +116,6 @@ export default function NuevoProductoPage() {
         <h1 className={styles.title}>Nuevo Producto</h1>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGrid}>
           {/* Columna Izquierda */}
@@ -189,29 +185,6 @@ export default function NuevoProductoPage() {
                   placeholder="Descripción detallada del producto..."
                   rows={6}
                 />
-              </div>
-            </div>
-
-            <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Imagen</h2>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  URL de la Imagen
-                </label>
-                <input
-                  type="url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  className={styles.input}
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-                {formData.image_url && (
-                  <div className={styles.imagePreview}>
-                    <img src={formData.image_url} alt="Preview" />
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -336,10 +309,19 @@ export default function NuevoProductoPage() {
                 </label>
               </div>
             </div>
+
+            <div className={styles.section}>
+              <div className={styles.infoBox}>
+                <h3 className={styles.infoTitle}>📸 Nota sobre imágenes</h3>
+                <p className={styles.infoText}>
+                  Después de crear el producto, serás redirigido a la página de edición 
+                  donde podrás agregar múltiples imágenes a la galería.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Actions */}
         <div className={styles.actions}>
           <Link href="/admin/productos" className={styles.cancelButton}>
             Cancelar

@@ -229,6 +229,27 @@
   justify-content: center;
 }
 
+.infoBox {
+  padding: 1rem;
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 0.75rem;
+}
+
+.infoTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0 0 0.5rem;
+}
+
+.infoText {
+  font-size: 0.875rem;
+  color: #1e3a8a;
+  margin: 0;
+  line-height: 1.5;
+}
+
 .cancelButton:hover {
   background: #f1f5f9;
   border-color: #cbd5e1;
