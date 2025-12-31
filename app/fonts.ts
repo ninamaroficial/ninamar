@@ -11,6 +11,8 @@ export const titleFont = localFont({
   ],
   variable: '--font-title',
   display: 'swap',
+  fallback: ['Georgia', 'serif'], // ← AGREGAR FALLBACK
+  preload: true, // ← ASEGURAR PRECARGA
 })
 
 export const bodyFont = localFont({
@@ -23,4 +25,6 @@ export const bodyFont = localFont({
   ],
   variable: '--font-body',
   display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'Arial', 'sans-serif'], // ← AGREGAR FALLBACK
+  preload: true, // ← ASEGURAR PRECARGA
 })
