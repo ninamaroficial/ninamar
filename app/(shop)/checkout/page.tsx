@@ -206,23 +206,28 @@ const handleSubmit = async (e: React.FormEvent) => {
     // 3. Limpiar carrito ANTES de redirigir
     clearCart()
 
-    // 4. Redirigir a MercadoPago
-    // Usar tanto window.location.href como window.open para mejor compatibilidad móvil
+    // 4. REDIRECCIÓN MEJORADA PARA MÓVILES
     console.log('🔄 Redirecting to payment...')
     
-    // Opción 1: Redirección directa (funciona mejor en móvil)
-    window.location.href = initPoint
+    // Método 1: Crear un enlace temporal y hacer click programático
+    // Este método funciona mejor en móviles porque simula un click real del usuario
+    const link = document.createElement('a')
+    link.href = initPoint
+    link.target = '_self' // Abrir en la misma ventana
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
     
-    // Opción 2: Como fallback, si la redirección tarda, mostrar un enlace manual
+    // Método 2: window.location.replace (no guarda en historial del navegador)
+    // Esto evita que el usuario pueda volver atrás y duplicar la orden
     setTimeout(() => {
-      // Si después de 2 segundos aún está en la página, mostrar enlace manual
-      const shouldShowLink = window.confirm(
-        'Si no fuiste redirigido automáticamente, presiona OK para ir al pago'
-      )
-      if (shouldShowLink) {
-        window.location.href = initPoint
-      }
-    }, 2000)
+      window.location.replace(initPoint)
+    }, 100)
+    
+    // Método 3: Fallback final con window.location.href
+    setTimeout(() => {
+      window.location.href = initPoint
+    }, 500)
 
   } catch (error) {
     console.error('Error processing checkout:', error)
