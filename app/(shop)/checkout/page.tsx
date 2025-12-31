@@ -111,104 +111,125 @@ export default function CheckoutPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
 
-    if (!validateForm()) {
-      return
+  if (!validateForm()) {
+    return
+  }
+
+  setIsProcessing(true)
+
+  try {
+    // 1. Crear la orden en Supabase
+    const orderData = {
+      customer_name: formData.customer_name,
+      customer_email: formData.customer_email,
+      customer_phone: formData.customer_phone,
+      customer_document: formData.customer_document,
+      shipping_address: formData.shipping_address,
+      shipping_city: formData.shipping_city,
+      shipping_state: formData.shipping_state,
+      shipping_zip: formData.shipping_zip || null,
+      shipping_country: 'Colombia',
+      subtotal: subtotal,
+      shipping_cost: shippingCost,
+      total: total,
+      customer_notes: formData.customer_notes || null,
+      items: items.map(item => ({
+        product_id: item.productId,
+        product_name: item.productName,
+        product_slug: item.productSlug,
+        product_image: item.productImage,
+        base_price: item.basePrice,
+        customization_details: item.selectedOptions,
+        engraving: item.engraving,
+        quantity: item.quantity,
+        unit_price: item.totalPrice / item.quantity,
+        total_price: item.totalPrice
+      }))
     }
 
-    setIsProcessing(true)
+    console.log('🚀 Sending order data:', orderData)
 
-    try {
-      // 1. Crear la orden en Supabase
-      const orderData = {
-        customer_name: formData.customer_name,
-        customer_email: formData.customer_email,
-        customer_phone: formData.customer_phone,
-        customer_document: formData.customer_document,
-        shipping_address: formData.shipping_address,
-        shipping_city: formData.shipping_city,
-        shipping_state: formData.shipping_state,
-        shipping_zip: formData.shipping_zip || null,
-        shipping_country: 'Colombia',
-        subtotal: subtotal,
-        shipping_cost: shippingCost,
-        total: total,
-        customer_notes: formData.customer_notes || null,
+    const createOrderResponse = await fetch('/api/orders/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    })
+
+    if (!createOrderResponse.ok) {
+      const errorData = await createOrderResponse.json()
+      console.error('❌ Order creation failed:', errorData)
+      throw new Error('Error al crear la orden')
+    }
+
+    const order = await createOrderResponse.json()
+    console.log('✅ Order created:', order)
+
+    // 2. Crear preferencia de MercadoPago
+    const preferenceResponse = await fetch('/api/mercadopago/create-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: order.id,
+        orderNumber: order.order_number,
         items: items.map(item => ({
           product_id: item.productId,
           product_name: item.productName,
-          product_slug: item.productSlug,
           product_image: item.productImage,
-          base_price: item.basePrice,
-          customization_details: item.selectedOptions,
-          engraving: item.engraving,
           quantity: item.quantity,
           unit_price: item.totalPrice / item.quantity,
-          total_price: item.totalPrice
-        }))
-      }
-
-      const createOrderResponse = await fetch('/api/orders/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
+          customization_summary: item.selectedOptions
+            .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
+            .join(', ')
+        })),
+        payer: {
+          name: formData.customer_name,
+          email: formData.customer_email,
+          phone: formData.customer_phone,
+          document: formData.customer_document,
+          address: formData.shipping_address,
+          zip_code: formData.shipping_zip
+        },
+        total: total
       })
+    })
 
-      if (!createOrderResponse.ok) {
-        throw new Error('Error al crear la orden')
-      }
-
-      const order = await createOrderResponse.json()
-
-      // 2. Crear preferencia de MercadoPago
-      const preferenceResponse = await fetch('/api/mercadopago/create-preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: order.id,
-          orderNumber: order.order_number,
-          items: items.map(item => ({
-            product_id: item.productId,
-            product_name: item.productName,
-            product_image: item.productImage,
-            quantity: item.quantity,
-            unit_price: item.totalPrice / item.quantity,
-            customization_summary: item.selectedOptions
-              .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
-              .join(', ')
-          })),
-          payer: {
-            name: formData.customer_name,
-            email: formData.customer_email,
-            phone: formData.customer_phone,
-            document: formData.customer_document,
-            address: formData.shipping_address,
-            zip_code: formData.shipping_zip
-          },
-          total: total
-        })
-      })
-
-      if (!preferenceResponse.ok) {
-        throw new Error('Error al crear la preferencia de pago')
-      }
-
-      const { initPoint } = await preferenceResponse.json()
-
-      // 3. Limpiar carrito
-      clearCart()
-
-      // 4. Redirigir a MercadoPago
-      window.location.href = initPoint
-
-    } catch (error) {
-      console.error('Error processing checkout:', error)
-      alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.')
-      setIsProcessing(false)
+    if (!preferenceResponse.ok) {
+      throw new Error('Error al crear la preferencia de pago')
     }
+
+    const { initPoint } = await preferenceResponse.json()
+    console.log('✅ Payment URL:', initPoint)
+
+    // 3. Limpiar carrito ANTES de redirigir
+    clearCart()
+
+    // 4. Redirigir a MercadoPago
+    // Usar tanto window.location.href como window.open para mejor compatibilidad móvil
+    console.log('🔄 Redirecting to payment...')
+    
+    // Opción 1: Redirección directa (funciona mejor en móvil)
+    window.location.href = initPoint
+    
+    // Opción 2: Como fallback, si la redirección tarda, mostrar un enlace manual
+    setTimeout(() => {
+      // Si después de 2 segundos aún está en la página, mostrar enlace manual
+      const shouldShowLink = window.confirm(
+        'Si no fuiste redirigido automáticamente, presiona OK para ir al pago'
+      )
+      if (shouldShowLink) {
+        window.location.href = initPoint
+      }
+    }, 2000)
+
+  } catch (error) {
+    console.error('Error processing checkout:', error)
+    setIsProcessing(false)
+    alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.')
   }
+}
 
   if (items.length === 0) {
     return null
@@ -216,7 +237,7 @@ export default function CheckoutPage() {
 
   return (
     <div className={styles.page}>
-      <Container>
+      <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Finalizar Compra</h1>
           <p className={styles.subtitle}>Completa tus datos para proceder al pago</p>
@@ -486,7 +507,7 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   )
 }
