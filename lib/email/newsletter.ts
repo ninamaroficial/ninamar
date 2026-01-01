@@ -95,7 +95,7 @@ export async function sendNewsletterConfirmation(
                         Síguenos en redes sociales
                       </p>
                       <p style="margin: 0 0 16px;">
-                        <a href="https://instagram.com/ninamar" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Instagram</a>
+                        <a href="https://www.instagram.com/ninamar_oficial" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Instagram</a>
                         <a href="https://facebook.com/ninamar" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Facebook</a>
                       </p>
                       <p style="margin: 0; color: #94a3b8; font-size: 12px;">

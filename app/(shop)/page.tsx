@@ -21,7 +21,7 @@ export default function Home() {
             <div className={styles.heroText}>
               <span className={styles.badge}>
                 <Sparkles size={16} />
-                Joyas Personalizadas
+                Accesorios Artesanales
               </span>
               <h1 className={styles.heroTitle}>
                 Diseña Tu Joya

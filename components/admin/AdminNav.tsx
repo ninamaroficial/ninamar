@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { 
   LayoutDashboard, 
   Package, 
-  ShoppingBag, 
+  Mail, 
   Settings, 
   Sliders, 
   LogOut 
@@ -45,6 +45,14 @@ export default function AdminNav() {
       >
         <Sliders size={20} />
         Personalizaciones
+      </Link>
+
+      <Link
+        href="/admin/newsletter"
+        className={`${styles.navLink} ${pathname?.startsWith('/admin/newsletter') ? styles.navLinkActive : ''}`}
+      >
+        <Mail size={20} />
+        Newsletter
       </Link>
 
       <Link 
