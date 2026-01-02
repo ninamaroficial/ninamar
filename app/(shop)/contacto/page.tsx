@@ -5,8 +5,8 @@ import { Mail, Phone, MapPin, Clock } from 'lucide-react'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Contacto - Niñamar | Joyas Personalizadas',
-  description: 'Contáctanos para consultas, pedidos personalizados o cualquier pregunta sobre nuestras joyas. Estamos en Popayán, Cauca, Colombia.',
+  title: 'Contacto - Niñamar | Accesorios Personalizados',
+  description: 'Contáctanos para consultas, pedidos personalizados o cualquier pregunta sobre nuestros accesorios. Estamos en Popayán, Cauca, Colombia.',
   openGraph: {
     title: 'Contacto - Niñamar',
     description: 'Contáctanos para consultas y pedidos personalizados',
@@ -23,7 +23,7 @@ export default function ContactoPage() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Contáctanos</h1>
             <p className={styles.heroSubtitle}>
-              Estamos aquí para ayudarte a crear la joya perfecta
+              Estamos aquí para ayudarte a crear el accesorio perfecto
             </p>
           </div>
         </Container>

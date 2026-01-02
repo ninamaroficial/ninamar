@@ -14,7 +14,7 @@ export default function ProcessSteps() {
     {
       number: "01",
       title: "Elige tu Base",
-      description: "Selecciona el tipo de joya que quieres crear: aretes, collar, pulsera o anillo",
+      description: "Selecciona el tipo de accesorio que quieres crear: aretes, collar, pulsera o anillo",
       icon: "🎯",
       color: "#fbbf24"
     },
@@ -41,7 +41,7 @@ export default function ProcessSteps() {
     },
     {
       number: "05",
-      title: "Recibe tu Joya",
+      title: "Recibe tu Accesorio",
       description: "Empaque premium y envío seguro directo a tu puerta",
       icon: "🎁",
       color: "#ec4899"

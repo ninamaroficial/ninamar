@@ -1,0 +1,270 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: transparent; /* ← CAMBIAR: fondo transparente */
+}
+
+/* Image Container */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* ← CAMBIAR: fondo transparente */
+}
+
+/* Background Blur Effect */
+.backgroundBlur {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  z-index: 0;
+  filter: blur(3px) brightness(0.7);
+  opacity: 0.9;
+  transform: scale(1.5);
+}
+
+.blurImage {
+  object-fit: cover;
+}
+
+/* Main Image */
+.mainImageWrapper {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  z-index: 1;
+  animation: fadeIn 0.6s ease-in-out, scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 1.5rem; /* ← AGREGAR: bordes redondeados */
+  overflow: hidden; /* ← AGREGAR: contener la imagen dentro del border-radius */
+  background: transparent; /* ← AGREGAR: fondo transparente */
+}
+
+.mainImage {
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+  background: transparent; /* ← AGREGAR: fondo transparente */
+}
+
+.carousel:hover .mainImage {
+  transform: scale(1.05);
+}
+
+/* Floating Orbs */
+.floatingOrb1,
+.floatingOrb2,
+.floatingOrb3 {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(166, 232, 228, 0.4), rgba(141, 212, 207, 0.2));
+  filter: blur(30px);
+  z-index: 0;
+  animation: float 6s ease-in-out infinite;
+}
+
+.floatingOrb1 {
+  width: 200px;
+  height: 200px;
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.floatingOrb2 {
+  width: 150px;
+  height: 150px;
+  bottom: 15%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.floatingOrb3 {
+  width: 180px;
+  height: 180px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 4s;
+}
+
+/* Navigation Buttons */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(166, 232, 228, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.carousel:hover .navButton {
+  opacity: 1;
+}
+
+.navButton:hover {
+  background: rgba(166, 232, 228, 1);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(166, 232, 228, 0.4);
+}
+
+.navButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.navButtonPrev {
+  left: 1rem;
+}
+
+.navButtonNext {
+  right: 1rem;
+}
+
+/* Dots Indicator */
+.dotsContainer {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.dotActive {
+  background: rgba(166, 232, 228, 1);
+  width: 30px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(166, 232, 228, 0.5);
+}
+
+/* Progress Bar */
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 2;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #a6e8e4, #8dd4cf);
+  width: 100%;
+  transform-origin: left;
+  animation: progress 4000ms linear;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .carousel {
+    min-height: 300px;
+    border-radius: 1.5rem;
+  }
+
+  .mainImageWrapper {
+    border-radius: 1rem; /* ← AGREGAR: bordes redondeados en móvil */
+  }
+
+  .navButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .navButtonPrev {
+    left: 0.5rem;
+  }
+
+  .navButtonNext {
+    right: 0.5rem;
+  }
+
+  .floatingOrb1,
+  .floatingOrb2,
+  .floatingOrb3 {
+    width: 100px;
+    height: 100px;
+  }
+
+  .mainImageWrapper {
+    width: 95%;
+    height: 95%;
+  }
+}

@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
           <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #a6e8e4, #8dd4cf); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
               <h1 style="color: #0f172a; margin: 0;">Niñamar</h1>
-              <p style="color: #0f172a; margin: 10px 0 0;">Joyas Personalizadas</p>
+              <p style="color: #0f172a; margin: 10px 0 0;">Accesorios Personalizados</p>
             </div>
             
             <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px;">
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
               </div>
               
               <p style="color: #475569; font-size: 16px;">
-                Mientras tanto, puedes explorar nuestra colección de joyas personalizadas.
+                Mientras tanto, puedes explorar nuestra colección de accesorios personalizados.
               </p>
               
               <div style="text-align: center; margin: 30px 0;">

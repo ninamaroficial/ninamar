@@ -6,11 +6,11 @@ import { Heart, Sparkles, Package, Users } from 'lucide-react'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
-  title: 'Acerca de Nosotros - Niñamar | Joyas Personalizadas',
-  description: 'Conoce la historia detrás de Niñamar, cómo nace nuestra pasión por crear joyas únicas y personalizadas hechas a mano en Popayán, Colombia.',
+  title: 'Acerca de Nosotros - Niñamar | Accesorios Personalizados',
+  description: 'Conoce la historia detrás de Niñamar, cómo nace nuestra pasión por crear accesorios únicos y personalizados hechas a mano en Popayán, Colombia.',
   openGraph: {
     title: 'Acerca de Nosotros - Niñamar',
-    description: 'Conoce la historia detrás de Niñamar y nuestra pasión por crear joyas únicas',
+    description: 'Conoce la historia detrás de Niñamar y nuestra pasión por crear accesorios únicos',
     url: 'https://niñamar.com/acerca',
   },
 }
@@ -24,7 +24,7 @@ export default function AcercaPage() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Nuestra Historia</h1>
             <p className={styles.heroSubtitle}>
-              Cada joya cuenta una historia, y esta es la nuestra
+              Cada accesorio cuenta una historia, y esta es la nuestra
             </p>
           </div>
         </Container>
@@ -48,7 +48,7 @@ export default function AcercaPage() {
                   atención al detalle.
                 </p>
                 <p>
-                  Creemos que las joyas son más que simples accesorios; son recuerdos tangibles, símbolos de momentos 
+                  Creemos que los accesorios son recuerdos tangibles, símbolos de momentos 
                   importantes y expresiones de individualidad. Por eso, cada creación de Niñamar es única, pensada y 
                   hecha especialmente para ti.
                 </p>
@@ -80,7 +80,7 @@ export default function AcercaPage() {
               </div>
               <h3 className={styles.valueTitle}>Hechas con Amor</h3>
               <p className={styles.valueDescription}>
-                Cada pieza es creada a mano con dedicación y cuidado. No hay dos joyas iguales, 
+                Cada pieza es creada a mano con dedicación y cuidado. No hay dos accesorios iguales, 
                 porque cada una lleva una parte de nuestra pasión por el arte.
               </p>
             </div>
@@ -91,7 +91,7 @@ export default function AcercaPage() {
               </div>
               <h3 className={styles.valueTitle}>Personalización Única</h3>
               <p className={styles.valueDescription}>
-                Tu joya, tu estilo. Ofrecemos infinitas posibilidades de personalización para que 
+                Tu accesorio, tu estilo. Ofrecemos infinitas posibilidades de personalización para que 
                 cada pieza refleje exactamente lo que deseas expresar.
               </p>
             </div>
@@ -126,13 +126,13 @@ export default function AcercaPage() {
             <h2 className={styles.sectionTitle}>Nuestro Compromiso</h2>
             <div className={styles.commitmentText}>
               <p>
-                En Niñamar, nos comprometemos a crear joyas que no solo embellezcan, sino que también 
+                En Niñamar, nos comprometemos a crear accesorios que no solo embellezcan, sino que también 
                 signifiquen algo especial. Trabajamos con materiales de calidad, procesos artesanales 
                 cuidadosos y un servicio al cliente excepcional.
               </p>
               <p>
-                Cada pedido es tratado con la misma dedicación, ya sea tu primera joya con nosotros o 
-                la décima. Porque para nosotros, no solo vendes un producto; creamos una experiencia y 
+                Cada pedido es tratado con la misma dedicación, ya sea tu primer accesorio con nosotros o 
+                el décima. Porque para nosotros, no solo vendes un producto; creamos una experiencia y 
                 un recuerdo que perdurará en el tiempo.
               </p>
             </div>

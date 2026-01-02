@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Sparkles, Package, Truck, Shield, ArrowRight, Star } from "lucide-react"
 import styles from "./page.module.css"
 import type { Metadata } from 'next'
+import ProductCarousel from "@/components/home/ProductCarousel"
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     'collares personalizados',
     'pulseras hechas a mano',
     'aretes únicos',
-    'joyas colombia',
+    'accesorios colombia',
     'accesorios personalizados',
     'regalos únicos',
     'joyería artesanal colombia'
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
         url: 'https://niñamar.com/icon.png',
         width: 1200,
         height: 630,
-        alt: 'Niñamar - Joyas Personalizadas',
+        alt: 'Niñamar - Accesorios Personalizados',
       },
     ],
     locale: 'es_CO',
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Niñamar - Joyas Personalizadas',
+    title: 'Niñamar - Accesorios Personalizados',
     description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor.',
     images: ['https://niñamar.com/icon.png'],
   },
@@ -48,7 +49,20 @@ export const metadata: Metadata = {
     canonical: 'https://niñamar.com',
   },
 }
+
+
 export default function Home() {
+  // ✅ AGREGAR: Array de imágenes para el carrusel
+  const carouselImages = [
+    {
+      url: 'https://xxzksnruxbaqemtebgln.supabase.co/storage/v1/object/public/product_images/Bananita/Bananita-1.png',
+      alt: 'Bananita - Accesorios personalizados'
+    },
+    {
+      url: 'https://xxzksnruxbaqemtebgln.supabase.co/storage/v1/object/public/product_images/Rainbow/Rainbow-1.png',
+      alt: 'Rainbow - Accesorios personalizados'
+    }
+  ]
   return (
     <div className={styles.page}>
       {/* Hero Section */}
@@ -67,8 +81,8 @@ export default function Home() {
                 Accesorios Artesanales
               </span>
               <h1 className={styles.heroTitle}>
-                Diseña Tu Joya
-                <span className={styles.heroTitleGradient}> Perfecta</span>
+                Diseña Tu Accesorio
+                <span className={styles.heroTitleGradient}> Perfecto</span>
               </h1>
               <p className={styles.heroSubtitle}>
                 Crea piezas únicas que cuenten tu historia. Personaliza cada detalle: 
@@ -128,7 +142,7 @@ export default function Home() {
                 
                 {/* Placeholder para imagen de producto */}
                 <div className={styles.productShowcase}>
-                  <div className={styles.showcaseItem}>💎</div>
+                  <ProductCarousel images={carouselImages} autoPlayInterval={5000} />
                 </div>
               </div>
             </div>
@@ -156,7 +170,7 @@ export default function Home() {
               </div>
               <h3 className={styles.featureTitle}>Calidad Garantizada</h3>
               <p className={styles.featureText}>
-                Materiales premium y acabados profesionales en cada joya.
+                Materiales premium y acabados profesionales en cada accesorio.
               </p>
             </div>
             
@@ -180,7 +194,7 @@ export default function Home() {
             <span className={styles.sectionBadge}>Proceso Simple</span>
             <h2 className={styles.sectionTitle}>¿Cómo Funciona?</h2>
             <p className={styles.sectionSubtitle}>
-              Crea tu joya perfecta en 3 simples pasos
+              Crea tu accesorio perfecto en 3 simples pasos
             </p>
           </div>
 
@@ -271,7 +285,7 @@ export default function Home() {
         <Container>
           <div className={styles.finalCtaContent}>
             <h2 className={styles.finalCtaTitle}>
-              ¿Lista para crear tu joya perfecta?
+              ¿Lista para crear tu accesorio único?
             </h2>
             <p className={styles.finalCtaText}>
               Diseña, personaliza y recibe una pieza única hecha especialmente para ti

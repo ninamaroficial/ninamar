@@ -31,7 +31,7 @@ export default function TerminosPage() {
             <h2 className={styles.heading}>2. Sobre Niñamar</h2>
             <p className={styles.text}>
               Niñamar es una marca de joyería artesanal personalizada con sede en Popayán, Cauca, Colombia. 
-              Nos especializamos en la creación de joyas únicas hechas a mano.
+              Nos especializamos en la creación de accesorios únicos hechos a mano.
             </p>
             <div className={styles.contactInfo}>
               <p><strong>Información de Contacto:</strong></p>
@@ -60,7 +60,7 @@ export default function TerminosPage() {
             <p className={styles.text}>
               <strong>Descripción de productos:</strong> Nos esforzamos por mostrar los productos con la mayor precisión posible. 
               Sin embargo, las imágenes son representativas y pueden variar ligeramente del producto final, especialmente 
-              en joyas personalizadas hechas a mano.
+              en accesorios personalizados hechos a mano.
             </p>
             <p className={styles.text}>
               <strong>Precios:</strong> Todos los precios están expresados en pesos colombianos (COP) e incluyen IVA cuando aplique. 
@@ -83,7 +83,7 @@ export default function TerminosPage() {
               no constituye la aceptación de tu pedido, solo confirma que lo hemos recibido.
             </p>
             <p className={styles.text}>
-              <strong>Personalización:</strong> Para joyas personalizadas, te contactaremos para confirmar los detalles 
+              <strong>Personalización:</strong> Para accesorios personalizados, te contactaremos para confirmar los detalles 
               específicos antes de iniciar la producción.
             </p>
           </section>
@@ -100,15 +100,15 @@ export default function TerminosPage() {
               <li>Transferencias bancarias</li>
             </ul>
             <p className={styles.text}>
-              El pago debe completarse antes de que comencemos la producción de tu joya personalizada.
+              El pago debe completarse antes de que comencemos la producción de tu accesorio personalizado.
             </p>
           </section>
 
           <section className={styles.section}>
             <h2 className={styles.heading}>7. Envíos y Entregas</h2>
             <p className={styles.text}>
-              <strong>Tiempo de producción:</strong> Las joyas personalizadas requieren tiempo de elaboración. 
-              El tiempo estimado de producción es de 7 a 15 días hábiles, dependiendo de la complejidad del diseño.
+              <strong>Tiempo de producción:</strong> Los accesorios personalizados requieren tiempo de elaboración. 
+              El tiempo estimado de producción es de 5 a 7 días hábiles, dependiendo de la complejidad del diseño.
             </p>
             <p className={styles.text}>
               <strong>Costos de envío:</strong> Los costos de envío se calculan según la ubicación y el peso del paquete. 
@@ -130,7 +130,7 @@ export default function TerminosPage() {
               una devolución o cambio, siempre que el producto esté en perfectas condiciones, sin usar y en su empaque original.
             </p>
             <p className={styles.text}>
-              <strong>Productos personalizados:</strong> Debido a la naturaleza personalizada de nuestras joyas, 
+              <strong>Productos personalizados:</strong> Debido a la naturaleza personalizada de nuestros accesorios, 
               NO aceptamos devoluciones de productos personalizados, excepto en caso de defectos de fabricación.
             </p>
             <p className={styles.text}>
@@ -147,10 +147,10 @@ export default function TerminosPage() {
           <section className={styles.section}>
             <h2 className={styles.heading}>9. Garantía</h2>
             <p className={styles.text}>
-              Todas nuestras joyas cuentan con garantía de 6 meses contra defectos de fabricación, que incluye:
+              Todos nuestros accesorios cuentan con garantía de 6 meses contra defectos de fabricación, que incluye:
             </p>
             <ul className={styles.list}>
-              <li>Roturas por defectos en la soldadura o ensamblaje</li>
+              <li>Roturas por defectos en el ensamblaje</li>
               <li>Pérdida de piedras por montaje defectuoso</li>
               <li>Descoloración por materiales de baja calidad</li>
             </ul>

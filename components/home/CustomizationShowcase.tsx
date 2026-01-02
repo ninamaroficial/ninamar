@@ -40,7 +40,7 @@ export default function CustomizationShowcase() {
           transition={{ duration: 0.8 }}
           className={styles.header}
         >
-          <h2 className={styles.title}>Diseña Tu Joya Perfecta</h2>
+          <h2 className={styles.title}>Diseña Tu Accesorio Perfecto</h2>
           <p className={styles.subtitle}>
             Tres simples pasos para crear una pieza única que refleje tu personalidad
           </p>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Container from "@/components/ui/Container"
 import Link from "next/link"
+import Image from "next/image"
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react"
 import styles from "./footer.module.css"
 
@@ -113,7 +114,7 @@ export default function Footer() {
                   <Twitter className={styles.socialIcon} />
                 </a>
                 <a 
-                  href="ninamar.oficial@gmail.com"
+                  href="mailto:ninamar.oficial@gmail.com"
                   className={styles.socialLink}
                   aria-label="Email"
                 >
@@ -227,11 +228,23 @@ export default function Footer() {
 
             {/* Métodos de Pago */}
             <div className={styles.paymentMethods}>
-              <span className={styles.paymentText}>Aceptamos:</span>
-              <div className={styles.paymentIcon} title="Visa">💳</div>
-              <div className={styles.paymentIcon} title="Mastercard">💳</div>
-              <div className={styles.paymentIcon} title="PSE">💰</div>
-              <div className={styles.paymentIcon} title="Transferencia">🏦</div>
+              <span className={styles.paymentText}>Pagos seguros con:</span>
+              <div className={styles.paymentLogos}>
+                {/* Logo de MercadoPago */}
+                <Image
+                  src="/mercadopago-logo.png"
+                  alt="MercadoPago"
+                  width={120}
+                  height={24}
+                  className={styles.mercadopagoLogo}
+                />
+                {/* Iconos de métodos */}
+                <div className={styles.paymentIcons}>
+                  <span className={styles.paymentIcon} title="Tarjetas">💳</span>
+                  <span className={styles.paymentIcon} title="PSE">💰</span>
+                  <span className={styles.paymentIcon} title="Efectivo">🏪</span>
+                </div>
+              </div>
             </div>
           </div>
         </Container>

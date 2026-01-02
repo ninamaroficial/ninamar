@@ -5,6 +5,73 @@
   overflow: hidden;
 }
 
+/* ... estilos existentes ... */
+
+.paymentMethods {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paymentText {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.paymentLogos {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mercadopagoLogo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.mercadopagoLogo:hover {
+  opacity: 1;
+}
+
+.paymentIcons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paymentIcon {
+  font-size: 1.25rem;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.paymentIcon:hover {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .paymentMethods {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .paymentText {
+    width: 100%;
+    text-align: center;
+  }
+
+  .paymentLogos {
+    justify-content: center;
+  }
+}
+
 /* Decoración de fondo */
 .footer::before {
   content: '';

@@ -54,7 +54,7 @@ function SuccessContent() {
               <li>Recibirás un email de confirmación</li>
               <li>Prepararemos tu pedido personalizado</li>
               <li>Te notificaremos cuando sea enviado</li>
-              <li>Recibirás tu joya en 3-5 días hábiles</li>
+              <li>Se enviará tu accesorio en 5-7 días hábiles</li>
             </ol>
           </div>
 

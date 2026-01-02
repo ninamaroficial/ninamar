@@ -39,7 +39,7 @@ export default function PrivacidadPage() {
               Utilizamos tu información personal para los siguientes propósitos:
             </p>
             <ul className={styles.list}>
-              <li>Procesar y gestionar tus pedidos de joyas personalizadas.</li>
+              <li>Procesar y gestionar tus pedidos de accesorios personalizados.</li>
               <li>Comunicarnos contigo sobre el estado de tus pedidos y envíos.</li>
               <li>Personalizar tu experiencia de compra según tus preferencias.</li>
               <li>Enviarte información sobre nuevos productos, ofertas y promociones (solo si te has suscrito).</li>
@@ -150,7 +150,7 @@ export default function PrivacidadPage() {
             <ul className={styles.list}>
               <li>Información sobre nuevas colecciones y productos.</li>
               <li>Ofertas exclusivas y promociones.</li>
-              <li>Tips de cuidado de joyas y contenido relevante.</li>
+              <li>Tips de cuidado de accesorios y contenido relevante.</li>
             </ul>
             <p className={styles.text}>
               Puedes cancelar tu suscripción en cualquier momento haciendo clic en el enlace "Cancelar suscripción" al final de cualquier email que recibas, o contactándonos directamente.

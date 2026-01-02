@@ -87,7 +87,7 @@ export default function HeroParallax() {
         >
           <Link href="/productos">
             <Button size="lg" variant="primary" className={styles.ctaButton}>
-              Personaliza tu Joya
+              Personaliza tu Accesorio
             </Button>
           </Link>
           <Link href="#como-funciona">

@@ -196,7 +196,7 @@ export default function NuevoProductoPage() {
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  Precio Base <span className={styles.required}>*</span>
+                  Precio<span className={styles.required}>*</span>
                 </label>
                 <div className={styles.inputGroup}>
                   <span className={styles.inputPrefix}>$</span>

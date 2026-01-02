@@ -205,7 +205,7 @@ export default function OrderStatusUpdateEmail({
               <Section style={thanksSection}>
                 <Heading style={thanksTitle}>¡Gracias por tu compra!</Heading>
                 <Text style={thanksText}>
-                  Esperamos que estés encantada con tu joya personalizada.
+                  Esperamos que estés encantada con tu accesorio personalizado.
                   Si tienes alguna pregunta o comentario, no dudes en contactarnos.
                 </Text>
               </Section>
