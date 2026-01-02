@@ -188,16 +188,28 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           orderId: order.id,
           orderNumber: order.order_number,
-          items: items.map(item => ({
-            product_id: item.productId,
-            product_name: item.productName,
-            product_image: item.productImage,
-            quantity: item.quantity,
-            unit_price: item.totalPrice / item.quantity,
-            customization_summary: item.selectedOptions
-              .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
-              .join(', ')
-          })),
+          items: [
+            // Items del carrito
+            ...items.map(item => ({
+              product_id: item.productId,
+              product_name: item.productName,
+              product_image: item.productImage,
+              quantity: item.quantity,
+              unit_price: item.totalPrice / item.quantity,
+              customization_summary: item.selectedOptions
+                .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
+                .join(', ')
+            })),
+            // ✅ AGREGAR el envío como un item adicional si tiene costo
+            ...(shippingCost > 0 ? [{
+              product_id: 'shipping',
+              product_name: `Envío a ${formData.shipping_city}, ${formData.shipping_state}`,
+              product_image: null,
+              quantity: 1,
+              unit_price: shippingCost,
+              customization_summary: ''
+            }] : [])
+          ],
           payer: {
             name: formData.customer_name,
             email: formData.customer_email,
@@ -206,7 +218,7 @@ export default function CheckoutPage() {
             address: formData.shipping_address,
             zip_code: formData.shipping_zip
           },
-          total: total
+          total: total // ✅ Este total ya incluye shipping
         })
       })
 
