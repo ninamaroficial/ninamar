@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     console.log('=== MERCADOPAGO DEBUG ===')
     console.log('Order ID:', orderId)
     console.log('Items count:', items.length)
+    console.log('Expected total:', total)
 
     // Verificar variables de entorno
     if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {
@@ -41,8 +42,8 @@ export async function POST(request: NextRequest) {
         unit_price: Number(item.unit_price)
       }
       
-      // Solo agregar picture_url si existe
-      if (item.product_image) {
+      // Solo agregar picture_url si existe y no es el item de envío
+      if (item.product_image && item.product_id !== 'shipping') {
         return {
           ...itemData,
           picture_url: String(item.product_image)
@@ -52,9 +53,25 @@ export async function POST(request: NextRequest) {
       return itemData
     })
 
-    console.log('Items preparados:', mpItems)
+    // ✅ Calcular total de items
+    const itemsTotal = mpItems.reduce((sum: number, item: any) => {
+      return sum + (item.unit_price * item.quantity)
+    }, 0)
 
-    // Crear preferencia de pago - VERSIÓN SIMPLIFICADA
+    console.log('Items preparados:', mpItems)
+    console.log('Items total calculado:', itemsTotal)
+    console.log('Total esperado:', total)
+
+    // ✅ Verificar que el total coincida (tolerancia de 1 peso por redondeos)
+    if (Math.abs(itemsTotal - total) > 1) {
+      console.error('❌ TOTAL MISMATCH!')
+      console.error('Items total:', itemsTotal)
+      console.error('Expected total:', total)
+      console.error('Difference:', itemsTotal - total)
+      throw new Error(`El total de los items (${itemsTotal}) no coincide con el total esperado (${total})`)
+    }
+
+    // Crear preferencia de pago
     const preferenceBody: any = {
       items: mpItems,
       back_urls: {
@@ -62,8 +79,10 @@ export async function POST(request: NextRequest) {
         failure: `${baseUrl}/checkout/failure?order_id=${orderId}`,
         pending: `${baseUrl}/checkout/pending?order_id=${orderId}`
       },
+      auto_return: 'approved', // ✅ AGREGAR: retorno automático al aprobar
       external_reference: String(orderId),
       statement_descriptor: 'NINAMAR',
+      notification_url: `${baseUrl}/api/mercadopago/webhook`, // ✅ AGREGAR: webhook URL
       metadata: {
         order_id: String(orderId),
         order_number: String(orderNumber)

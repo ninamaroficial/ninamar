@@ -180,7 +180,6 @@ export default function CheckoutPage() {
 
       const order = await createOrderResponse.json()
       console.log('✅ Order created:', order)
-
       // 2. Crear preferencia de MercadoPago
       const preferenceResponse = await fetch('/api/mercadopago/create-preference', {
         method: 'POST',
@@ -200,14 +199,14 @@ export default function CheckoutPage() {
                 .map((opt: any) => `${opt.optionName}: ${opt.valueName}`)
                 .join(', ')
             })),
-            // ✅ AGREGAR el envío como un item adicional si tiene costo
+            // ✅ Agregar envío como item si tiene costo
             ...(shippingCost > 0 ? [{
               product_id: 'shipping',
               product_name: `Envío a ${formData.shipping_city}, ${formData.shipping_state}`,
               product_image: null,
               quantity: 1,
               unit_price: shippingCost,
-              customization_summary: ''
+              customization_summary: 'Costo de envío'
             }] : [])
           ],
           payer: {
@@ -218,7 +217,7 @@ export default function CheckoutPage() {
             address: formData.shipping_address,
             zip_code: formData.shipping_zip
           },
-          total: total // ✅ Este total ya incluye shipping
+          total: total // Este total YA incluye shipping
         })
       })
 
