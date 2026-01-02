@@ -107,7 +107,7 @@ export default function PrivacidadPage() {
               <li><strong>Revocación del consentimiento:</strong> retirar tu consentimiento en cualquier momento.</li>
             </ul>
             <p className={styles.text}>
-              Para ejercer cualquiera de estos derechos, contáctanos en: <a href="mailto:privacidad@ninamar.com" className={styles.link}>privacidad@ninamar.com</a>
+              Para ejercer cualquiera de estos derechos, contáctanos en: <a href="mailto:ninamar.oficial@gmail.com" className={styles.link}>ninamar.oficial@gmail.com</a>
             </p>
           </section>
 

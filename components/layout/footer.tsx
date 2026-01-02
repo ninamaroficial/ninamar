@@ -133,7 +133,7 @@ export default function Footer() {
                   <div className={styles.contactIcon}>
                     <Mail size={16} />
                   </div>
-                  <span>contacto@ninamar.com</span>
+                  <span>ninamar.oficial@gmail.com</span>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.contactIcon}>

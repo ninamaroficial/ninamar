@@ -139,9 +139,6 @@ export default function OrderConfirmationEmail({
               {items.map((item, index) => (
                 <div key={index} style={itemCard}>
                   <Row>
-                    <Column style={itemImageCol}>
-                      <div style={itemImagePlaceholder}>💎</div>
-                    </Column>
                     <Column style={itemDetailsCol}>
                       <Text style={itemName}>{item.product_name}</Text>
                       <Text style={itemQuantity}>Cantidad: {item.quantity}</Text>
