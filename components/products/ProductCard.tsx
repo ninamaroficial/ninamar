@@ -30,7 +30,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   const primaryImage = images.find(img => img.is_primary) || images[0]
   
-  const discount = product.original_price 
+  // ✅ Calcular descuento solo si hay diferencia real de precio
+  const hasDiscount = product.original_price != null && product.original_price > product.price
+  const discount = hasDiscount && product.original_price != null
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0
 
@@ -109,7 +111,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           )}
           
-          {discount > 0 && (
+          {/* ✅ Solo mostrar badge si hay descuento real */}
+          {hasDiscount && discount > 0 && (
             <div className={styles.badge}>
               -{discount}%
             </div>
@@ -136,7 +139,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <div className={styles.priceWrapper}>
             <span className={styles.price}>{formatPrice(product.price)}</span>
-            {product.original_price && (
+            {/* ✅ Solo mostrar precio original si hasDiscount es true */}
+            {hasDiscount && product.original_price != null && (
               <span className={styles.originalPrice}>
                 {formatPrice(product.original_price)}
               </span>
