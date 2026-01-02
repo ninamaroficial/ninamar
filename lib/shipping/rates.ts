@@ -48,7 +48,7 @@ export const SHIPPING_RATES: Record<string, number> = {
 
 // Tarifas especiales por ciudad (sobrescribe la tarifa del departamento)
 export const CITY_SHIPPING_RATES: Record<string, number> = {
-  'Popayán': 5000, // Tarifa especial para Popayán (sede principal)
+  'Popayán': 0, // Tarifa especial para Popayán (sede principal)
 }
 
 export const FREE_SHIPPING_THRESHOLD = 100000 // $100,000 COP
