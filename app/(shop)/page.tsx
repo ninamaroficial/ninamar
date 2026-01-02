@@ -4,7 +4,50 @@ import Link from "next/link"
 import Image from "next/image"
 import { Sparkles, Package, Truck, Shield, ArrowRight, Star } from "lucide-react"
 import styles from "./page.module.css"
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
+  description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.',
+  keywords: [
+    'accesorios personalizadas',
+    'joyas artesanales',
+    'accesorios artesanales',
+    'accesorios popayán',
+    'collares personalizados',
+    'pulseras hechas a mano',
+    'aretes únicos',
+    'joyas colombia',
+    'accesorios personalizados',
+    'regalos únicos',
+    'joyería artesanal colombia'
+  ].join(', '),
+  openGraph: {
+    title: 'Niñamar - Accesorios Artesanales Hechos a Mano',
+    description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.',
+    url: 'https://niñamar.com',
+    siteName: 'Niñamar',
+    images: [
+      {
+        url: 'https://niñamar.com/icon.png',
+        width: 1200,
+        height: 630,
+        alt: 'Niñamar - Joyas Personalizadas',
+      },
+    ],
+    locale: 'es_CO',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Niñamar - Joyas Personalizadas',
+    description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor.',
+    images: ['https://niñamar.com/icon.png'],
+  },
+  alternates: {
+    canonical: 'https://niñamar.com',
+  },
+}
 export default function Home() {
   return (
     <div className={styles.page}>
