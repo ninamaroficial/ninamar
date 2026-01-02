@@ -166,6 +166,7 @@
   box-shadow: 0 4px 20px rgba(166, 232, 228, 0.4);
 }
 
+
 .primaryButton:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 30px rgba(166, 232, 228, 0.6) !important;
@@ -196,6 +197,51 @@
   gap: 0.75rem;
 }
 
+/* ✅ AGREGAR: Estilo para el link de Google Reviews */
+.statLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.statLink:hover {
+  transform: translateY(-2px);
+}
+
+.statLink:hover .statNumber {
+  color: #a6e8e4;
+}
+
+.statLink:hover .statIcon {
+  color: #8dd4cf;
+}
+
+.statIcon {
+  color: #a6e8e4;
+  flex-shrink: 0;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.statNumber {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: var(--font-title);
+  transition: color 0.3s ease;
+}
+
+.statLabel {
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
+}
 .statIcon {
   color: #a6e8e4;
   flex-shrink: 0;

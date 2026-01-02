@@ -50,9 +50,8 @@ export const metadata: Metadata = {
   },
 }
 
-
 export default function Home() {
-  // ✅ AGREGAR: Array de imágenes para el carrusel
+  // Array de imágenes para el carrusel
   const carouselImages = [
     {
       url: 'https://xxzksnruxbaqemtebgln.supabase.co/storage/v1/object/public/product_images/Bananita/Bananita-1.png',
@@ -63,6 +62,7 @@ export default function Home() {
       alt: 'Rainbow - Accesorios personalizados'
     }
   ]
+  
   return (
     <div className={styles.page}>
       {/* Hero Section */}
@@ -104,20 +104,45 @@ export default function Home() {
               
               {/* Stats */}
               <div className={styles.stats}>
-                <div className={styles.stat}>
+                {/* STAT CON LINK A GOOGLE REVIEWS */}
+                <Link
+                  href="https://share.google/Pdv59OhmhXXC719Ge"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.statLink}
+                >
                   <Star className={styles.statIcon} size={20} />
                   <div className={styles.statContent}>
-                    <span className={styles.statNumber}>4.9</span>
-                    <span className={styles.statLabel}>Calificación</span>
+                    <span className={styles.statNumber}>5.0</span>
+                    <span className={styles.statLabel}>
+                      Google Reviews
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        style={{ marginLeft: '4px', display: 'inline-block', verticalAlign: 'middle' }}
+                      >
+                        <path
+                          d="M10 1L2 9M10 1H3M10 1V8"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
                   </div>
-                </div>
+                </Link>
+                
                 <div className={styles.stat}>
                   <Package className={styles.statIcon} size={20} />
                   <div className={styles.statContent}>
                     <span className={styles.statNumber}>1000+</span>
-                    <span className={styles.statLabel}>accesorios Creadas</span>
+                    <span className={styles.statLabel}>Accesorios Creados</span>
                   </div>
                 </div>
+                
                 <div className={styles.stat}>
                   <Truck className={styles.statIcon} size={20} />
                   <div className={styles.statContent}>
@@ -140,7 +165,7 @@ export default function Home() {
                   </div>
                 </div>
                 
-                {/* Placeholder para imagen de producto */}
+                {/* Carrusel de productos */}
                 <div className={styles.productShowcase}>
                   <ProductCarousel images={carouselImages} autoPlayInterval={5000} />
                 </div>
@@ -258,18 +283,18 @@ export default function Home() {
                 Más de 1000 clientes satisfechos
               </h2>
               <p className={styles.trustSubtitle}>
-                accesorios únicas que cuentan historias únicas
+                Accesorios únicos que cuentan historias únicas
               </p>
             </div>
             
             <div className={styles.trustStats}>
               <div className={styles.trustStat}>
-                <span className={styles.trustNumber}>4.9/5</span>
+                <span className={styles.trustNumber}>5.0/5</span>
                 <span className={styles.trustLabel}>Calificación promedio</span>
               </div>
               <div className={styles.trustStat}>
                 <span className={styles.trustNumber}>1000+</span>
-                <span className={styles.trustLabel}>accesorios entregadas</span>
+                <span className={styles.trustLabel}>Accesorios entregados</span>
               </div>
               <div className={styles.trustStat}>
                 <span className={styles.trustNumber}>98%</span>
