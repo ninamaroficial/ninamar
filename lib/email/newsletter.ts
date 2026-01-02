@@ -45,7 +45,7 @@ export async function sendNewsletterConfirmation(
                         Niñamar
                       </h1>
                       <p style="margin: 10px 0 0; color: #0f172a; font-size: 16px;">
-                        Joyas Personalizadas
+                        accesorios Personalizadas
                       </p>
                     </td>
                   </tr>
@@ -68,7 +68,7 @@ export async function sendNewsletterConfirmation(
                       <ul style="margin: 0 0 24px; padding-left: 20px; color: #64748b; font-size: 16px; line-height: 1.8;">
                         <li>Nuevas colecciones y diseños exclusivos</li>
                         <li>Ofertas especiales y descuentos</li>
-                        <li>Tips de cuidado para tus joyas</li>
+                        <li>Tips de cuidado para tus accesorios</li>
                         <li>Historias detrás de nuestras creaciones</li>
                       </ul>
 
@@ -96,7 +96,7 @@ export async function sendNewsletterConfirmation(
                       </p>
                       <p style="margin: 0 0 16px;">
                         <a href="https://www.instagram.com/ninamar_oficial" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Instagram</a>
-                        <a href="https://facebook.com/ninamar" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Facebook</a>
+                        <a href="https://www.facebook.com/profile.php?id=61585522993204" style="display: inline-block; margin: 0 8px; color: #a6e8e4; text-decoration: none; font-size: 14px;">Facebook</a>
                       </p>
                       <p style="margin: 0; color: #94a3b8; font-size: 12px;">
                         © ${new Date().getFullYear()} Niñamar. Popayán, Cauca, Colombia

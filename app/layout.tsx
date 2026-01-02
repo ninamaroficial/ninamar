@@ -3,9 +3,9 @@ import { titleFont, bodyFont } from './fonts'
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Niñamar - Accesarios Artesanales",
-  description: "Descubre joyas únicas y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.",
-  keywords: "joyas personalizadas, joyas artesanales, collares, pulseras, aretes, joyería Popayán, joyas Colombia",
+  title: "Niñamar - Accesarios Artesanales Hechos a Mano | Popayán, Colombia",
+  description: "Descubre accesorios únicas y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.",
+  keywords: "Accesorios, accesorios artesanales, collares, pulseras, aretes, joyería Popayán, accesorios Colombia",
   authors: [{ name: "Niñamar" }],
   creator: "Niñamar",
   publisher: "Niñamar",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     url: "https://niñamar.com",
     siteName: "Niñamar",
     title: "Niñamar - Accesarios Artesanales",
-    description: "Descubre joyas únicas y personalizadas hechas a mano con amor en Popayán, Colombia.",
+    description: "Descubre accesorios únicas y personalizadas hechas a mano con amor en Popayán, Colombia.",
     images: [
       {
         url: "https://niñamar.com/logo.png", // Necesitarás crear esta imagen
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Niñamar - Accesarios Artesanales",
-    description: "Descubre joyas únicas y personalizadas hechas a mano con amor.",
+    description: "Descubre accesorios únicas y personalizadas hechas a mano con amor.",
     images: ["https://niñamar.com/logo.png"],
   },
   robots: {
@@ -41,10 +41,7 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  verification: {
-    // google: 'tu-codigo-de-verificacion', // Agrega cuando tengas Google Search Console
-  },
+  }
 };
 
 export default function RootLayout({

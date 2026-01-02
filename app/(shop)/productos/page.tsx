@@ -7,7 +7,7 @@ import styles from "./page.module.css"
 
 export const metadata = {
   title: "Productos - Niñamar",
-  description: "Explora nuestra colección de joyas personalizables"
+  description: "Explora nuestra colección de accesorios personalizables"
 }
 
 export default async function ProductsPage({
@@ -34,7 +34,7 @@ export default async function ProductsPage({
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Colección</h1>
             <p className={styles.heroSubtitle}>
-              Joyas únicas diseñadas con amor
+              accesorios únicos diseñados con amor
             </p>
           </div>
         </Container>

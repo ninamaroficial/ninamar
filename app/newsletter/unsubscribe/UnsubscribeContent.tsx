@@ -60,7 +60,7 @@ export default function UnsubscribeContent() {
                 <p className={styles.email}>{email}</p>
               )}
               <p className={styles.info}>
-                Ya no recibirás actualizaciones sobre nuevos productos, ofertas exclusivas ni tips sobre joyas.
+                Ya no recibirás actualizaciones sobre nuevos productos, ofertas exclusivas ni tips sobre accesorios.
               </p>
               <div className={styles.actions}>
                 <button

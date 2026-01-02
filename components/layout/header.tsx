@@ -18,6 +18,7 @@ export default function Header() {
     { name: 'Inicio', href: '/' },
     { name: 'Productos', href: '/productos' },
     { name: 'Seguimiento', href: '/seguimiento' },
+    { name: 'Acerca de Niñamar', href: '/acerca' },
     { name: 'Contacto', href: '/contacto' },
   ]
 

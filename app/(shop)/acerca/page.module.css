@@ -1,0 +1,249 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(180deg, #f8fafa 0%, #ffffff 100%);
+  padding: 3.5rem 0 2.5rem;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-title);
+  letter-spacing: 0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.125rem;
+  color: #64748b;
+}
+
+/* Story Section */
+.story {
+  padding: 6rem 0;
+}
+
+.storyContent {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 2rem;
+  font-family: var(--font-title);
+  text-align: center;
+}
+
+.storyText .sectionTitle {
+  text-align: left;
+}
+
+.paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.paragraphs p {
+  font-size: 1.125rem;
+  color: #475569;
+  line-height: 1.8;
+}
+
+.storyImage {
+  position: relative;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Values Section */
+.values {
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafa 100%);
+  margin: 0 -2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.valueCard {
+  background: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.valueCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(166, 232, 228, 0.15);
+  border-color: #a6e8e4;
+}
+
+.valueIcon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.valueTitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 1rem;
+  font-family: var(--font-title);
+}
+
+.valueDescription {
+  font-size: 1rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Commitment Section */
+.commitment {
+  padding: 6rem 0;
+}
+
+.commitmentContent {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.commitmentText {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.commitmentText p {
+  font-size: 1.125rem;
+  color: #475569;
+  line-height: 1.8;
+  text-align: center;
+}
+
+/* CTA Section */
+.cta {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+  margin: 0 -2rem;
+  border-radius: 2rem;
+}
+
+.ctaContent {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 1rem;
+  font-family: var(--font-title);
+}
+
+.ctaText {
+  font-size: 1.25rem;
+  color: #0f172a;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
+  background: #1e293b;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .storyContent {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .story:nth-child(even) .storyContent {
+    direction: rtl;
+  }
+  
+  .story:nth-child(even) .storyText {
+    direction: ltr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .story,
+  .values,
+  .commitment {
+    padding: 4rem 0;
+  }
+
+  .cta {
+    padding: 4rem 1rem;
+    margin: 0 -1rem;
+  }
+
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+}

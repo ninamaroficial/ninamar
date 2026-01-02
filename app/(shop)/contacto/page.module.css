@@ -1,0 +1,216 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(180deg, #f8fafa 0%, #ffffff 100%);
+  padding: 6rem 0 4rem;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-title);
+  letter-spacing: 0.02em;
+}
+
+.heroSubtitle {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Content */
+.content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  padding: 4rem 0;
+}
+
+.sectionTitle {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 400;
+  color: #0f172a;
+  margin-bottom: 2rem;
+  font-family: var(--font-title);
+}
+
+/* Info Section */
+.infoSection {
+  order: 2;
+}
+
+.infoCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.infoCard {
+  background: #f8fafc;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  gap: 1.25rem;
+  transition: all 0.3s ease;
+  overflow: hidden; /* ← AGREGAR */
+}
+
+.infoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(166, 232, 228, 0.15);
+  border-color: #a6e8e4;
+}
+
+.iconWrapper {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.infoContent {
+  flex: 1;
+  min-width: 0; /* ← AGREGAR: permite que flex-children se encojan */
+  overflow: hidden; /* ← AGREGAR */
+}
+
+
+.infoTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  word-wrap: break-word; /* ← AGREGAR */
+  overflow-wrap: break-word; /* ← AGREGAR */
+}
+
+.infoLink {
+  display: block;
+  font-size: 1rem;
+  color: #0f766e;
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  word-wrap: break-word; /* ← AGREGAR */
+  overflow-wrap: break-word; /* ← AGREGAR */
+  overflow: hidden; /* ← AGREGAR */
+  text-overflow: ellipsis; /* ← AGREGAR: muestra ... si es muy largo */
+}
+.infoLink:hover {
+  color: #0d9488;
+}
+
+.infoText {
+  font-size: 0.875rem;
+  color: #64748b;
+  word-wrap: break-word; /* ← AGREGAR */
+  overflow-wrap: break-word; /* ← AGREGAR */
+}
+
+/* Social Section */
+.socialSection {
+  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+  padding: 2.5rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.socialTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-title);
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+/* Form Section */
+.formSection {
+  order: 1;
+}
+
+.formDescription {
+  font-size: 1.0625rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (min-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .infoSection {
+    order: 1;
+  }
+
+  .formSection {
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .content {
+    padding: 3rem 0;
+  }
+
+  .infoCards {
+    grid-template-columns: 1fr;
+  }
+
+  .socialLinks {
+    flex-direction: column;
+  }
+}

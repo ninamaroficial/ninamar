@@ -30,7 +30,7 @@ export default function Testimonials() {
     },
     {
       name: "Ana Silva",
-      role: "Amante de joyas",
+      role: "Amante de accesorios",
       text: "Compré un collar personalizado como regalo y fue un éxito total. La calidad es excepcional y el empaque hermoso.",
       rating: 5,
       image: "💝"
@@ -56,7 +56,7 @@ export default function Testimonials() {
         >
           <h2 className={styles.title}>Lo Que Dicen Nuestras Clientas</h2>
           <p className={styles.subtitle}>
-            Historias reales de personas que crearon sus joyas únicas
+            Historias reales de personas que crearon sus accesorios únicas
           </p>
         </motion.div>
 

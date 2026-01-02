@@ -451,7 +451,7 @@ export default function CheckoutPage() {
                         className={styles.checkbox}
                       />
                       <span className={styles.checkboxText}>
-                        Quiero recibir novedades, ofertas exclusivas y tips sobre joyas por email
+                        Quiero recibir novedades, ofertas exclusivas y tips sobre accesorios por email
                       </span>
                     </label>
                   </div>

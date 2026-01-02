@@ -58,7 +58,7 @@ export default function Home() {
                   <Package className={styles.statIcon} size={20} />
                   <div className={styles.statContent}>
                     <span className={styles.statNumber}>1000+</span>
-                    <span className={styles.statLabel}>Joyas Creadas</span>
+                    <span className={styles.statLabel}>accesorios Creadas</span>
                   </div>
                 </div>
                 <div className={styles.stat}>
@@ -201,7 +201,7 @@ export default function Home() {
                 Más de 1000 clientes satisfechos
               </h2>
               <p className={styles.trustSubtitle}>
-                Joyas únicas que cuentan historias únicas
+                accesorios únicas que cuentan historias únicas
               </p>
             </div>
             
@@ -212,7 +212,7 @@ export default function Home() {
               </div>
               <div className={styles.trustStat}>
                 <span className={styles.trustNumber}>1000+</span>
-                <span className={styles.trustLabel}>Joyas entregadas</span>
+                <span className={styles.trustLabel}>accesorios entregadas</span>
               </div>
               <div className={styles.trustStat}>
                 <span className={styles.trustNumber}>98%</span>

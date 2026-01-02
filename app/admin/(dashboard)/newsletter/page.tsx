@@ -341,7 +341,7 @@ export default function NewsletterPage() {
                 value={formData.subject}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Ej: Nuevas joyas de la temporada ✨"
+                placeholder="Ej: Nuevas accesorios de la temporada ✨"
                 maxLength={100}
               />
               <span className={styles.hint}>

@@ -63,7 +63,7 @@ export default function HeroParallax() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Joyas Únicas
+          accesorios Únicas
           <br />
           <span className={styles.titleAccent}>Hechas para Ti</span>
         </motion.h1>

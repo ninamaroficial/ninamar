@@ -10,7 +10,7 @@
 
 body {
   font-family: var(--font-body);
-  font-weight: 800;  /* ← Cambiar de 200 a 400 */
+  font-weight: 800;
 }
 
 .font-title {

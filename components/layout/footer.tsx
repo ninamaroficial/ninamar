@@ -14,16 +14,11 @@ export default function Footer() {
   const footerLinks = {
     company: [
       { name: "Acerca de Nosotros", href: "/acerca" },
-      { name: "Nuestra Historia", href: "/historia" },
-      { name: "Blog de Joyas", href: "/blog" },
-      { name: "Trabaja con Nosotros", href: "/carreras" },
+      { name: "Trabaja con Nosotros", href: "/contacto" },
     ],
     support: [
-      { name: "Centro de Ayuda", href: "/ayuda" },
-      { name: "Guía de Tallas", href: "/guia-tallas" },
-      { name: "Envíos y Entregas", href: "/envios" },
-      { name: "Devoluciones", href: "/devoluciones" },
-      { name: "Garantía", href: "/garantia" },
+      { name: "Centro de Ayuda", href: "/contacto" },
+      { name: "Envíos y Entregas", href: "/Seguimiento" }
     ],
     legal: [
       { name: "Términos y Condiciones", href: "/terminos" },
@@ -84,14 +79,14 @@ export default function Footer() {
               </Link>
               
               <p className={styles.brandDescription}>
-                Creando joyas únicas y personalizadas que cuentan tu historia. 
+                Creando accesorios únicas y personalizadas que cuentan tu historia. 
                 Cada pieza es una obra de arte hecha con amor y dedicación.
               </p>
 
               {/* Redes Sociales */}
               <div className={styles.socialLinks}>
                 <a 
-                  href="https://facebook.com" 
+                  href="https://www.facebook.com/profile.php?id=61585522993204" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.socialLink}
@@ -100,7 +95,7 @@ export default function Footer() {
                   <Facebook className={styles.socialIcon} />
                 </a>
                 <a 
-                  href="https://instagram.com" 
+                  href="https://www.instagram.com/ninamar_oficial/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.socialLink}
@@ -118,7 +113,7 @@ export default function Footer() {
                   <Twitter className={styles.socialIcon} />
                 </a>
                 <a 
-                  href="mailto:contacto@ninamar.com"
+                  href="ninamar.oficial@gmail.com"
                   className={styles.socialLink}
                   aria-label="Email"
                 >
