@@ -40,9 +40,8 @@ export default function LoadingScreen() {
         <div className={styles.logoContainer}>
           <div className={styles.logo3d}>
             <div className={styles.logoFace}>
-              {/* Opción 1: Con tu logo (descomenta cuando tengas el logo) */}
               <Image
-                src="/images/logo2.png"
+                src="/images/gif-logo3.gif"
                 alt="Niñamar"
                 width={120}
                 height={120}
