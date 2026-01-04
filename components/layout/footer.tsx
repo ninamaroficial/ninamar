@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Container from "@/components/ui/Container"
 import Link from "next/link"
 import Image from "next/image"
@@ -29,9 +29,63 @@ export default function Footer() {
     ],
   }
 
+  const footerImages = [
+  "/images/footerimages/arcoiris-original2.png",
+  "/images/footerimages/flor.png",
+  "/images/footerimages/collar-amarillo.png",
+  "/images/footerimages/barco-amarillo.png",
+  "/images/footerimages/banana-amarilla.png",
+  "/images/footerimages/banana-azul.png",
+  "/images/footerimages/barco-azul.png",
+  "/images/footerimages/arcoiris-azul.png",
+  "/images/footerimages/barco-blanco.png",
+  "/images/footerimages/collar-azul.png",
+]
+
+// “Slots” (posiciones) — NO se enciman porque son distintos
+const SLOTS = [
+  { x: "6%",  y: "12%", size: 170, rot: -8, dur: 18 },
+  { x: "18%", y: "55%", size: 140, rot: 6,  dur: 22 },
+  { x: "8%",  y: "78%", size: 160, rot: -3, dur: 20 },
+
+  { x: "40%", y: "18%", size: 190, rot: 7,  dur: 24 },
+  { x: "46%", y: "62%", size: 150, rot: -6, dur: 19 },
+  { x: "38%", y: "82%", size: 130, rot: 4,  dur: 21 },
+
+  { x: "72%", y: "14%", size: 180, rot: -7, dur: 20 },
+  { x: "84%", y: "46%", size: 150, rot: 5,  dur: 23 },
+  { x: "76%", y: "78%", size: 170, rot: 2,  dur: 19 },
+
+  { x: "92%", y: "20%", size: 130, rot: 9,  dur: 25 },
+  { x: "92%", y: "78%", size: 140, rot: -5, dur: 22 },
+] as const
+
+// cuántas quieres mostrar
+const DECOR_COUNT = 10 // pon 5, 7, 9...
+
+type DecoItem = {
+  src: string
+  slot: (typeof SLOTS)[number]
+}
+
+const [decorativeImages, setDecorativeImages] = useState<DecoItem[]>([])
+
+useEffect(() => {
+  // elegir imágenes aleatorias
+  const imgs = [...footerImages].sort(() => 0.5 - Math.random()).slice(0, DECOR_COUNT)
+
+  // elegir slots aleatorios (sin repetirse)
+  const slots = [...SLOTS].sort(() => 0.5 - Math.random()).slice(0, imgs.length)
+
+  setDecorativeImages(imgs.map((src, i) => ({ src, slot: slots[i] })))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+
+
+
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!email) {
       setMessage({ type: 'error', text: 'Por favor ingresa tu email' })
       return
@@ -69,6 +123,30 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
+{decorativeImages.length > 0 && (
+  <div className={styles.decorativeImages} aria-hidden="true">
+    {decorativeImages.map((item, index) => (
+      <Image
+        key={`${item.src}-${index}`}
+        src={item.src}
+        alt=""
+        width={item.slot.size}
+        height={item.slot.size}
+        className={styles.decorativeImage}
+        style={{
+          // CSS variables para posición / tamaño / rotación
+          ["--x" as any]: item.slot.x,
+          ["--y" as any]: item.slot.y,
+          ["--s" as any]: `${item.slot.size}px`,
+          ["--r" as any]: `${item.slot.rot}deg`,
+          ["--d" as any]: `${item.slot.dur}s`,
+        }}
+      />
+    ))}
+  </div>
+)}
+
+
       {/* Sección Superior */}
       <div className={styles.topSection}>
         <Container>
@@ -78,42 +156,42 @@ export default function Footer() {
               <Link href="/" className={styles.logo}>
                 <span className={styles.logoText}>Niñamar</span>
               </Link>
-              
+
               <p className={styles.brandDescription}>
-                Creando accesorios únicas y personalizadas que cuentan tu historia. 
+                Creando accesorios únicas y personalizadas que cuentan tu historia.
                 Cada pieza es una obra de arte hecha con amor y dedicación.
               </p>
 
               {/* Redes Sociales */}
               <div className={styles.socialLinks}>
-                <a 
-                  href="https://www.facebook.com/profile.php?id=61585522993204" 
-                  target="_blank" 
+                <a
+                  href="https://www.facebook.com/profile.php?id=61585522993204"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialLink}
                   aria-label="Facebook"
                 >
                   <Facebook className={styles.socialIcon} />
                 </a>
-                <a 
-                  href="https://www.instagram.com/ninamar_oficial/" 
-                  target="_blank" 
+                <a
+                  href="https://www.instagram.com/ninamar_oficial/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialLink}
                   aria-label="Instagram"
                 >
                   <Instagram className={styles.socialIcon} />
                 </a>
-                <a 
-                  href="https://twitter.com" 
-                  target="_blank" 
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialLink}
                   aria-label="Twitter"
                 >
                   <Twitter className={styles.socialIcon} />
                 </a>
-                <a 
+                <a
                   href="mailto:ninamar.oficial@gmail.com"
                   className={styles.socialLink}
                   aria-label="Email"
@@ -176,8 +254,10 @@ export default function Footer() {
             {/* Newsletter */}
             <div className={styles.newsletterSection}>
               <h4 className={styles.sectionTitle}>Newsletter</h4>
+              
               <p className={styles.newsletterText}>
                 Suscríbete para recibir ofertas exclusivas y novedades sobre nuestras colecciones.
+                
               </p>
               <form onSubmit={handleNewsletterSubmit} className={styles.newsletterForm}>
                 <input
@@ -189,23 +269,22 @@ export default function Footer() {
                   required
                   disabled={isSubmitting}
                 />
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className={styles.newsletterButton}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Enviando...' : 'Suscribirme ✨'}
+                  {isSubmitting ? 'Enviando...' : 'Suscribirme'}
                 </button>
               </form>
-              
+
               {message && (
-                <p className={`${styles.newsletterMessage} ${
-                  message.type === 'success' ? styles.messageSuccess : styles.messageError
-                }`}>
+                <p className={`${styles.newsletterMessage} ${message.type === 'success' ? styles.messageSuccess : styles.messageError
+                  }`}>
                   {message.text}
                 </p>
               )}
-              
+
               <p className={styles.privacyNote}>
                 Al suscribirte, aceptas nuestra{' '}
                 <Link href="/privacidad" className={styles.privacyLink}>
