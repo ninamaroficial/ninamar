@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderDetails, updateOrderStatus } from '@/lib/supabase/admin-orders'
+import { createShipment } from '@/lib/supabase/shipments'
 import { sendOrderStatusUpdateEmail } from '@/lib/email/resend'
 
+// ... resto del código sin cambios ...
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ orderId: string }> }
@@ -33,7 +35,8 @@ export async function PATCH(
 ) {
   try {
     const { orderId } = await params
-    const { status } = await request.json()
+    const body = await request.json()
+    const { status, shipmentData } = body
 
     if (!status) {
       return NextResponse.json(
@@ -63,7 +66,41 @@ export async function PATCH(
       )
     }
 
-    // Actualizar estado
+    // ✅ Si el estado es "shipped", validar y crear registro de envío
+    if (status === 'shipped') {
+      if (!shipmentData || !shipmentData.carrier || !shipmentData.tracking_number) {
+        return NextResponse.json(
+          { error: 'Información de envío incompleta. Se requiere proveedor y número de guía.' },
+          { status: 400 }
+        )
+      }
+
+      // Crear registro de envío
+      try {
+        await createShipment({
+          order_id: orderId,
+          carrier: shipmentData.carrier,
+          tracking_number: shipmentData.tracking_number,
+          shipping_date: shipmentData.shipping_date || new Date().toISOString(),
+          estimated_delivery_date: shipmentData.estimated_delivery_date || null,
+          notes: shipmentData.notes || null,
+        })
+
+        console.log('✅ Shipment record created:', {
+          orderId,
+          carrier: shipmentData.carrier,
+          tracking: shipmentData.tracking_number
+        })
+      } catch (shipmentError) {
+        console.error('Error creating shipment:', shipmentError)
+        return NextResponse.json(
+          { error: 'Error al registrar información de envío' },
+          { status: 500 }
+        )
+      }
+    }
+
+    // Actualizar estado de la orden
     const order = await updateOrderStatus(orderId, status)
 
     console.log('✅ Order status updated:', {
@@ -72,13 +109,14 @@ export async function PATCH(
       newStatus: status
     })
 
-    // 🆕 Enviar email de actualización de estado (solo para ciertos estados)
+    // Enviar email de actualización de estado
     if (status === 'processing' || status === 'shipped' || status === 'delivered') {
       sendOrderStatusUpdateEmail(
         currentOrder.order_number,
         currentOrder.customer_name,
         currentOrder.customer_email,
-        status as 'processing' | 'shipped' | 'delivered'
+        status as 'processing' | 'shipped' | 'delivered',
+        status === 'shipped' ? shipmentData : undefined
       ).catch(err => {
         console.error('Failed to send status update email:', err)
       })

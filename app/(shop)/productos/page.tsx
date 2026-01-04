@@ -28,17 +28,20 @@ export default async function ProductsPage({
 
   return (
     <div className={styles.page}>
-      {/* Hero Section - Más minimalista */}
-      <section className={styles.hero}>
-        <Container>
-          <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Colección</h1>
-            <p className={styles.heroSubtitle}>
-              accesorios únicos diseñados con amor
-            </p>
-          </div>
-        </Container>
-      </section>
+
+
+<section className={styles.hero}>
+  <Container>
+    <div className={styles.heroContent}>
+      <h1 className={styles.heroTitle}>Colección</h1>
+      <p className={styles.heroSubtitle}>
+        accesorios únicos diseñados con amor
+      </p>
+    </div>
+  </Container>
+</section>
+
+
 
       {/* Products Section */}
       <section className={styles.productsSection}>
@@ -62,7 +65,7 @@ export default async function ProductsPage({
 
               <div className={styles.resultsHeader}>
                 <h2 className={styles.resultsTitle}>
-                  {categorySlug 
+                  {categorySlug
                     ? categories.find(c => c.slug === categorySlug)?.name || 'Productos'
                     : 'Todos los productos'
                   }
@@ -83,7 +86,7 @@ export default async function ProductsPage({
                   <div className={styles.emptyContent}>
                     <h3 className={styles.emptyTitle}>No se encontraron productos</h3>
                     <p className={styles.emptyText}>
-                      {search 
+                      {search
                         ? `Intenta buscar algo diferente`
                         : 'Ajusta los filtros para ver más productos'
                       }

@@ -1,8 +1,7 @@
 "use client"
-
 import { useState } from 'react'
 import Container from '@/components/ui/Container'
-import { Search, Package, CheckCircle, Truck, Clock, MapPin, Mail, Phone } from 'lucide-react'
+import { Search, Package, CheckCircle, Truck, Clock, MapPin, Mail, Phone, ExternalLink } from 'lucide-react'
 import styles from './page.module.css'
 import Image from 'next/image'
 import { calculateShipping, FREE_SHIPPING_THRESHOLD } from '@/lib/shipping/rates'
@@ -15,6 +14,15 @@ interface OrderItem {
   unit_price: number
   total_price: number
   customization_details?: any
+}
+
+// ✅ Agregar interfaz de envío
+interface ShipmentInfo {
+  carrier: string
+  tracking_number: string
+  shipping_date: string
+  estimated_delivery_date?: string
+  notes?: string
 }
 
 interface OrderTracking {
@@ -37,6 +45,7 @@ interface OrderTracking {
   delivered_at?: string
   items: OrderItem[]
   items_count: number
+  shipment?: ShipmentInfo // ✅ Agregar información de envío
 }
 
 export default function SeguimientoPage() {
@@ -226,6 +235,48 @@ export default function SeguimientoPage() {
               <p>{statusInfo.description}</p>
             </div>
 
+            {/* ✅ Información de Envío (si existe) */}
+            {order.shipment && (order.status === 'shipped' || order.status === 'delivered') && (
+              <div className={styles.shipmentInfo}>
+                <div className={styles.shipmentHeader}>
+                  <Truck size={20} />
+                  <h3>Información de Envío</h3>
+                </div>
+                <div className={styles.shipmentDetails}>
+                  <div className={styles.shipmentRow}>
+                    <span className={styles.shipmentLabel}>Transportadora:</span>
+                    <span className={styles.shipmentValue}>{order.shipment.carrier}</span>
+                  </div>
+                  <div className={styles.shipmentRow}>
+                    <span className={styles.shipmentLabel}>Número de Guía:</span>
+                    <span className={styles.shipmentValue}>
+                      <strong>{order.shipment.tracking_number}</strong>
+                    </span>
+                  </div>
+                  <div className={styles.shipmentRow}>
+                    <span className={styles.shipmentLabel}>Fecha de Envío:</span>
+                    <span className={styles.shipmentValue}>
+                      {formatDate(order.shipment.shipping_date)}
+                    </span>
+                  </div>
+                  {order.shipment.estimated_delivery_date && (
+                    <div className={styles.shipmentRow}>
+                      <span className={styles.shipmentLabel}>Entrega Estimada:</span>
+                      <span className={styles.shipmentValue}>
+                        {formatDate(order.shipment.estimated_delivery_date)}
+                      </span>
+                    </div>
+                  )}
+                  {order.shipment.notes && (
+                    <div className={styles.shipmentNotes}>
+                      <span className={styles.shipmentLabel}>Notas:</span>
+                      <p>{order.shipment.notes}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Timeline */}
             <div className={styles.timeline}>
               <div className={`${styles.timelineStep} ${styles.active}`}>
@@ -265,6 +316,12 @@ export default function SeguimientoPage() {
                 <div className={styles.timelineContent}>
                   <p className={styles.timelineLabel}>Enviado</p>
                   <p className={styles.timelineDate}>{formatDate(order.shipped_at)}</p>
+                  {/* ✅ Mostrar guía en timeline */}
+                  {order.shipment && (
+                    <p className={styles.trackingNumber}>
+                      Guía: {order.shipment.tracking_number}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -285,7 +342,6 @@ export default function SeguimientoPage() {
                 <Package size={20} />
                 Productos Ordenados ({order.items_count})
               </h3>
-
               <div className={styles.itemsList}>
                 {order.items.map((item) => (
                   <div key={item.id} className={styles.orderItem}>
@@ -304,11 +360,8 @@ export default function SeguimientoPage() {
                         </div>
                       )}
                     </div>
-
                     <div className={styles.itemInfo}>
                       <h4 className={styles.itemName}>{item.product_name}</h4>
-
-                      {/* Customizations */}
                       {item.customization_details && Array.isArray(item.customization_details) && item.customization_details.length > 0 && (
                         <div className={styles.customizations}>
                           {item.customization_details.map((custom: any, idx: number) => (
@@ -323,7 +376,6 @@ export default function SeguimientoPage() {
                           ))}
                         </div>
                       )}
-
                       <div className={styles.itemPricing}>
                         <span className={styles.itemQuantity}>Cantidad: {item.quantity}</span>
                         <span className={styles.itemPrice}>
@@ -331,7 +383,6 @@ export default function SeguimientoPage() {
                         </span>
                       </div>
                     </div>
-
                     <div className={styles.itemTotal}>
                       {formatPrice(Number(item.total_price))}
                     </div>

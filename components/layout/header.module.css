@@ -1,4 +1,7 @@
-/* Promotional Banner */
+/* =========================================================
+   PROMOTIONAL BANNER
+========================================================= */
+
 .banner {
   background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
   padding: 0.75rem 1rem;
@@ -9,25 +12,20 @@
 
 /* Shimmer effect */
 .banner::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
+  inset: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shimmer 3s ease-in-out infinite;
   z-index: 0;
 }
 
 /* Diagonal stripes */
 .banner::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -45,21 +43,13 @@
 }
 
 @keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 @keyframes stripeMove {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(30px, 30px);
-  }
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(30px, 30px); }
 }
 
 .bannerContent {
@@ -74,58 +64,8 @@
 }
 
 @keyframes contentFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-}
-
-.bannerIcon {
-  color: #1f2937;
-  animation: iconSpin 4s linear infinite;
-}
-
-@keyframes iconSpin {
-  0%, 90%, 100% {
-    transform: rotate(0deg);
-  }
-  95% {
-    transform: rotate(15deg);
-  }
-}
-
-.bannerText {
-  font-size: 0.875rem;
-  color: #1f2937;
-  font-weight: 500;
-  margin: 0;
-}
-
-.bannerText strong {
-  font-weight: 700;
-  color: #0f172a;
-  animation: strongPulse 5s ease-in-out infinite;
-}
-
-@keyframes strongPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.bannerContent {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 }
 
 .bannerIcon {
@@ -134,12 +74,8 @@
 }
 
 @keyframes iconBounce {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-3px) rotate(5deg);
-  }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(5deg); }
 }
 
 .bannerText {
@@ -150,14 +86,14 @@
 }
 
 .bannerText strong {
-  font-weight: 700;
+  font-weight: 900;
   color: #0f172a;
   position: relative;
   display: inline-block;
 }
 
 .bannerText strong::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -168,45 +104,106 @@
 }
 
 @keyframes underlineSlide {
-  0%, 100% {
-    transform: scaleX(0.8);
-    opacity: 0.5;
+  0%, 100% { transform: scaleX(0.8); opacity: 0.5; }
+  50% { transform: scaleX(1); opacity: 1; }
+}
+
+/* =========================================================
+   PAGE TRANSITION (PRO)
+========================================================= */
+
+.pageTransition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 420ms cubic-bezier(.22, 1, .36, 1),
+    transform 420ms cubic-bezier(.22, 1, .36, 1);
+
+  background:
+    radial-gradient(800px 500px at 20% 20%, rgba(166, 232, 228, 0.75), transparent 70%),
+    radial-gradient(900px 600px at 80% 60%, rgba(255, 179, 249, 0.55), transparent 72%),
+    radial-gradient(320px 240px at 55% 35%, rgba(253, 255, 118, 0.55), transparent 70%),
+    rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(10px);
+}
+
+.pageTransitionEnter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pageTransitionExit {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* =========================================================
+   TOP LOADER (PROGRESS BAR)
+========================================================= */
+
+.topLoader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 10000;
+  pointer-events: none;
+
+  background: linear-gradient(90deg, #a6e8e4, #ffb3f9, #fdff76);
+  box-shadow: 0 0 18px rgba(255, 179, 249, 0.45);
+  opacity: 0;
+  transform: translateY(-2px);
+}
+
+.topLoaderOn {
+  opacity: 1;
+  transform: translateY(0);
+  animation: loaderRun 420ms cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+.topLoaderOff {
+  opacity: 1;
+  animation: loaderFinish 420ms cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+@keyframes loaderRun {
+  from { width: 0%; }
+  to { width: 70%; }
+}
+
+@keyframes loaderFinish {
+  0% { width: 70%; opacity: 1; }
+  60% { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .pageTransition,
+  .topLoader,
+  .banner::before,
+  .banner::after,
+  .bannerContent,
+  .bannerIcon,
+  .bannerText strong::after {
+    transition: none !important;
+    animation: none !important;
   }
-  50% {
-    transform: scaleX(1);
-    opacity: 1;
-  }
 }
 
-.bannerContent {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+/* =========================================================
+   MAIN HEADER
+========================================================= */
 
-.bannerIcon {
-  color: #1f2937;
-}
-
-.bannerText {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 500;
-  margin: 0;
-}
-
-.bannerText strong {
-  font-weight: 900;
-  color: #0f172a;
-}
-
-/* Main Header */
 .header {
-  background: white;
+  background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
@@ -214,7 +211,7 @@
   transition: all 0.3s ease;
 }
 
-.header.scrolled {
+.scrolled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid transparent;
 }
@@ -229,7 +226,10 @@
   gap: 2rem;
 }
 
-/* Logo */
+/* =========================================================
+   LOGO
+========================================================= */
+
 .logo {
   display: flex;
   align-items: center;
@@ -237,25 +237,11 @@
   text-decoration: none;
   transition: transform 0.3s ease;
   margin-bottom: -10px;
+  cursor: pointer;
 }
 
 .logo:hover {
   transform: scale(1.05);
-}
-
-.logoIcon {
-  font-size: 2rem;
-  line-height: 1;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
 }
 
 .logoText {
@@ -268,56 +254,78 @@
   background-clip: text;
 }
 
-/* Desktop Navigation */
+/* =========================================================
+   DESKTOP NAV
+========================================================= */
+
 .desktopNav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+/* buttons que se ven como links */
 .navLink {
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #4b5563;
-  text-decoration: none;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font: inherit;
+
   position: relative;
+  padding: 0.7rem 1.25rem;
+  border-radius: 0.75rem;
+
+  color: #4b5563;
+  font-weight: 600;
+
+  transition: background 220ms ease, color 220ms ease, transform 220ms ease;
 }
 
+/* underline pro */
 .navLink::after {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 60%;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
   height: 2px;
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
-  border-radius: 2px;
-  transition: transform 0.3s ease;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms cubic-bezier(.22, 1, .36, 1);
+
+  background: linear-gradient(90deg, #a6e8e4, #ffb3f9, #fdff76);
+  border-radius: 999px;
 }
 
 .navLink:hover {
   color: #1f2937;
-  background: rgba(166, 232, 228, 0.1);
+  background: rgba(166, 232, 228, 0.10);
+  transform: translateY(-1px);
 }
 
 .navLink:hover::after {
-  transform: translateX(-50%) scaleX(1);
+  transform: scaleX(1);
 }
 
-.navLink.active {
+/* Active (por pathname) */
+.active {
   color: #1f2937;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(166, 232, 228, 0.15),
+    rgba(141, 212, 207, 0.15)
+  );
 }
 
-.navLink.active::after {
-  transform: translateX(-50%) scaleX(1);
+.active::after {
+  transform: scaleX(1);
 }
 
-/* Actions */
+/* =========================================================
+   ACTIONS
+========================================================= */
+
 .actions {
   display: flex;
   align-items: center;
@@ -331,9 +339,11 @@
   justify-content: center;
   width: 48px;
   height: 48px;
+
   background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
   border: 2px solid #a6e8e4;
   border-radius: 50%;
+
   cursor: pointer;
   transition: all 0.3s ease;
   color: #1f2937;
@@ -349,28 +359,29 @@
   position: absolute;
   top: -4px;
   right: -4px;
+
   background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
+  color: #ffffff;
+
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 700;
+
   min-width: 20px;
   height: 20px;
   border-radius: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 0 5px;
-  border: 2px solid white;
+  border: 2px solid #ffffff;
   animation: bounce 0.5s ease;
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
 }
 
 .mobileMenuButton {
@@ -379,9 +390,11 @@
   justify-content: center;
   width: 48px;
   height: 48px;
+
   background: transparent;
   border: 2px solid #e5e7eb;
   border-radius: 0.75rem;
+
   cursor: pointer;
   transition: all 0.3s ease;
   color: #4b5563;
@@ -393,23 +406,30 @@
   color: #1f2937;
 }
 
-/* Mobile Menu */
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
 .mobileMenu {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
+
   width: 300px;
   max-width: 85vw;
-  background: white;
+
+  background: #ffffff;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+
   transform: translateX(100%);
   transition: transform 0.3s ease;
+
   z-index: 100;
   display: none;
 }
 
-.mobileMenu.open {
+.open {
   transform: translateX(0);
 }
 
@@ -421,13 +441,21 @@
   height: 100%;
 }
 
+/* buttons que se ven como links */
 .mobileMenuLink {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font: inherit;
+
   padding: 1rem 1.25rem;
   font-size: 1.0625rem;
   font-weight: 600;
   color: #4b5563;
-  text-decoration: none;
+
+  text-align: left;
   border-radius: 0.75rem;
+
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
@@ -438,7 +466,8 @@
   border-color: #a6e8e4;
 }
 
-.mobileMenuLink.active {
+.mobileMenuLink.active,
+.mobileMenuLink.active:hover {
   color: #1f2937;
   background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
   border-color: #a6e8e4;
@@ -448,17 +477,22 @@
 .mobileCartButton {
   margin-top: auto;
   padding: 1.25rem;
+
   background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
   color: #1f2937;
+
   border: none;
   border-radius: 0.75rem;
+
   font-weight: 700;
   font-size: 1.0625rem;
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+
   position: relative;
   transition: all 0.3s ease;
   font-family: var(--font-title);
@@ -473,19 +507,28 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+
   background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
+  color: #ffffff;
+
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 700;
+
   min-width: 20px;
   height: 20px;
   border-radius: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 0 5px;
-  border: 2px solid white;
+  border: 2px solid #ffffff;
 }
+
+/* =========================================================
+   OVERLAY
+========================================================= */
 
 .overlay {
   position: fixed;
@@ -498,68 +541,30 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Responsive */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
 @media (max-width: 1024px) {
-  .desktopNav {
-    display: none;
-  }
-
-  .mobileMenuButton {
-    display: flex;
-  }
-
-  .mobileMenu {
-    display: block;
-  }
-
-  .overlay {
-    display: block;
-  }
+  .desktopNav { display: none; }
+  .mobileMenuButton { display: flex; }
+  .mobileMenu { display: block; }
+  .overlay { display: block; }
 }
 
 @media (max-width: 768px) {
-  .headerContent {
-    padding: 0.875rem 1.25rem;
-  }
-
-  .logoText {
-    font-size: 1.5rem;
-  }
-
-  .logoIcon {
-    font-size: 1.75rem;
-  }
-
-  .bannerText {
-    font-size: 0.8125rem;
-    text-align: center;
-  }
-
-  .mobileMenu {
-    width: 100%;
-    max-width: 100%;
-  }
+  .headerContent { padding: 0.875rem 1.25rem; }
+  .logoText { font-size: 1.5rem; }
+  .bannerText { font-size: 0.8125rem; text-align: center; }
+  .mobileMenu { width: 100%; max-width: 100%; }
 }
 
 @media (max-width: 640px) {
-  .headerContent {
-    padding: 0.75rem 1rem;
-  }
-
-  .cartButton {
-    width: 44px;
-    height: 44px;
-  }
-
-  .bannerText {
-    font-size: 0.75rem;
-  }
+  .headerContent { padding: 0.75rem 1rem; }
+  .cartButton { width: 44px; height: 44px; }
+  .bannerText { font-size: 0.75rem; }
 }

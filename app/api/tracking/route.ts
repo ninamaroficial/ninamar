@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,13 +24,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
-
-    // Buscar orden por número y email
+    // Buscar orden con shipment info
     const { data: order, error } = await supabase
       .from('orders')
       .select(`
-        id,
         order_number,
         customer_name,
         customer_email,
@@ -37,38 +44,62 @@ export async function GET(request: NextRequest) {
         paid_at,
         processing_at,
         shipped_at,
-        delivered_at
+        delivered_at,
+        order_items (
+          id,
+          product_name,
+          product_image,
+          quantity,
+          unit_price,
+          total_price,
+          customization_details
+        ),
+        shipments (
+          carrier,
+          tracking_number,
+          shipping_date,
+          estimated_delivery_date,
+          notes
+        )
       `)
       .eq('order_number', orderNumber)
-      .ilike('customer_email', email)
+      .eq('customer_email', email)
       .single()
 
     if (error || !order) {
-      console.error('Tracking error:', error)
       return NextResponse.json(
-        { error: 'Orden no encontrada. Verifica el número de orden y email.' },
+        { error: 'Orden no encontrada' },
         { status: 404 }
       )
     }
 
-    // Obtener items de la orden
-    const { data: items, error: itemsError } = await supabase
-      .from('order_items')
-      .select('*')
-      .eq('order_id', order.id)
-
-    if (itemsError) {
-      console.error('Error fetching items:', itemsError)
+    // ✅ Formatear respuesta de forma limpia
+    const response = {
+      order_number: order.order_number,
+      customer_name: order.customer_name,
+      customer_email: order.customer_email,
+      customer_phone: order.customer_phone,
+      shipping_address: order.shipping_address,
+      shipping_city: order.shipping_city,
+      shipping_state: order.shipping_state,
+      subtotal: order.subtotal,
+      shipping_cost: order.shipping_cost,
+      total: order.total,
+      status: order.status,
+      payment_status: order.payment_status,
+      created_at: order.created_at,
+      paid_at: order.paid_at,
+      processing_at: order.processing_at,
+      shipped_at: order.shipped_at,
+      delivered_at: order.delivered_at,
+      items: order.order_items || [],
+      items_count: order.order_items?.length || 0,
+      shipment: order.shipments && order.shipments.length > 0 ? order.shipments[0] : null
     }
 
-    return NextResponse.json({
-      ...order,
-      items: items || [],
-      items_count: items?.length || 0
-    })
-
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Tracking error:', error)
+    console.error('Error fetching order tracking:', error)
     return NextResponse.json(
       { error: 'Error al buscar la orden' },
       { status: 500 }

@@ -4,32 +4,58 @@
   overflow-x: hidden; /* ← AGREGAR para prevenir scroll horizontal */
 }
 
-/* Hero Section */
+/* =========================================================
+   HERO
+========================================================= */
 .hero {
-  background: linear-gradient(180deg, #f8fafa 0%, #ffffff 100%);
+  position: relative;
   padding: 3.5rem 0 2.5rem;
-  text-align: center;
-  border-bottom: 1px solid #e2e8f0;
+  overflow: hidden;
+
+  /* Fondo integrado con tus colores */
+  background:
+    radial-gradient(circle at top left, #a6e8e4 0%, transparent 55%),
+    radial-gradient(circle at bottom right, #ffb3f9 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
 }
 
+/* Capa de contenido por encima de todo */
 .heroContent {
-  max-width: 800px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 720px;
   margin: 0 auto;
+
+  /* Fix: fuerza render nítido en móviles */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 .heroTitle {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 400;
-  color: #0f172a;
-  margin-bottom: 1.5rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #7e4603;
+  letter-spacing: -0.02em;
   font-family: var(--font-title);
-  letter-spacing: 0.02em;
+
+  /* Fix extra: evita “halo”/blur por composición */
+  position: relative;
+  z-index: 3;
 }
 
 .heroSubtitle {
-  font-size: 1.125rem;
-  color: #64748b;
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
+  color: #7e4603;
+  opacity: 0.8;
+  letter-spacing: 0.01em;
+
+  position: relative;
+  z-index: 3;
 }
+
 
 /* Story Section */
 .story {

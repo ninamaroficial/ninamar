@@ -98,6 +98,41 @@ export interface Database {
   }
 }
 
+export interface Shipment {
+  id: string
+  order_id: string
+  carrier: string
+  tracking_number: string
+  shipping_date: string
+  estimated_delivery_date?: string | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateShipmentData {
+  order_id: string
+  carrier: string
+  tracking_number: string
+  shipping_date?: string
+  estimated_delivery_date?: string | null
+  notes?: string | null
+}
+
+// Proveedores de envío comunes en Colombia
+export const SHIPPING_CARRIERS = [
+  'Servientrega',
+  'Coordinadora',
+  'Deprisa',
+  'Envía',
+  'InterRapidísimo',
+  'TCC',
+  'Mensajeros Urbanos',
+  '99 Minutos',
+  'Otro'
+] as const
+
+export type ShippingCarrier = typeof SHIPPING_CARRIERS[number]
 export type Product = Database['public']['Tables']['products']['Row']
 export type Category = Database['public']['Tables']['categories']['Row']
 export type ProductImage = Database['public']['Tables']['product_images']['Row']

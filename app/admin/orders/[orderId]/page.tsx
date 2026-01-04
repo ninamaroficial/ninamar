@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import ShipmentModal from '@/components/admin/ShipmentModal' // ← IMPORTAR
 import {
   ArrowLeft,
   Package,
@@ -66,7 +67,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
   const [isUpdating, setIsUpdating] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState('')
   const canUpdateStatus = order?.payment_status === 'approved'
-
+  const [isShipmentModalOpen, setIsShipmentModalOpen] = useState(false) // ← AGREGAR
+  const [pendingStatus, setPendingStatus] = useState<string | null>(null) 
+  
   useEffect(() => {
     loadOrder()
   }, [resolvedParams.orderId])
@@ -88,28 +91,41 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
     }
   }
 
-  const handleUpdateStatus = async () => {
-    if (!order || selectedStatus === order.status || !canUpdateStatus) return
+// ✅ Función actualizada para manejar actualización de estado
+const handleUpdateStatus = async () => {
+  if (!order || selectedStatus === order.status || !canUpdateStatus) return
 
-    setIsUpdating(true)
-    try {
-      const res = await fetch(`/api/admin/orders/${order.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: selectedStatus })
-      })
-
-      if (!res.ok) throw new Error('Update failed')
-
-      alert('Estado actualizado correctamente')
-      loadOrder()
-    } catch (error) {
-      console.error('Error updating status:', error)
-      alert('Error al actualizar el estado')
-    } finally {
-      setIsUpdating(false)
-    }
+  // ✅ Si es "shipped", abrir modal primero
+  if (selectedStatus === 'shipped') {
+    setPendingStatus(selectedStatus)
+    setIsShipmentModalOpen(true)
+    return
   }
+
+  // Para otros estados, actualizar directamente
+  setIsUpdating(true)
+  try {
+    const res = await fetch(`/api/admin/orders/${resolvedParams.orderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: selectedStatus })
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Update failed')
+    }
+
+    alert('Estado actualizado correctamente')
+    await loadOrder()
+  } catch (error: any) {
+    console.error('Error updating status:', error)
+    alert(error.message || 'Error al actualizar el estado')
+  } finally {
+    setIsUpdating(false)
+  }
+}
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -129,6 +145,88 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
       minute: '2-digit'
     })
   }
+
+  const handleStatusChange = async (newStatus: string) => {
+    // ✅ Si el estado es "shipped", abrir modal primero
+    if (newStatus === 'shipped') {
+      setPendingStatus(newStatus)
+      setIsShipmentModalOpen(true)
+      return
+    }
+
+    // Para otros estados, actualizar directamente
+    await updateStatus(newStatus, undefined)
+  }
+// ✅ Función para manejar envío del modal
+const handleShipmentSubmit = async (shipmentData: any) => {
+  if (!order || !pendingStatus) return
+
+  setIsUpdating(true)
+  try {
+    const res = await fetch(`/api/admin/orders/${resolvedParams.orderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        status: pendingStatus,
+        shipmentData: shipmentData
+      })
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Error al actualizar estado')
+    }
+
+    alert('Estado actualizado y envío registrado correctamente')
+    setIsShipmentModalOpen(false)
+    setPendingStatus(null)
+    await loadOrder()
+  } catch (error: any) {
+    console.error('Error updating status:', error)
+    alert(error.message || 'Error al actualizar el estado')
+  } finally {
+    setIsUpdating(false)
+  }
+}
+
+const updateStatus = async (newStatus: string, shipmentData?: any) => {
+  setIsUpdating(true) // ✅ Cambiar setIsUpdatingStatus -> setIsUpdating
+  // ❌ Remover setUpdateError (no existe en tu código)
+  
+  try {
+    const payload: any = { status: newStatus }
+    
+    if (shipmentData) {
+      payload.shipmentData = shipmentData
+    }
+
+    const response = await fetch(`/api/admin/orders/${resolvedParams.orderId}`, { // ✅ Cambiar params -> resolvedParams y usar paréntesis normales
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al actualizar estado')
+    }
+
+    // Actualizar estado local
+    setOrder(data)
+    setSelectedStatus(newStatus)
+    
+    alert('Estado actualizado correctamente') // ✅ Agregar feedback al usuario
+    await loadOrder() // ✅ Recargar datos
+    
+  } catch (error: any) {
+    console.error('Error updating status:', error)
+    alert(error.message || 'Error al actualizar el estado') // ✅ Mostrar error al usuario
+  } finally {
+    setIsUpdating(false)
+  }
+}
 
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { label: string; className: string; icon: any }> = {
@@ -556,6 +654,16 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
           </div>
         </div>
       </div>
+
+      <ShipmentModal
+        isOpen={isShipmentModalOpen}
+        onClose={() => {
+          setIsShipmentModalOpen(false)
+          setPendingStatus(null)
+        }}
+        onSubmit={handleShipmentSubmit}
+        orderNumber={order?.order_number || ''}
+      />
     </div>
   )
 }

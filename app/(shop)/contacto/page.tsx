@@ -18,16 +18,17 @@ export default function ContactoPage() {
   return (
     <div className={styles.page}>
       {/* Hero */}
-      <section className={styles.hero}>
-        <Container>
-          <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Contáctanos</h1>
-            <p className={styles.heroSubtitle}>
-              Estamos aquí para ayudarte a crear el accesorio perfecto
-            </p>
-          </div>
-        </Container>
-      </section>
+
+<section className={styles.hero}>
+  <Container>
+    <div className={styles.heroContent}>
+      <h1 className={styles.heroTitle}>Contáctanos</h1>
+      <p className={styles.heroSubtitle}>
+       Estamos aquí para ayudarte a crear el accesorio perfecto
+      </p>
+    </div>
+  </Container>
+</section>
 
       <Container>
         <div className={styles.content}>
