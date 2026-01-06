@@ -1,134 +1,181 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import styles from './ProductCarousel.module.css'
 
+// ✅ Actualizar la interfaz
 interface CarouselImage {
   url: string
   alt: string
 }
 
 interface ProductCarouselProps {
-  images: CarouselImage[]
+  images: CarouselImage[] // ← Cambiar de string[] a CarouselImage[]
   autoPlayInterval?: number
 }
 
 export default function ProductCarousel({ 
   images, 
-  autoPlayInterval = 4000 
+  autoPlayInterval = 5000 
 }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState<'left' | 'right'>('right')
+
+  const goToNext = useCallback(() => {
+    if (isTransitioning) return
+    setDirection('right')
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => (prev + 1) % images.length)
+  }, [images.length, isTransitioning])
+
+  const goToPrevious = useCallback(() => {
+    if (isTransitioning) return
+    setDirection('left')
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+  }, [images.length, isTransitioning])
+
+  const goToSlide = (index: number) => {
+    if (isTransitioning || index === currentIndex) return
+    setDirection(index > currentIndex ? 'right' : 'left')
+    setIsTransitioning(true)
+    setCurrentIndex(index)
+  }
 
   // Auto-play
   useEffect(() => {
-    if (!isHovered && images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % images.length)
-      }, autoPlayInterval)
+    if (!isAutoPlaying) return
 
-      return () => clearInterval(interval)
+    const interval = setInterval(goToNext, autoPlayInterval)
+    return () => clearInterval(interval)
+  }, [isAutoPlaying, autoPlayInterval, goToNext])
+
+  // Reset transition
+  useEffect(() => {
+    if (isTransitioning) {
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false)
+      }, 500)
+      return () => clearTimeout(timeout)
     }
-  }, [currentIndex, images.length, autoPlayInterval, isHovered])
+  }, [isTransitioning])
 
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length)
-  }
-
-  const goToPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
-  }
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index)
-  }
+  const handleMouseEnter = () => setIsAutoPlaying(false)
+  const handleMouseLeave = () => setIsAutoPlaying(true)
 
   return (
     <div 
       className={styles.carousel}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Main Image Display */}
+      {/* Main Image Container */}
       <div className={styles.imageContainer}>
-        {/* Background blur effect */}
-        <div className={styles.backgroundBlur}>
-          <Image
-            src={images[currentIndex].url}
-            alt={images[currentIndex].alt}
-            fill
-            className={styles.blurImage}
-            priority
-          />
-        </div>
-
-        {/* Main image */}
-        <div className={styles.mainImageWrapper}>
-          <Image
-            src={images[currentIndex].url}
-            alt={images[currentIndex].alt}
-            fill
-            className={styles.mainImage}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={currentIndex === 0}
-          />
-        </div>
-
-        {/* Floating decorations */}
-        <div className={styles.floatingOrb1}></div>
-        <div className={styles.floatingOrb2}></div>
-        <div className={styles.floatingOrb3}></div>
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`${styles.imageWrapper} ${
+              index === currentIndex ? styles.active : ''
+            } ${isTransitioning ? styles.transitioning : ''}`}
+            style={{
+              transform: `translateX(${(index - currentIndex) * 100}%)`,
+              opacity: index === currentIndex ? 1 : 0,
+            }}
+          >
+<Image
+  src={image.url}
+  alt={image.alt}
+  fill
+  className={styles.image}
+  sizes="100vw"
+  quality={100}
+  priority={index === 0}
+  unoptimized={true} // ← Desactivar optimización de Next.js
+/>
+            
+            {/* Gradient overlay */}
+            <div className={styles.imageOverlay}></div>
+          </div>
+        ))}
       </div>
 
       {/* Navigation Arrows */}
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={goToPrev}
-            className={`${styles.navButton} ${styles.navButtonPrev}`}
-            aria-label="Anterior"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          <button
-            onClick={goToNext}
-            className={`${styles.navButton} ${styles.navButtonNext}`}
-            aria-label="Siguiente"
-          >
-            <ChevronRight size={24} />
-          </button>
-        </>
-      )}
+      <button
+        onClick={goToPrevious}
+        className={`${styles.navButton} ${styles.navButtonLeft}`}
+        aria-label="Anterior"
+        disabled={isTransitioning}
+      >
+        <ChevronLeft size={24} />
+      </button>
+
+      <button
+        onClick={goToNext}
+        className={`${styles.navButton} ${styles.navButtonRight}`}
+        aria-label="Siguiente"
+        disabled={isTransitioning}
+      >
+        <ChevronRight size={24} />
+      </button>
 
       {/* Dots Indicator */}
-      {images.length > 1 && (
-        <div className={styles.dotsContainer}>
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`${styles.dot} ${
-                index === currentIndex ? styles.dotActive : ''
-              }`}
-              aria-label={`Ir a imagen ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+      <div className={styles.dotsContainer}>
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`${styles.dot} ${
+              index === currentIndex ? styles.dotActive : ''
+            }`}
+            aria-label={`Ir a imagen ${index + 1}`}
+          />
+        ))}
+      </div>
 
       {/* Progress Bar */}
-      {images.length > 1 && !isHovered && (
+      {isAutoPlaying && (
         <div className={styles.progressBar}>
-          <div 
+          <div
             className={styles.progressFill}
             style={{
-              animation: `progress ${autoPlayInterval}ms linear`,
+              animationDuration: `${autoPlayInterval}ms`,
             }}
           />
         </div>
       )}
+
+      {/* Counter */}
+      <div className={styles.counter}>
+        <span className={styles.counterCurrent}>{currentIndex + 1}</span>
+        <span className={styles.counterSeparator}>/</span>
+        <span className={styles.counterTotal}>{images.length}</span>
+      </div>
+
+      {/* Thumbnail Preview */}
+      <div className={styles.thumbnailsContainer}>
+        {images.map((image, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`${styles.thumbnail} ${
+              index === currentIndex ? styles.thumbnailActive : ''
+            }`}
+          >
+<Image
+  src={image.url}
+  alt={image.alt}
+  fill
+  className={styles.thumbnailImage}
+  sizes="80px"
+  quality={90} // ← Agregar calidad
+/>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

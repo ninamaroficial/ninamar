@@ -1,11 +1,11 @@
 import Container from "@/components/ui/Container"
 import Button from "@/components/ui/Button"
 import Link from "next/link"
-import Image from "next/image"
 import { Sparkles, Package, Truck, Shield, ArrowRight, Star } from "lucide-react"
 import styles from "./page.module.css"
 import type { Metadata } from 'next'
 import ProductCarousel from "@/components/home/ProductCarousel"
+import { carouselImages, carouselConfig } from '@/lib/carousel-config'
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
@@ -51,128 +51,71 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-  // Array de imágenes para el carrusel
-  const carouselImages = [
-    {
-      url: 'https://xxzksnruxbaqemtebgln.supabase.co/storage/v1/object/public/product_images/Bananita/Bananita-1.png',
-      alt: 'Bananita - Accesorios personalizados'
-    },
-    {
-      url: 'https://xxzksnruxbaqemtebgln.supabase.co/storage/v1/object/public/product_images/Rainbow/Rainbow-1.png',
-      alt: 'Rainbow - Accesorios personalizados'
-    }
-  ]
-  
   return (
     <div className={styles.page}>
       {/* Hero Section */}
       <section className={styles.hero}>
-        <div className={styles.heroBackground}>
-          <div className={styles.gradientOrb1}></div>
-          <div className={styles.gradientOrb2}></div>
-          <div className={styles.gradientOrb3}></div>
+        {/* Carrusel a pantalla completa */}
+        <div className={styles.heroCarousel}>
+          <ProductCarousel 
+            images={carouselImages} 
+            autoPlayInterval={carouselConfig.autoPlayInterval} 
+          />
+          
+          {/* Overlay con gradiente sutil */}
+          <div className={styles.heroOverlay}></div>
         </div>
         
+        {/* Content flotante sobre el carrusel */}
         <Container>
           <div className={styles.heroContent}>
-            <div className={styles.heroText}>
-              <span className={styles.badge}>
-                <Sparkles size={16} />
-                Accesorios Artesanales
-              </span>
-              <h1 className={styles.heroTitle}>
-                Diseña Tu Accesorio
-                <span className={styles.heroTitleGradient}> Perfecto</span>
-              </h1>
-              <p className={styles.heroSubtitle}>
-                Crea piezas únicas que cuenten tu historia. Personaliza cada detalle: 
-                colores, acabados y grabados exclusivos.
-              </p>
-              <div className={styles.heroButtons}>
-                <Link href="/productos">
-                  <Button size="lg" className={styles.primaryButton}>
-                    Comenzar a Diseñar
-                    <ArrowRight size={20} />
-                  </Button>
-                </Link>
-                <Link href="/seguimiento">
-                  <Button variant="outline" size="lg" className={styles.secondaryButton}>
-                    Rastrear Pedido
-                  </Button>
-                </Link>
+            {/* Logo o título minimalista */}
+            <div className={styles.heroTitle}>
+              <h1>Niñamar</h1>
+              <p>Accesorios Personalizados</p>
+            </div>
+            
+            {/* Stats minimalistas */}
+            <div className={styles.heroStats}>
+              <Link
+                href="https://share.google/Pdv59OhmhXXC719Ge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.stat}
+              >
+                <Star size={18} fill="currentColor" />
+                <span>5.0 Google Reviews</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M10 1L2 9M10 1H3M10 1V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              
+              <div className={styles.stat}>
+                <Package size={18} />
+                <span>1000+ Piezas Creadas</span>
               </div>
               
-              {/* Stats */}
-              <div className={styles.stats}>
-                {/* STAT CON LINK A GOOGLE REVIEWS */}
-                <Link
-                  href="https://share.google/Pdv59OhmhXXC719Ge"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.statLink}
-                >
-                  <Star className={styles.statIcon} size={20} />
-                  <div className={styles.statContent}>
-                    <span className={styles.statNumber}>5.0</span>
-                    <span className={styles.statLabel}>
-                      Google Reviews
-                      <svg
-                        width="10"
-                        height="10"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        style={{ marginLeft: '4px', display: 'inline-block', verticalAlign: 'middle' }}
-                      >
-                        <path
-                          d="M10 1L2 9M10 1H3M10 1V8"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                </Link>
-                
-                <div className={styles.stat}>
-                  <Package className={styles.statIcon} size={20} />
-                  <div className={styles.statContent}>
-                    <span className={styles.statNumber}>1000+</span>
-                    <span className={styles.statLabel}>Accesorios Creados</span>
-                  </div>
-                </div>
-                
-                <div className={styles.stat}>
-                  <Truck className={styles.statIcon} size={20} />
-                  <div className={styles.statContent}>
-                    <span className={styles.statNumber}>Envío</span>
-                    <span className={styles.statLabel}>A Todo Colombia</span>
-                  </div>
-                </div>
+              <div className={styles.stat}>
+                <Truck size={18} />
+                <span>Envío Nacional</span>
               </div>
             </div>
             
-            <div className={styles.heroImage}>
-              <div className={styles.imageWrapper}>
-                <div className={styles.floatingCard}>
-                  <div className={styles.cardIcon}>
-                    <Sparkles size={24} />
-                  </div>
-                  <div className={styles.cardContent}>
-                    <p className={styles.cardTitle}>100% Personalizable</p>
-                    <p className={styles.cardText}>Diseña a tu gusto</p>
-                  </div>
-                </div>
-                
-                {/* Carrusel de productos */}
-                <div className={styles.productShowcase}>
-                  <ProductCarousel images={carouselImages} autoPlayInterval={5000} />
-                </div>
-              </div>
-            </div>
+            {/* CTA Button */}
+            <Link href="/productos" className={styles.ctaButton}>
+              <span>Explorar Colección</span>
+              <ArrowRight size={20} />
+            </Link>
           </div>
         </Container>
+        
+        {/* Scroll indicator */}
+        <div className={styles.scrollIndicator}>
+          <div className={styles.scrollMouse}>
+            <div className={styles.scrollWheel}></div>
+          </div>
+          <span>Desliza para ver más</span>
+        </div>
       </section>
 
       {/* Features Section */}
@@ -222,7 +165,7 @@ export default function Home() {
               Crea tu accesorio perfecto en 3 simples pasos
             </p>
           </div>
-
+          
           <div className={styles.steps}>
             <div className={styles.step}>
               <div className={styles.stepNumber}>
