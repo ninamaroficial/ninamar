@@ -109,13 +109,6 @@ export default function Home() {
           </div>
         </Container>
         
-        {/* Scroll indicator */}
-        <div className={styles.scrollIndicator}>
-          <div className={styles.scrollMouse}>
-            <div className={styles.scrollWheel}></div>
-          </div>
-          <span>Desliza para ver más</span>
-        </div>
       </section>
 
       {/* Features Section */}

@@ -17,7 +17,8 @@
 .imageWrapper {
   position: absolute;
   inset: 0;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* ← Transición más suave */
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 6% 10%;
 }
 
 .imageWrapper.active {
@@ -212,7 +213,20 @@
   }
 
   .dotsContainer {
-    bottom: 120px;
+    bottom: 100px;
+  }
+
+  .imageWrapper {
+    padding: 2% 0; /* ← Sin padding horizontal para verticales */
+  }
+
+  .image {
+    object-fit: cover; /* ← Cambiar a cover para verticales */
+    object-position: center;
+  }
+
+  .dotsContainer {
+    bottom: 150px;
   }
 }
 
@@ -228,5 +242,13 @@
 
   .dotsContainer {
     bottom: 100px;
+  }
+
+  .imageWrapper {
+    padding: 1% 0;
+  }
+
+  .dotsContainer {
+    bottom: 130px;
   }
 }

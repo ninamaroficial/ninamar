@@ -5,14 +5,16 @@ import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import styles from './ProductCarousel.module.css'
 
-// ✅ Actualizar la interfaz
+// ✅ Interfaz actualizada con soporte móvil
 interface CarouselImage {
   url: string
+  urlMobile?: string // ← Nueva propiedad para imágenes móviles
   alt: string
+  title?: string
 }
 
 interface ProductCarouselProps {
-  images: CarouselImage[] // ← Cambiar de string[] a CarouselImage[]
+  images: CarouselImage[]
   autoPlayInterval?: number
 }
 
@@ -24,6 +26,19 @@ export default function ProductCarousel({
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [direction, setDirection] = useState<'left' | 'right'>('right')
+  const [isMobile, setIsMobile] = useState(false) // ✅ Estado para detectar móvil
+
+  // ✅ Detectar si es móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const goToNext = useCallback(() => {
     if (isTransitioning) return
@@ -64,14 +79,15 @@ export default function ProductCarousel({
     }
   }, [isTransitioning])
 
-  const handleMouseEnter = () => setIsAutoPlaying(false)
-  const handleMouseLeave = () => setIsAutoPlaying(true)
+  // ✅ Función para obtener la URL correcta según el dispositivo
+  const getImageUrl = (image: CarouselImage) => {
+    return isMobile && image.urlMobile ? image.urlMobile : image.url
+  }
+
 
   return (
     <div 
       className={styles.carousel}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Main Image Container */}
       <div className={styles.imageContainer}>
@@ -86,42 +102,23 @@ export default function ProductCarousel({
               opacity: index === currentIndex ? 1 : 0,
             }}
           >
-<Image
-  src={image.url}
-  alt={image.alt}
-  fill
-  className={styles.image}
-  sizes="100vw"
-  quality={100}
-  priority={index === 0}
-  unoptimized={true} // ← Desactivar optimización de Next.js
-/>
+            {/* ✅ Usar la URL correcta según el dispositivo */}
+            <Image
+              src={getImageUrl(image)}
+              alt={image.alt}
+              fill
+              className={styles.image}
+              sizes="100vw"
+              quality={75}
+              priority={index === 0}
+              unoptimized={true}
+            />
             
             {/* Gradient overlay */}
             <div className={styles.imageOverlay}></div>
           </div>
         ))}
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={goToPrevious}
-        className={`${styles.navButton} ${styles.navButtonLeft}`}
-        aria-label="Anterior"
-        disabled={isTransitioning}
-      >
-        <ChevronLeft size={24} />
-      </button>
-
-      <button
-        onClick={goToNext}
-        className={`${styles.navButton} ${styles.navButtonRight}`}
-        aria-label="Siguiente"
-        disabled={isTransitioning}
-      >
-        <ChevronRight size={24} />
-      </button>
-
       {/* Dots Indicator */}
       <div className={styles.dotsContainer}>
         {images.map((_, index) => (
@@ -155,7 +152,7 @@ export default function ProductCarousel({
         <span className={styles.counterTotal}>{images.length}</span>
       </div>
 
-      {/* Thumbnail Preview */}
+      {/* Thumbnail Preview (oculto en móvil) */}
       <div className={styles.thumbnailsContainer}>
         {images.map((image, index) => (
           <button
@@ -165,14 +162,15 @@ export default function ProductCarousel({
               index === currentIndex ? styles.thumbnailActive : ''
             }`}
           >
-<Image
-  src={image.url}
-  alt={image.alt}
-  fill
-  className={styles.thumbnailImage}
-  sizes="80px"
-  quality={90} // ← Agregar calidad
-/>
+            {/* ✅ Usar la URL correcta para thumbnails también */}
+            <Image
+              src={getImageUrl(image)}
+              alt={image.alt}
+              fill
+              className={styles.thumbnailImage}
+              sizes="80px"
+              quality={75}
+            />
           </button>
         ))}
       </div>

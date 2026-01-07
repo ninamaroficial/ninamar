@@ -1,5 +1,6 @@
 export interface CarouselImage {
   url: string
+  urlMobile?: string // ← Agregar URL para móvil
   alt: string
   title?: string
 }
@@ -8,11 +9,13 @@ export interface CarouselImage {
 export const carouselImages: CarouselImage[] = [
   {
     url: '/carousel/imagen-1.jpg',
+    urlMobile: '/carousel/mobile/imagen-mobile-1.jpg', // ← Versión vertical
     alt: 'Aretes arcoíris',
     title: 'Aretes aretesanales con forma de arcoíris'
   },
   {
     url: '/carousel/imagen-2.jpg',
+    urlMobile: '/carousel/mobile/imagen-mobile-2.jpg',
     alt: 'Aretes bananita',
     title: 'Aretes artesanales con forma de banana'
   },
