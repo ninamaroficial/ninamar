@@ -242,118 +242,98 @@
 /* ============================= */
 /* RESPONSIVE */
 /* ============================= */
-@media (max-width: 1024px) {
-  .heroContent {
-    grid-template-columns: 1fr;
-    gap: 60px;
-    text-align: center;
-  }
-  
-  .heroText {
-    max-width: 100%;
-  }
-  
-  .badgeWrapper {
-    justify-content: center;
-  }
-  
-  .heroButtons {
-    justify-content: center;
-  }
-  
-  .features {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats {
-    justify-content: center;
-  }
-  
-  .carouselContainer {
-    max-width: 500px;
-  }
-  
-  .floatingCard {
-    display: none;
-  }
-}
-
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
-    padding: 80px 0 60px;
-  }
-  
-  .heroTitle {
-    margin-bottom: 20px;
-    font-size: 2.25rem;
+    min-height: 100vh;
+    height: 100svh;
   }
 
+  /* ✅ Ajustar posición del content para que no se tape con header */
+  .heroContent {
+    bottom: auto; /* ← Cambiar de bottom a auto */
+    top: 50%; /* ← Centrar verticalmente */
+    transform: translateY(-50%); /* ← Centrar perfectamente */
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  /* ✅ Reducir tamaño del título */
+  .heroTitle h1 {
+    font-size: 2.5rem;
+    margin-bottom: 6px;
+  }
+
+  .heroTitle p {
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ✅ Ajustar stats */
   .heroStats {
-        margin-bottom: 50px;
-  }
-  
-  .heroSubtitle {
-    font-size: 1rem;
-  }
-  
-  .heroButtons {
     flex-direction: column;
     width: 100%;
+    max-width: 300px;
+    gap: 10px;
+    margin-top: 16px;
+    margin-bottom: 16px;
   }
-  
-  .primaryButton,
-  .secondaryButton {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  
-  .features {
-    padding: 20px;
-    gap: 16px;
-  }
-  
-  .stats {
-    flex-direction: column;
+
+  .stat {
     width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 0.875rem;
   }
-  
-  .stat,
-  .statLink {
-    width: 100%;
-  }
-  
-  .carouselContainer {
-    max-width: 100%;
-  }
-  
-  .decorativeCircle1,
-  .decorativeCircle2 {
-    display: none;
+
+  /* ✅ Ajustar botón CTA */
+  .ctaButton {
+    padding: 14px 32px;
+    font-size: 0.9375rem;
+    margin-bottom: 0; /* ← Quitar margin-bottom */
   }
 }
 
 @media (max-width: 480px) {
-  .heroTitle {
-    font-size: 1.875rem;
-  }
-  
+  /* ✅ Ajustar aún más para pantallas muy pequeñas */
   .heroContent {
-    gap: 40px;
+    gap: 16px;
+    padding: 0 16px;
   }
-  
-  .newBadge {
-    font-size: 0.6875rem;
-    padding: 4px 10px;
+
+  .heroTitle h1 {
+    font-size: 2rem;
+    margin-bottom: 4px;
   }
-  
-  .features {
-    padding: 16px;
+
+  .heroTitle p {
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
   }
-  
-  .feature {
-    flex-direction: column;
-    text-align: center;
+
+  .heroStats {
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  .stat {
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+  }
+
+  .ctaButton {
+    padding: 12px 28px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .heroContent {
+    /* Mantener centrado en touch devices */
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 /* ============================= */

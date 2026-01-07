@@ -241,14 +241,11 @@
   }
 
   .dotsContainer {
-    bottom: 100px;
+    bottom: 150px;
   }
 
   .imageWrapper {
     padding: 1% 0;
   }
 
-  .dotsContainer {
-    bottom: 130px;
-  }
 }
