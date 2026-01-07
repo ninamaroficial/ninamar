@@ -539,7 +539,7 @@
 @media (max-width: 768px) {
   /* Hero */
   .hero {
-    min-height: 100vh;
+    min-height: 90vh;
     height: 100dvh;
   }
 
@@ -551,6 +551,7 @@
     transform: translateY(-50%);
     gap: 18px;
     padding: 0 20px;
+    margin-top: -80px;
   }
 
   .heroTitle h1 {
