@@ -539,8 +539,8 @@
 @media (max-width: 768px) {
   /* Hero */
   .hero {
-    min-height: 90vh;
-    height: 100dvh;
+    min-height: 70vh;
+    height: 70dvh;
   }
 
   .heroContent {
