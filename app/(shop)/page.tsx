@@ -72,34 +72,9 @@ export default function Home() {
             {/* Logo o título minimalista */}
             <div className={styles.heroTitle}>
               <h1>Niñamar</h1>
-              <p>Accesorios Personalizados</p>
+              <p>Accesorios Creativos y coloridos hechos a mano</p>
             </div>
             
-            {/* Stats minimalistas */}
-            <div className={styles.heroStats}>
-              <Link
-                href="https://share.google/Pdv59OhmhXXC719Ge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.stat}
-              >
-                <Star size={18} fill="currentColor" />
-                <span>5.0 Google Reviews</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M10 1L2 9M10 1H3M10 1V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              
-              <div className={styles.stat}>
-                <Package size={18} />
-                <span>1000+ Piezas Creadas</span>
-              </div>
-              
-              <div className={styles.stat}>
-                <Truck size={18} />
-                <span>Envío Nacional</span>
-              </div>
-            </div>
             
             {/* CTA Button */}
             <Link href="/productos" className={styles.ctaButton}>

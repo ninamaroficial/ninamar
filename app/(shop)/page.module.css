@@ -69,7 +69,7 @@
 }
 
 .heroTitle p {
-  font-size: 1.125rem;
+  font-size: 1.525rem;
   font-weight: 300;
   margin: 0;
   letter-spacing: 0.15em;
@@ -145,10 +145,27 @@
 /* ============================= */
 .features {
   padding: 6rem 0;
-  background: white;
+  position: relative;
+  background-color: #f8fafa;
+  background-image: url("/hero/texture2.png");
+  background-repeat: repeat;
+  background-size: 1920px 1080px; /* ← Ajusta el tamaño de la textura */
+  overflow: hidden;
 }
 
+/* Overlay con gradiente para más profundidad */
+.features::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+}
+
+/* Asegurar que el contenido esté encima */
 .featuresGrid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 3rem;

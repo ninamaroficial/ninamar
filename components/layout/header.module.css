@@ -3,7 +3,7 @@
 ========================================================= */
 
 .banner {
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
+  background: linear-gradient(135deg, #ffb3f9 0%, #f897f0 100%);
   padding: 0.75rem 1rem;
   text-align: center;
   position: relative;
@@ -203,7 +203,7 @@
 ========================================================= */
 
 .header {
-  background: #ffffff;
+  background: #ffdb31;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
@@ -275,7 +275,7 @@
   padding: 0.7rem 1.25rem;
   border-radius: 0.75rem;
 
-  color: #4b5563;
+  color: #8e4603;
   font-weight: 600;
 
   transition: background 220ms ease, color 220ms ease, transform 220ms ease;
@@ -294,13 +294,12 @@
   transform-origin: left;
   transition: transform 220ms cubic-bezier(.22, 1, .36, 1);
 
-  background: linear-gradient(90deg, #a6e8e4, #ffb3f9, #fdff76);
   border-radius: 999px;
 }
 
 .navLink:hover {
-  color: #1f2937;
-  background: rgba(166, 232, 228, 0.10);
+  color: #7e4603;
+  background: #7e49081a;
   transform: translateY(-1px);
 }
 
@@ -310,12 +309,8 @@
 
 /* Active (por pathname) */
 .active {
-  color: #1f2937;
-  background: linear-gradient(
-    135deg,
-    rgba(166, 232, 228, 0.15),
-    rgba(141, 212, 207, 0.15)
-  );
+  color: #7e4603;
+  background: #fdf25bc0;
 }
 
 .active::after {
@@ -340,19 +335,39 @@
   width: 48px;
   height: 48px;
 
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
-  border: 2px solid #a6e8e4;
+  background: #fdde52c7;
+  border: 2px solid #ffe87f;
   border-radius: 50%;
 
   cursor: pointer;
   transition: all 0.3s ease;
   color: #1f2937;
 }
+.cartButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+
+  border: 2px solid #7e4603;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cartIcon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
 
 .cartButton:hover {
   transform: scale(1.05);
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
-  box-shadow: 0 4px 12px rgba(166, 232, 228, 0.4);
+  background: linear-gradient(135deg, #ffe87f, #ffe87f);
+  box-shadow: 0 4px 12px rgba(225, 232, 166, 0.4);
 }
 
 .cartBadge {
@@ -567,4 +582,7 @@
   .headerContent { padding: 0.75rem 1rem; }
   .cartButton { width: 44px; height: 44px; }
   .bannerText { font-size: 0.75rem; }
+    .cartButton {
+    display: none;
+  }
 }

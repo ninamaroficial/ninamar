@@ -106,7 +106,7 @@ export default function Header() {
           >
             <div className={styles.logoImage}>
               <Image
-                src="/images/gif-logo3.gif"
+                src="/logo.png"
                 alt="Niñamar"
                 width={80}
                 height={80}
@@ -135,17 +135,23 @@ export default function Header() {
 
           {/* Right Icons */}
           <div className={styles.actions}>
-            <button
-              onClick={openCart}
-              className={styles.cartButton}
-              aria-label="Carrito de compras"
-              type="button"
-            >
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className={styles.cartBadge}>{totalItems}</span>
-              )}
-            </button>
+          <button
+            onClick={openCart}
+            className={styles.cartButton}
+            aria-label="Carrito de compras"
+            type="button"
+          >
+            <img
+              src="/header/carrito2.png"
+              alt=""
+              className={styles.cartIcon}
+              aria-hidden="true"
+            />
+
+            {totalItems > 0 && (
+              <span className={styles.cartBadge}>{totalItems}</span>
+            )}
+          </button>
 
             {/* Mobile menu button */}
             <button
