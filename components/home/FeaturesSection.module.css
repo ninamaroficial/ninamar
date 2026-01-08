@@ -1,0 +1,514 @@
+/* ============================= */
+/* FEATURES SECTION - PARALLAX VERSION */
+/* ============================= */
+.features {
+  padding: 6rem 0;
+  position: relative;
+  background: linear-gradient(180deg, #f8fafa 0%, #fef5ff 100%);
+  overflow: hidden;
+}
+
+/* Textura de fondo */
+.features::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/hero/texture2.png");
+  background-repeat: repeat;
+  background-size: 1920px 1080px;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Elementos decorativos animados de fondo */
+.backgroundDecor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decorCircle1 {
+  position: absolute;
+  top: 10%;
+  right: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 179, 249, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatSlow 20s ease-in-out infinite;
+}
+
+.decorCircle2 {
+  position: absolute;
+  bottom: 20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 219, 49, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatSlow 25s ease-in-out infinite reverse;
+}
+
+.decorCircle3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 179, 249, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulse 15s ease-in-out infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.featuresGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Wrapper para cada feature con animación parallax */
+.featureWrapper {
+  position: relative;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Animaciones de entrada desde los lados */
+.featureWrapper.from-left {
+  transform: translateX(-100px) translateY(30px);
+}
+
+.featureWrapper.from-right {
+  transform: translateX(100px) translateY(30px);
+}
+
+.featureWrapper.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+.feature {
+  position: relative;
+  text-align: center;
+  padding: 0;
+  border-radius: 1.5rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 179, 249, 0.3);
+  background: white;
+  overflow: visible;
+  height: 100%;
+}
+
+.feature:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 179, 249, 0.3);
+  border-color: rgba(255, 179, 249, 0.6);
+}
+
+/* Fondo de la card */
+.featureBackground {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.feature:hover .featureBackground {
+  transform: scale(1.05);
+}
+
+.featureBackgroundOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.featureContent {
+  position: relative;
+  z-index: 2;
+  padding: 2.5rem 1.75rem;
+}
+
+/* Wrapper de la imagen - MÁS GRANDE */
+.featureImageWrapper {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 0 auto 1.75rem;
+}
+
+.featureImageContainer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animación de flotación constante */
+  animation: floatImage 4s ease-in-out infinite;
+}
+
+.feature:hover .featureImageContainer {
+  transform: translateY(-12px) rotate(-5deg) scale(1.08);
+  box-shadow: 0 20px 45px rgba(255, 179, 249, 0.55);
+  animation-play-state: paused;
+}
+
+/* Animación de flotación para las imágenes */
+@keyframes floatImage {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-10px) rotate(-2deg);
+  }
+}
+
+/* Diferentes delays para cada card */
+.featureWrapper:nth-child(1) .featureImageContainer {
+  animation-delay: 0s;
+}
+
+.featureWrapper:nth-child(2) .featureImageContainer {
+  animation-delay: 0.5s;
+}
+
+.featureWrapper:nth-child(3) .featureImageContainer {
+  animation-delay: 1s;
+}
+
+.featureImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1.1) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  /* Rotación sutil constante */
+  animation: rotateSubtle 6s ease-in-out infinite;
+}
+
+.feature:hover .featureImage {
+  transform: scale(1.15) rotate(8deg);
+  filter: brightness(1.15) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.15));
+  animation-play-state: paused;
+}
+
+@keyframes rotateSubtle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+/* Glow animado detrás de la imagen - SIEMPRE VISIBLE Y ANIMADO */
+.featureImageGlow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(255, 179, 249, 0.5) 0%, rgba(255, 179, 249, 0.2) 50%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.7;
+  z-index: 1;
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.feature:hover .featureImageGlow {
+  opacity: 1;
+  animation: pulseGlowFast 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.9;
+  }
+}
+
+@keyframes pulseGlowFast {
+  0%, 100% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.featureTitle {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #8e4603;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-title);
+  transition: all 0.3s ease;
+}
+
+.feature:hover .featureTitle {
+  color: #b35804;
+  transform: translateY(-2px);
+}
+
+.featureText {
+  font-size: 0.9375rem;
+  color: #64493b;
+  line-height: 1.7;
+  transition: color 0.3s ease;
+}
+
+.feature:hover .featureText {
+  color: #8e4603;
+}
+
+/* Decoración inferior con puntos - ANIMADOS CONSTANTEMENTE */
+.featureDecoration {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+.featureDecoration span {
+  width: 7px;
+  height: 7px;
+  background: #ffb3f9;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  animation: dotBounce 2s ease-in-out infinite;
+}
+
+.featureDecoration span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.featureDecoration span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.featureDecoration span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.2);
+  }
+}
+
+.feature:hover .featureDecoration span {
+  background: #ff8bf5;
+}
+
+.feature:hover .featureDecoration span:nth-child(1) {
+  transform: translateX(-8px) scale(1.3);
+}
+
+.feature:hover .featureDecoration span:nth-child(2) {
+  transform: scale(1.4);
+}
+
+.feature:hover .featureDecoration span:nth-child(3) {
+  transform: translateX(8px) scale(1.3);
+}
+
+/* Efecto de brillo que sigue el mouse */
+.featureShine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: 1.5rem;
+}
+
+.feature:hover .featureShine {
+  opacity: 1;
+}
+
+/* Efecto de borde animado - SIEMPRE ANIMADO */
+.feature::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #ffb3f9, #ff8bf5, #ffdb31, #ffb3f9);
+  background-size: 300% 300%;
+  border-radius: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: gradientShift 4s ease infinite;
+  z-index: -1;
+}
+
+.feature:hover::before {
+  opacity: 1;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE - TABLETS */
+/* ============================= */
+@media (max-width: 1024px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    max-width: 550px;
+  }
+
+  .featureWrapper.from-left,
+  .featureWrapper.from-right {
+    transform: translateY(30px);
+  }
+
+  .featureContent {
+    padding: 2.5rem 2rem;
+  }
+
+  .featureImageWrapper {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* ============================= */
+/* RESPONSIVE - MOBILE */
+/* ============================= */
+@media (max-width: 768px) {
+  .features {
+    padding: 4rem 0;
+  }
+
+  .featuresGrid {
+    gap: 2rem;
+    max-width: 100%;
+  }
+
+  /* IMÁGENES MÁS GRANDES EN MÓVIL */
+  .featureImageWrapper {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1.5rem;
+  }
+
+  .featureImageContainer {
+    padding: 18px;
+  }
+
+  .featureTitle {
+    font-size: 1.375rem;
+  }
+
+  .featureText {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .featureContent {
+    padding: 2.25rem 1.75rem;
+  }
+
+  .decorCircle1,
+  .decorCircle2,
+  .decorCircle3 {
+    display: none;
+  }
+}
+
+/* MÓVILES PEQUEÑOS - IMÁGENES AÚN MÁS GRANDES */
+@media (max-width: 480px) {
+  .featureImageWrapper {
+    width: 130px;
+    height: 130px;
+  }
+
+  .featureImageContainer {
+    padding: 16px;
+  }
+
+  .featureContent {
+    padding: 2rem 1.5rem;
+  }
+
+  .featureTitle {
+    font-size: 1.3rem;
+  }
+
+  .featureText {
+    font-size: 0.9375rem;
+  }
+}
+
+/* MÓVILES MUY PEQUEÑOS */
+@media (max-width: 375px) {
+  .featureImageWrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .featureContent {
+    padding: 1.75rem 1.25rem;
+  }
+}
