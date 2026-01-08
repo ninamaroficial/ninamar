@@ -111,7 +111,7 @@
   top: 0;
   width: 1.75rem;
   height: 1.75rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #1f2937;
   border-radius: 50%;
   display: flex;
@@ -140,7 +140,7 @@
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #1f2937;
 }
 

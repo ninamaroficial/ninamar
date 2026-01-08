@@ -17,7 +17,7 @@
   /* Fondo integrado con tus colores */
   background:
     radial-gradient(circle at top left, #a6e8e4 0%, transparent 55%),
-    radial-gradient(circle at bottom right, #ffb3f9 0%, transparent 60%),
+    radial-gradient(circle at bottom right, #a6e8e4 0%, transparent 60%),
     linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
 }
 
@@ -109,12 +109,12 @@
 
 .searchInfo {
   font-size: 0.9375rem;
-  color: #64748b;
+  color: #8e4603;
   font-weight: 300;
 }
 
 .searchTerm {
-  color: #0f172a;
+  color: #8e4603;
   font-weight: 500;
 }
 
@@ -125,20 +125,20 @@
   align-items: baseline;
   margin-bottom: 2.5rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #8e4603;
 }
 
 .resultsTitle {
   font-size: 1.5rem;
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   font-family: var(--font-title);
   letter-spacing: 0.01em;
 }
 
 .resultsCount {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #8e4603;
   font-weight: 300;
   text-transform: lowercase;
 }
@@ -191,14 +191,14 @@
 .emptyTitle {
   font-size: 1.5rem;
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 0.75rem;
   font-family: var(--font-title);
 }
 
 .emptyText {
   font-size: 1rem;
-  color: #64748b;
+  color: #8e4603;
   font-weight: 300;
   line-height: 1.6;
 }

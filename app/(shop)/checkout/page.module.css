@@ -165,7 +165,7 @@
 
 .submitButton {
   padding: 1.25rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #1f2937;
   border: none;
   border-radius: 0.75rem;
@@ -295,7 +295,7 @@
   display: inline-block;
   margin-top: 2rem;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
   text-decoration: none;
   border-radius: 0.5rem;

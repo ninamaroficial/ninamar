@@ -28,7 +28,7 @@ export const EmailHeader = ({
 }
 
 const header = {
-  background: 'linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%)',
+  background: '#ffdb31',
   padding: '40px 20px',
   textAlign: 'center' as const,
 }

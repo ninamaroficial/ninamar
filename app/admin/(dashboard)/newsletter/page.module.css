@@ -58,7 +58,7 @@
 }
 
 .statIconActive {
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
 }
 
@@ -184,7 +184,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
   border: none;
   border-radius: 0.5rem;

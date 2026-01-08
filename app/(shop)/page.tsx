@@ -127,7 +127,6 @@ export default function Home() {
       <section className={styles.howItWorks}>
         <Container>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Proceso Simple</span>
             <h2 className={styles.sectionTitle}>¿Cómo Funciona?</h2>
             <p className={styles.sectionSubtitle}>
               Crea tu accesorio perfecto en 3 simples pasos
@@ -170,46 +169,6 @@ export default function Home() {
                 <p className={styles.stepText}>
                   Realizamos tu pedido con cuidado y lo enviamos directamente a tu puerta.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.ctaCenter}>
-            <Link href="/productos">
-              <Button size="lg" className={styles.ctaButton}>
-                Comenzar Ahora
-                <ArrowRight size={20} />
-              </Button>
-            </Link>
-          </div>
-        </Container>
-      </section>
-
-      {/* Trust Section */}
-      <section className={styles.trust}>
-        <Container>
-          <div className={styles.trustContent}>
-            <div className={styles.trustText}>
-              <h2 className={styles.trustTitle}>
-                Más de 1000 clientes satisfechos
-              </h2>
-              <p className={styles.trustSubtitle}>
-                Accesorios únicos que cuentan historias únicas
-              </p>
-            </div>
-            
-            <div className={styles.trustStats}>
-              <div className={styles.trustStat}>
-                <span className={styles.trustNumber}>5.0/5</span>
-                <span className={styles.trustLabel}>Calificación promedio</span>
-              </div>
-              <div className={styles.trustStat}>
-                <span className={styles.trustNumber}>1000+</span>
-                <span className={styles.trustLabel}>Accesorios entregados</span>
-              </div>
-              <div className={styles.trustStat}>
-                <span className={styles.trustNumber}>98%</span>
-                <span className={styles.trustLabel}>Clientes satisfechos</span>
               </div>
             </div>
           </div>

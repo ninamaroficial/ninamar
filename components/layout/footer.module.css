@@ -1,5 +1,5 @@
 .footer {
-  background: linear-gradient(135deg, #1f2937 0%, #112427 100%);
+  background: white;
   color: #d1d5db;
   position: relative;
   overflow: hidden;
@@ -16,7 +16,7 @@
 
 .paymentText {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #8e4603;
   font-weight: 500;
 }
 
@@ -80,7 +80,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #a6e8e4, #8dd4cf, #a6e8e4);
+  background: #ffdb31;
   background-size: 200% 100%;
   animation: shimmer 3s linear infinite;
 }
@@ -109,19 +109,19 @@
 .privacyNote {
   margin-top: 0.75rem;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: #8e4603;
   text-align: center;
   line-height: 1.5;
 }
 
 .privacyLink {
-  color: #a6e8e4;
+  color: #ffb3f9;
   text-decoration: underline;
   transition: color 0.2s;
 }
 
 .privacyLink:hover {
-  color: #8dd4cf;
+  color: #ffdb31;
 }
 
 .decorativeImages {
@@ -174,7 +174,7 @@
 }
 .topSection {
   padding: 4rem 0 3rem;
-  border-bottom: 1px solid rgba(166, 232, 228, 0.2);
+  border-bottom: 1px solid rgba(232, 225, 166, 0.2);
 }
 
 .content {
@@ -211,7 +211,7 @@
 .logoIcon {
   width: 3.5rem;
   height: 3.5rem;
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
+  background: #ffdb31;
   border-radius: 1rem;
   display: flex;
   align-items: center;
@@ -220,7 +220,7 @@
 }
 
 .logoIconText {
-  color: #1f2937;
+  color: #8e4603;
   font-weight: bold;
   font-size: 1.5rem;
   font-family: var(--font-title);
@@ -229,7 +229,7 @@
 .logoText {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #ffffff;
+  color: #8e4603;
   font-family: var(--font-title);
   letter-spacing: 0.05em;
 }
@@ -237,7 +237,7 @@
 .brandDescription {
   font-size: 1rem;
   line-height: 1.6;
-  color: #9ca3af;
+  color: #8e4603;
   max-width: 300px;
 }
 
@@ -250,20 +250,20 @@
 .socialLink {
   width: 2.75rem;
   height: 2.75rem;
-  background: rgba(166, 232, 228, 0.1);
-  border: 2px solid rgba(166, 232, 228, 0.2);
+  background: rgba(227, 166, 232, 0.1);
+  border: 2px solid rgba(232, 166, 218, 0.2);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  color: #a6e8e4;
+  color: #ffb3f9;
 }
 
 .socialLink:hover {
-  background: #a6e8e4;
-  border-color: #a6e8e4;
-  color: #1f2937;
+  background: #ffb3f9;
+  border-color: #ffb3f9;
+  color: #8e4603;
   transform: translateY(-4px) rotate(5deg);
   box-shadow: 0 8px 16px rgba(166, 232, 228, 0.4);
 }
@@ -281,7 +281,7 @@
 }
 
 .sectionTitle {
-  color: #ffffff;
+  color: #8e4603;
   font-weight: 700;
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
@@ -297,7 +297,7 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background: linear-gradient(90deg, #a6e8e4, transparent);
+  background: linear-gradient(90deg, #ffb3f9, transparent);
   border-radius: 2px;
 }
 
@@ -309,7 +309,7 @@
 }
 
 .link {
-  color: #9ca3af;
+  color: #8e4603;
   font-size: 0.9375rem;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -326,11 +326,11 @@
   opacity: 0;
   transform: translateX(-10px);
   transition: all 0.3s ease;
-  color: #a6e8e4;
+  color: #ffb3f9;
 }
 
 .link:hover {
-  color: #ffffff;
+  color: #ffb3f9;
   padding-left: 1.5rem;
 }
 
@@ -348,7 +348,7 @@
 
 .newsletterText {
   font-size: 0.9375rem;
-  color: #9ca3af;
+  color: #8e4603;
   line-height: 1.6;
 }
 
@@ -359,28 +359,28 @@
 
 .newsletterInput {
   padding: 0.575rem 1rem;
-  border: 2px solid rgba(166, 232, 228, 0.2);
+  border: 2px solid #ffb3f9;
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background: rgba(255, 0, 255, 0.05);
+  color: #8e4603;
   font-size: 0.9375rem;
   transition: all 0.3s ease;
 }
 
 .newsletterInput::placeholder {
-  color: #6b7280;
+  color: #8e4603;
 }
 
 .newsletterInput:focus {
   outline: none;
-  border-color: #a6e8e4;
+  border-color: #8e4603;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 0 4px rgba(166, 232, 228, 0.1);
 }
 
 .newsletterButton {
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #1f2937;
   border: none;
   border-radius: 0.75rem;
@@ -393,7 +393,7 @@
 }
 
 .newsletterButton:hover {
-  background: linear-gradient(135deg, #8dd4cf, #a6e8e4);
+  background: linear-gradient(135deg, #ffb3f9, #ffdb31);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(166, 232, 228, 0.4);
 }
@@ -405,7 +405,7 @@
 /* Bottom Section */
 .bottomSection {
   padding: 2rem 0;
-  background: rgba(0, 0, 0, 0.2);
+  background: #ffdd3159;
 }
 
 .bottomContent {
@@ -484,9 +484,9 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(166, 232, 228, 0.05);
+  background: rgba(227, 166, 232, 0.05);
   border-radius: 1rem;
-  border: 1px solid rgba(166, 232, 228, 0.1);
+  border: 1px solid rgba(230, 166, 232, 0.1);
 }
 
 @media (min-width: 768px) {
@@ -499,19 +499,19 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #9ca3af;
+  color: #ac9caf;
   font-size: 0.9375rem;
 }
 
 .contactIcon {
   width: 2rem;
   height: 2rem;
-  background: rgba(166, 232, 228, 0.1);
+  background: rgba(232, 166, 218, 0.1);
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a6e8e4;
+  color: #ffb3f9;
 }
 
 /* Animaciones */

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
           <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #a6e8e4, #8dd4cf); padding: 30px; border-radius: 10px 10px 0 0;">
+            <div style=" background-color: #ffb3f9; padding: 30px; border-radius: 10px 10px 0 0;">
               <h1 style="color: #0f172a; margin: 0;">Nuevo Mensaje de Contacto</h1>
             </div>
             
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
         </head>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
           <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #a6e8e4, #8dd4cf); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <div style=" background-color: #ffb3f9; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
               <h1 style="color: #0f172a; margin: 0;">Niñamar</h1>
               <p style="color: #0f172a; margin: 10px 0 0;">Accesorios Personalizados</p>
             </div>
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
               
               <div style="text-align: center; margin: 30px 0;">
                 <a href="${process.env.NEXT_PUBLIC_URL || 'https://ninamar.com'}/productos" 
-                   style="display: inline-block; background: linear-gradient(135deg, #a6e8e4, #8dd4cf); 
+                   style="display: inline-block;  background-color: #ffb3f9; 
                           color: #0f172a; padding: 15px 40px; text-decoration: none; 
                           border-radius: 50px; font-weight: 600;">
                   Ver Productos

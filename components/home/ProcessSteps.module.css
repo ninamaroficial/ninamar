@@ -124,7 +124,7 @@
 .stepNumber {
   font-size: 3rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

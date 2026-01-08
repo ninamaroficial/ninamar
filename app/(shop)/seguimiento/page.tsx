@@ -154,13 +154,20 @@ export default function SeguimientoPage() {
 
   return (
     <div className={styles.page}>
+
+      <section className={styles.hero}>
+  <Container>
+    <div className={styles.heroContent}>
+      <h1 className={styles.heroTitle}>Rastrea tu Pedido</h1>
+      <p className={styles.heroSubtitle}>
+        Ingresa tu número de orden y email para conocer el estado de tu pedido
+      </p>
+    </div>
+  </Container>
+</section>
+
       <Container>
-        <div className={styles.hero}>
-          <h1 className={styles.title}>Rastrea tu Pedido</h1>
-          <p className={styles.subtitle}>
-            Ingresa tu número de orden y email para conocer el estado de tu pedido
-          </p>
-        </div>
+
 
         <div className={styles.searchCard}>
           <form onSubmit={handleSubmit} className={styles.form}>
@@ -223,7 +230,7 @@ export default function SeguimientoPage() {
               </div>
               <div
                 className={styles.statusBadge}
-                style={{ background: `${statusInfo.color}15`, color: statusInfo.color }}
+                style={{ background: `${statusInfo.color}15`, color: statusInfo.color}}
               >
                 <StatusIcon size={20} />
                 {statusInfo.label}

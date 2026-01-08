@@ -147,19 +147,26 @@
   padding: 6rem 0;
   position: relative;
   background-color: #f8fafa;
-  background-image: url("/hero/texture2.png");
-  background-repeat: repeat;
-  background-size: 1920px 1080px; /* ← Ajusta el tamaño de la textura */
   overflow: hidden;
 }
 
-/* Overlay con gradiente para más profundidad */
+/* Textura con opacidad */
 .features::before {
+  content: "";
   position: absolute;
   inset: 0;
+  background-image: url("/hero/texture2.png");
+  background-repeat: repeat;
+  background-size: 1920px 1080px;
+  opacity: 0.45; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
   pointer-events: none;
   z-index: 0;
+}
 
+/* Asegura que el contenido esté encima */
+.features > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Asegurar que el contenido esté encima */
@@ -176,19 +183,19 @@
   padding: 2rem;
   border-radius: 1.5rem;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid #ffb3f9;
+  background-color: #ffb3f94b;
 }
 
 .feature:hover {
-  border-color: rgba(166, 232, 228, 0.3);
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.05), rgba(141, 212, 207, 0.05));
+  border-color: #8e4603;
   transform: translateY(-8px);
 }
 
 .featureIcon {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   border-radius: 1.5rem;
   display: flex;
   align-items: center;
@@ -200,20 +207,20 @@
 
 .feature:hover .featureIcon {
   transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 10px 30px rgba(166, 232, 228, 0.4);
+  box-shadow: #8e4603;
 }
 
 .featureTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 1rem;
   font-family: var(--font-title);
 }
 
 .featureText {
   font-size: 1rem;
-  color: #64748b;
+  color: #8e4603;
   line-height: 1.7;
 }
 
@@ -230,16 +237,43 @@
 .howItWorks::before {
   content: '';
   position: absolute;
+  inset: 0;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200%;
   height: 100%;
-  background: radial-gradient(circle, rgba(166, 232, 228, 0.1) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.5;
+    background-image: url("/hero/texture1.png");
+
+  background-repeat: repeat;
+  background-size: 1920px 1080px;
+  opacity: 0.45; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
+  pointer-events: none;
+  z-index: 0;
+
+
 }
 
+/* ============================= */
+/* FEATURES SECTION */
+/* ============================= */
+.features {
+  padding: 6rem 0;
+  position: relative;
+  background-color: #f8fafa;
+  overflow: hidden;
+}
+
+/* Textura con opacidad */
+.features::before {
+
+}
+
+/* Asegura que el contenido esté encima */
+.howItWorks > * {
+  position: relative;
+  z-index: 1;
+}
 .sectionHeader {
   text-align: center;
   margin-bottom: 4rem;
@@ -262,14 +296,14 @@
 .sectionTitle {
   font-size: 3rem;
   font-weight: 900;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 1rem;
   font-family: var(--font-title);
 }
 
 .sectionSubtitle {
   font-size: 1.25rem;
-  color: #64748b;
+  color: #8e4603;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -286,10 +320,12 @@
 .step {
   position: relative;
   padding: 2.5rem;
-  background: white;
+  background: #ffdd3162;
   border-radius: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+    border: 2px solid #ffdb31;
+
 }
 
 .step:hover {
@@ -300,19 +336,19 @@
 .stepNumber {
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffdb31;
   border-radius: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  box-shadow: 0 8px 20px rgba(166, 232, 228, 0.3);
+  box-shadow: #f0cd1f;
 }
 
 .stepNumber span {
   font-size: 2rem;
   font-weight: 900;
-  color: white;
+  color: #8e4603;
   font-family: var(--font-title);
 }
 
@@ -325,13 +361,13 @@
 .stepTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #8e4603;
   font-family: var(--font-title);
 }
 
 .stepText {
   font-size: 1rem;
-  color: #64748b;
+  color: #8e4603;
   line-height: 1.7;
 }
 
@@ -410,7 +446,7 @@
   color: #0f172a;
   font-family: var(--font-title);
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -427,7 +463,7 @@
 /* ============================= */
 .finalCta {
   padding: 8rem 0;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: #ffb3f9;
   position: relative;
   overflow: hidden;
 }
@@ -436,8 +472,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(166, 232, 228, 0.1), transparent 50%);
-}
+background-image: url("/hero/texture1.png");
+
+  background-repeat: repeat;
+  background-size: 1920px 1080px;
+  opacity: 0.15; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
+  pointer-events: none;
+  z-index: 0;}
 
 .finalCtaContent {
   text-align: center;
@@ -450,7 +491,7 @@
 .finalCtaTitle {
   font-size: 3.5rem;
   font-weight: 900;
-  color: white;
+  color: #8e4603;
   margin-bottom: 1.5rem;
   font-family: var(--font-title);
   line-height: 1.2;
@@ -458,28 +499,28 @@
 
 .finalCtaText {
   font-size: 1.25rem;
-  color: #cbd5e1;
+  color:#8e4603;
   margin-bottom: 3rem;
   line-height: 1.8;
 }
 
 .finalCtaButton {
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf) !important;
-  color: #0f172a !important;
+   background-color: #ffdb31!important;
+  color: #8e4603 !important;
   border: none !important;
   font-weight: 700 !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
   transition: all 0.3s ease !important;
-  box-shadow: 0 8px 30px rgba(166, 232, 228, 0.4);
+  box-shadow: #ffdb31;
   font-size: 1.125rem !important;
   padding: 1.25rem 2.5rem !important;
 }
 
 .finalCtaButton:hover {
-  transform: translateY(-4px) scale(1.05) !important;
-  box-shadow: 0 12px 40px rgba(166, 232, 228, 0.6) !important;
+  transform: translateY(0px) scale(1.05) !important;
+  box-shadow: 0 12px 40px #ffdb31 !important;
 }
 
 /* ============================= */

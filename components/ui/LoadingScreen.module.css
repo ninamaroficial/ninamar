@@ -174,7 +174,7 @@
 .dot {
   width: 8px;
   height: 8px;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   border-radius: 50%;
   animation: dotBounce 1.4s ease-in-out infinite;
   box-shadow: 0 0 10px rgba(166, 232, 228, 0.6);

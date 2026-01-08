@@ -1,25 +1,76 @@
 .page {
-  min-height: 80vh;
-  padding: 4rem 0;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.1) 0%, rgba(141, 212, 207, 0.1) 100%);
+  min-height: 100vh;
+  background: #fff3b8ff;
+  overflow-x: hidden; /* ← AGREGAR para prevenir scroll horizontal */
 }
 
+
+/* =========================================================
+   HERO
+========================================================= */
 .hero {
+  position: relative;
+  padding: 3.5rem 0 2.5rem;
+  overflow: hidden;
+
+  /* Fondo integrado con tus colores */
+  background:
+    radial-gradient(circle at top left, #a6e8e4 0%, transparent 55%),
+    radial-gradient(circle at bottom right,  #a6e8e4 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
+
+    margin-bottom: 100px;
+
+}
+
+/* Capa de contenido por encima de todo */
+.heroContent {
+  position: relative;
+  z-index: 2;
   text-align: center;
-  margin-bottom: 3rem;
+  max-width: 720px;
+  margin: 0 auto;
+
+  /* Fix: fuerza render nítido en móviles */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #7e4603;
+  letter-spacing: -0.02em;
+  font-family: var(--font-title);
+
+  /* Fix extra: evita “halo”/blur por composición */
+  position: relative;
+  z-index: 3;
+}
+
+.heroSubtitle {
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
+  color: #7e4603;
+  opacity: 0.8;
+  letter-spacing: 0.01em;
+
+  position: relative;
+  z-index: 3;
 }
 
 .title {
   font-size: 3rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   margin-bottom: 1rem;
   font-family: var(--font-title);
 }
 
 .subtitle {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: #8e4603;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -27,7 +78,7 @@
 .searchCard {
   max-width: 700px;
   margin: 0 auto 3rem;
-  background: white;
+  background:#fcc6f7ff;
   border-radius: 1.5rem;
   padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -48,7 +99,7 @@
 .label {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #374151;
+  color: #8e4603;
 }
 
 .inputWrapper {
@@ -60,13 +111,13 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: #8e4603;
 }
 
 .input {
   width: 100%;
   padding: 0.875rem 1rem 0.875rem 3rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #8e4603;
   border-radius: 0.75rem;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -74,14 +125,14 @@
 
 .input:focus {
   outline: none;
-  border-color: #a6e8e4;
-  box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.2);
+  border-color: #8e036b;
+  box-shadow: 0 0 0 3px rgba(232, 166, 221, 0.2);
 }
 
 .submitButton {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
-  color: #1f2937;
+   background-color: #ffd4fbb2;
+  color: #8e4603;
   border: none;
   border-radius: 0.75rem;
   font-weight: 700;
@@ -94,11 +145,13 @@
   gap: 0.75rem;
   font-family: var(--font-title);
   margin-top: 0.5rem;
+  border: 2px solid #ff9ae6;
+
 }
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(166, 232, 228, 0.4);
+  box-shadow: 0 8px 20px rgba(227, 166, 232, 0.4);
 }
 
 .submitButton:disabled {
@@ -122,7 +175,8 @@
 /* Result Card */
 .resultCard {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 20px auto;
+  padding: 2rem;
   background: white;
   border-radius: 1.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -130,31 +184,34 @@
 }
 
 .resultHeader {
+    border-radius: 1.5rem;
+
   padding: 2rem;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.1), rgba(141, 212, 207, 0.1));
-  border-bottom: 2px solid #e5e7eb;
+  background:   #ffeafdff;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  margin-bottom: 2px;
 }
 
 .orderInfo {
+  
   flex: 1;
 }
 
 .orderNumber {
   font-size: 1.75rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   margin-bottom: 0.25rem;
   font-family: var(--font-title);
 }
 
 .orderDate {
   font-size: 0.9375rem;
-  color: #6b7280;
+  color: #8e4603;
 }
 
 .statusBadge {
@@ -169,16 +226,17 @@
 }
 
 .statusDescription {
+      border-radius: 1.5rem;
+
   padding: 1.5rem 2rem;
-  background: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  background: #ffeafdff;
   text-align: center;
 }
 
 .statusDescription p {
-  font-size: 1rem;
-  color: #6b7280;
-  font-weight: 500;
+  font-size: 1.0rem;
+  color: #8e4603;
+  font-weight: 800;
 }
 
 /* Timeline */
@@ -187,16 +245,17 @@
   display: flex;
   justify-content: space-between;
   position: relative;
+  
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  top: 3.5rem;
+  top: 4.5rem;
   left: 2rem;
   right: 2rem;
   height: 2px;
-  background: #e5e7eb;
+  background: #8e4603;
   z-index: 0;
 }
 
@@ -211,14 +270,15 @@
 }
 
 .timelineIcon {
+
   width: 50px;
   height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  border: 4px solid white;
+  color: #ffeafdff;
+  border: 4px solid rgb(255, 224, 251);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
 }
@@ -233,14 +293,14 @@
 
 .timelineLabel {
   font-weight: 600;
-  color: #1f2937;
+  color: #8e4603;
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
 }
 
 .timelineDate {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #8e4603;
 }
 
 @keyframes pulse {
@@ -255,7 +315,7 @@
 /* Order Items */
 .itemsSection {
   padding: 2rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid #8e4603;
 }
 
 .sectionTitle {
@@ -264,7 +324,7 @@
   gap: 0.5rem;
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #8e4603;
   font-family: var(--font-title);
   margin-bottom: 1.5rem;
 }
@@ -281,12 +341,12 @@
   padding: 1.25rem;
   background: #f9fafb;
   border-radius: 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #ffeafdff;
   transition: all 0.3s ease;
 }
 
 .orderItem:hover {
-  border-color: #a6e8e4;
+  border-color: #ffb3f9;
   box-shadow: 0 4px 12px rgba(166, 232, 228, 0.2);
 }
 
@@ -328,7 +388,7 @@
 .itemName {
   font-size: 1.0625rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #8e4603;
   margin: 0;
   line-height: 1.4;
 }
@@ -349,11 +409,11 @@
   border-radius: 9999px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #4b5563;
+  color: #8e4603;
 }
 
 .customPrice {
-  color: #10b981;
+  color: #8e4603;
   font-weight: 700;
 }
 
@@ -362,7 +422,7 @@
   align-items: center;
   gap: 1.25rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #8e4603;
   margin-top: auto;
 }
 
@@ -377,7 +437,7 @@
 .itemTotal {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #8e4603;
   flex-shrink: 0;
   align-self: flex-start;
   font-family: var(--font-title);
@@ -440,14 +500,14 @@
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #8e4603;
   font-family: var(--font-title);
   margin-bottom: 0.5rem;
 }
 
 .detailText {
   font-size: 0.9375rem;
-  color: #6b7280;
+  color: #8e4603;
   line-height: 1.6;
 }
 
@@ -456,13 +516,13 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.9375rem;
-  color: #6b7280;
+  color: #8e4603;
   padding: 0.5rem 0;
 }
 
 .summaryRow span:last-child {
   font-weight: 600;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .summaryTotal {
@@ -471,14 +531,14 @@
   padding-top: 1rem;
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #8e4603;
 }
 /* ============================= */
 /* SHIPMENT INFO */
 /* ============================= */
 .shipmentInfo {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(59, 130, 246, 0.05));
-  border: 2px solid #8b5cf6;
+  background: #ffeafdff;
+  border: 2px solid #ffb3f9;
   border-radius: 1rem;
   padding: 1.5rem;
   margin: 2rem 0;
@@ -489,14 +549,14 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1.25rem;
-  color: #8b5cf6;
+  color: #ffb3f9;
 }
 
 .shipmentHeader h3 {
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
-  color: #0f172a;
+  color: #8e4603;
 }
 
 .shipmentDetails {
@@ -516,13 +576,13 @@
 
 .shipmentLabel {
   font-size: 0.9375rem;
-  color: #64748b;
+  color: #8e4603;
   font-weight: 500;
 }
 
 .shipmentValue {
   font-size: 1rem;
-  color: #0f172a;
+  color: #8e4603;
   font-weight: 600;
 }
 
@@ -530,25 +590,25 @@
   padding: 1rem;
   background: white;
   border-radius: 0.5rem;
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid #ffb3f9;
 }
 
 .shipmentNotes .shipmentLabel {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #8e4603;
 }
 
 .shipmentNotes p {
   margin: 0;
-  color: #475569;
+  color: #8e4603;
   line-height: 1.6;
 }
 
 .trackingNumber {
   font-size: 0.875rem;
-  color: #8b5cf6;
+  color: #ffb3f9;
   font-weight: 600;
   margin-top: 0.25rem;
 }
@@ -582,14 +642,14 @@
 
 .contactText {
   font-size: 1rem;
-  color: #6b7280;
+  color: #8e4603;
   font-weight: 500;
 }
 
 .contactButton {
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
-  color: #1f2937;
+   background-color: #ffb3f9;
+  color: #8e4603;
   border-radius: 0.75rem;
   font-weight: 700;
   font-size: 1rem;

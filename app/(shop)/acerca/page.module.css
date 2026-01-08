@@ -15,7 +15,7 @@
   /* Fondo integrado con tus colores */
   background:
     radial-gradient(circle at top left, #a6e8e4 0%, transparent 55%),
-    radial-gradient(circle at bottom right, #ffb3f9 0%, transparent 60%),
+    radial-gradient(circle at bottom right,  #a6e8e4 0%, transparent 60%),
     linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
 }
 
@@ -147,7 +147,7 @@
   width: 4rem;
   height: 4rem;
   margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   border-radius: 1rem;
   display: flex;
   align-items: center;
@@ -196,7 +196,7 @@
 /* CTA Section */
 .cta {
   padding: 6rem 2rem; /* ← CAMBIAR de margin a padding */
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   margin: 0; /* ← ELIMINAR margin negativo */
   border-radius: 0; /* ← CAMBIAR a 0 para que ocupe todo el ancho */
 }

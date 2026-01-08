@@ -169,7 +169,7 @@
 
 .progressFill {
   height: 100%;
-  background: white;
+  background:#ffb3f9;
   animation: progress linear;
   transform-origin: left;
 }

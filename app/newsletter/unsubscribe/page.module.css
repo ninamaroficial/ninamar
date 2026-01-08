@@ -87,7 +87,7 @@
 .cancelButton,
 .homeButton {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
   border: none;
   border-radius: 0.5rem;

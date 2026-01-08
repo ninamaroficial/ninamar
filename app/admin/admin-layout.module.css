@@ -28,7 +28,7 @@
   color: #0f172a;
   margin: 0;
   font-family: var(--font-title);
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

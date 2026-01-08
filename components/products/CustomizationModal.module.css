@@ -33,8 +33,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem 2rem;
-  border-bottom: 2px solid #e5e7eb;
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
+  border-bottom: 2px solid #8e4603;
+  background: #ffdb31;
 }
 
 .headerContent {
@@ -44,14 +44,14 @@
 }
 
 .headerIcon {
-  color: #1f2937;
+  color: #8e4603;
   animation: sparkle 2s ease-in-out infinite;
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   font-family: var(--font-title);
 }
 
@@ -66,7 +66,7 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .closeButton:hover {
@@ -90,14 +90,14 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #a6e8e4, #8dd4cf);
+  background: #ffdb31;
   border-radius: 1rem;
   transition: width 0.4s ease;
 }
 
 .progressText {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #8e4603;
   text-align: center;
   font-weight: 600;
 }
@@ -161,7 +161,7 @@
 .productName {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   margin-bottom: 1rem;
   font-family: var(--font-title);
 }
@@ -177,13 +177,13 @@
 
 .basePrice {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #8e4603;
 }
 
 .price {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .selectedOptions {
@@ -195,7 +195,7 @@
 .selectedTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: #8e4603;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.25rem;
@@ -209,12 +209,12 @@
 }
 
 .selectedLabel {
-  color: #6b7280;
+  color: #8e4603;
   font-weight: 500;
 }
 
 .selectedValue {
-  color: #1f2937;
+  color: #8e4603;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -242,7 +242,7 @@
 .optionTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   font-family: var(--font-title);
   display: flex;
   align-items: center;
@@ -250,7 +250,7 @@
 }
 
 .required {
-  color: #ef4444;
+  color: #ffb3f9;
   font-size: 1.25rem;
 }
 
@@ -275,14 +275,14 @@
 }
 
 .optionButton:hover {
-  border-color: #a6e8e4;
+  border-color: #ffb3f9;
   transform: translateY(-4px);
   box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
 }
 
 .optionButtonActive {
-  border-color: #a6e8e4;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.1), rgba(141, 212, 207, 0.1));
+  border-color: #ffb3f9;
+  background: #ffeafdff;
   box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.2);
 }
 
@@ -303,7 +303,7 @@
 
 .optionPrice {
   font-size: 0.8125rem;
-  color: #059669;
+  color: #ffb3f9;
   font-weight: 600;
 }
 
@@ -313,7 +313,7 @@
   right: 0.5rem;
   width: 1.5rem;
   height: 1.5rem;
-  background: #10b981;
+  background: #ffb3f9;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -333,12 +333,12 @@
 .label {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .hint {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #8e4603;
 }
 
 .quantityControls {
@@ -353,12 +353,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .quantityButton:hover:not(:disabled) {
@@ -374,7 +374,7 @@
 .quantityValue {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   min-width: 3rem;
   text-align: center;
 }
@@ -382,7 +382,7 @@
 .totalSection {
   margin-top: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.2), rgba(141, 212, 207, 0.2));
+  background: #ffeafdff;
   border-radius: 1rem;
 }
 
@@ -395,13 +395,13 @@
 .totalLabel {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #8e4603;
 }
 
 .totalPrice {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: #8e4603;
   font-family: var(--font-title);
 }
 
@@ -439,21 +439,19 @@
 }
 
 .backButton:hover {
-  border-color: #a6e8e4;
-  color: #1f2937;
+  border-color: #ffeafdff;
+  color: #8e4603;
 }
 
 .nextButton,
 .addToCartButton {
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #1f2937;
-  box-shadow: 0 4px 15px rgba(166, 232, 228, 0.4);
 }
 
 .nextButton:hover,
 .addToCartButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(166, 232, 228, 0.6);
 }
 
 .nextButton:disabled {

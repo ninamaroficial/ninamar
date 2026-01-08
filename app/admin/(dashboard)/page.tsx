@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className={styles.statCard}>
-              <div className={styles.statIcon} style={{ background: 'linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%)' }}>
+              <div className={styles.statIcon} style={{ background: '#ffdb31' }}>
                 <Package size={24} />
               </div>
               <div className={styles.statContent}>

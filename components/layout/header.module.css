@@ -3,7 +3,7 @@
 ========================================================= */
 
 .banner {
-  background: linear-gradient(135deg, #ffb3f9 0%, #f897f0 100%);
+  background: #ffb3f9;
   padding: 0.75rem 1rem;
   text-align: center;
   position: relative;
@@ -156,7 +156,7 @@
   z-index: 10000;
   pointer-events: none;
 
-  background: linear-gradient(90deg, #a6e8e4, #ffb3f9, #fdff76);
+  background: #ffb3f9;
   box-shadow: 0 0 18px rgba(255, 179, 249, 0.45);
   opacity: 0;
   transform: translateY(-2px);
@@ -203,8 +203,7 @@
 ========================================================= */
 
 .header {
-  background: #ffdb31;
-  border-bottom: 1px solid #e5e7eb;
+  background: #ffdd31ef;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -299,7 +298,7 @@
 
 .navLink:hover {
   color: #7e4603;
-  background: #7e49081a;
+  background: #ffeafdff;
   transform: translateY(-1px);
 }
 
@@ -310,7 +309,7 @@
 /* Active (por pathname) */
 .active {
   color: #7e4603;
-  background: #fdf25bc0;
+  background: #ffeafdff;
 }
 
 .active::after {
@@ -407,12 +406,12 @@
   height: 48px;
 
   background: transparent;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #7e4603;
   border-radius: 0.75rem;
 
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #4b5563;
+  color: #7e4603;
 }
 
 .mobileMenuButton:hover {
@@ -424,26 +423,40 @@
 /* =========================================================
    MOBILE MENU
 ========================================================= */
-
 .mobileMenu {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-
   width: 300px;
   max-width: 85vw;
-
-  background: #ffffff;
+  
+  background-color: #ffe87f;
+  
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-
   transform: translateX(100%);
   transition: transform 0.3s ease;
-
   z-index: 100;
   display: none;
+  overflow-y: auto;
 }
 
+.mobileMenu::before {
+  content: '';
+  position: absolute; /* ← Cambiar de fixed a absolute */
+  inset: 0; /* ← Esto cubre todo el contenedor padre */
+  background-image: url("/header/Textura1.png");
+  background-repeat: repeat;
+  background-size: 800px 800px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mobileMenu > * {
+  position: relative;
+  z-index: 1;
+}
 .open {
   transform: translateX(0);
 }
@@ -466,7 +479,7 @@
   padding: 1rem 1.25rem;
   font-size: 1.0625rem;
   font-weight: 600;
-  color: #4b5563;
+  color: #7e4603;
 
   text-align: left;
   border-radius: 0.75rem;
@@ -477,15 +490,15 @@
 
 .mobileMenuLink:hover {
   color: #1f2937;
-  background: rgba(166, 232, 228, 0.1);
-  border-color: #a6e8e4;
+  background: "#ffb3f9";
+  border-color: #7e4603;
 }
 
 .mobileMenuLink.active,
 .mobileMenuLink.active:hover {
   color: #1f2937;
-  background: linear-gradient(135deg, rgba(166, 232, 228, 0.15), rgba(141, 212, 207, 0.15));
-  border-color: #a6e8e4;
+  background: #ffb3f9;
+  border-color: #7e4603;
   font-weight: 700;
 }
 
@@ -493,8 +506,8 @@
   margin-top: auto;
   padding: 1.25rem;
 
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
-  color: #1f2937;
+  background: #ffb3f9;
+  color: #7e4603;
 
   border: none;
   border-radius: 0.75rem;

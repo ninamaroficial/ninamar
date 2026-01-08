@@ -120,7 +120,7 @@
 .categoryCount {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   border-radius: 2rem;
   font-size: 0.875rem;
   font-weight: 600;

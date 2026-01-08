@@ -1,9 +1,9 @@
 /* Desktop Filters */
 .filters {
-  background: #ffffff;
+  background: #ffeafdff;
   border-radius: 0.75rem;
   padding: 1.75rem;
-  border: 1px solid #f1f5f9;
+  border: 1px solid #ffb3f9;
 }
 
 @media (min-width: 1024px) {
@@ -49,7 +49,7 @@
     position: fixed;
     bottom: 2rem;
     right: 1.5rem;
-    background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+     background-color: #ffb3f9;
     color: #0f172a;
     border: none;
     padding: 1rem 1.5rem;
@@ -153,7 +153,7 @@
 .title {
   font-size: 1.25rem;
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   font-family: var(--font-title);
   letter-spacing: 0.01em;
 }
@@ -161,7 +161,7 @@
 .clearButton {
   background: transparent;
   border: none;
-  color: #64748b;
+  color: #8e4603;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -177,7 +177,7 @@
 .section {
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #8e4603;
 }
 
 .section:last-of-type {
@@ -189,7 +189,7 @@
 .sectionTitle {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 1rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -214,21 +214,21 @@
   transition: all 0.2s ease;
   text-align: left;
   font-size: 0.9375rem;
-  color: #64748b;
+  color: #8e4603;
   width: 100%;
   font-weight: 400;
 }
 
 .categoryItem:hover {
-  background: #f8fafc;
-  border-color: #f1f5f9;
-  color: #0f172a;
+  background: #ffb3f9;
+  border-color: #ffeafdff;
+  color: #8e4603;
 }
 
 .categoryItemActive {
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 100%);
-  border-color: #a6e8e4;
-  color: #0f172a;
+  background: #ffb3f9;
+  border-color: #ffeafdff;
+  color: #8e4603;
   font-weight: 600;
 }
 
@@ -248,20 +248,20 @@
   flex: 1;
   min-width: 0;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8e4603;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   transition: all 0.2s ease;
-  color: #0f172a;
+  color: #8e4603;
 }
 
 .priceInput::placeholder {
-  color: #94a3b8;
+  color: #8e4603;
 }
 
 .priceInput:focus {
   outline: none;
-  border-color: #a6e8e4;
+  border-color: #8e4603;
   box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.1);
 }
 
@@ -277,7 +277,7 @@
 }
 
 .priceSeparator {
-  color: #94a3b8;
+  color: #8e4603;
   font-weight: 500;
   flex-shrink: 0;
 }
@@ -286,9 +286,9 @@
 .applyButton {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
-  color: #0f172a;
-  border: none;
+   background-color: #ffeafdff;
+  color: #8e4603;
+    border: 1px solid #8e4603;
   border-radius: 0.5rem;
   font-weight: 600;
   font-size: 0.875rem;
@@ -299,7 +299,7 @@
 }
 
 .applyButton:hover {
-  background: linear-gradient(135deg, #8dd4cf, #a6e8e4);
+  background: #ffb3f9;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(166, 232, 228, 0.3);
 }
@@ -314,20 +314,20 @@
 .priceRangeButton {
   padding: 0.75rem 1rem;
   background: transparent;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8e4603;
   border-radius: 0.5rem;
-  color: #64748b;
+  color: #8e4603;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
   width: 100%;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .priceRangeButton:hover {
-  background: #f8fafc;
-  border-color: #a6e8e4;
+  background: #ffb3f9;
+  border-color: #8e4603;
   color: #0f172a;
 }
 

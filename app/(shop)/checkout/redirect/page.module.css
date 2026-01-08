@@ -58,7 +58,7 @@
 .button {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
   border-radius: 0.75rem;
   font-weight: 700;
@@ -94,7 +94,7 @@
 .error a {
   display: inline-block;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #a6e8e4, #8dd4cf);
+   background-color: #ffb3f9;
   color: #0f172a;
   border-radius: 0.75rem;
   font-weight: 700;

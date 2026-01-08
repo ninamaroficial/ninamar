@@ -151,7 +151,7 @@ export async function sendNewsletterConfirmation(
                   <td align="center">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="background: linear-gradient(135deg, #a6e8e4, #8dd4cf); border-radius: 50px; box-shadow: 0 8px 20px rgba(166, 232, 228, 0.4);">
+                        <td style=" background-color: #ffb3f9; border-radius: 50px; box-shadow: 0 8px 20px rgba(166, 232, 228, 0.4);">
                           <a href="${appUrl}/productos" style="display: block; color: #0f172a; text-decoration: none; padding: 18px 50px; font-weight: 700; font-size: 17px; letter-spacing: 0.5px;">
                             ✨ Explorar Colección
                           </a>
