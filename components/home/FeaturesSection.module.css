@@ -219,6 +219,7 @@
   filter: brightness(1.1) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
   /* Rotación sutil constante */
   animation: rotateSubtle 6s ease-in-out infinite;
+  
 }
 
 .feature:hover .featureImage {

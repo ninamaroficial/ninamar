@@ -117,8 +117,8 @@ export default function FeaturesSection() {
                       <Image
                         src={feature.image}
                         alt={feature.title}
-                        width={120}
-                        height={120}
+                        width={520}
+                        height={520}
                         className={styles.featureImage}
                       />
                     </div>

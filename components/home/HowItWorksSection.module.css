@@ -1,0 +1,653 @@
+/* ============================= */
+/* HOW IT WORKS SECTION */
+/* ============================= */
+.howItWorks {
+  padding: 8rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.howItWorks::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/hero/texture1.png");
+  background-repeat: repeat;
+  background-size: 1920px 1080px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionTitle {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #8e4603;
+  margin-bottom: 1rem;
+  font-family: var(--font-title);
+}
+
+.sectionSubtitle {
+  font-size: 1.25rem;
+  color: #8e4603;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.stepsContainer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================= */
+/* STEP 1 Y 2: VIEWER 3D */
+/* ============================= */
+.step3DContainer {
+  margin-bottom: 8rem;
+}
+
+.stepNumbers {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.stepBadge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: white;
+  border: 2px solid #ffb3f9;
+  border-radius: 100px;
+  box-shadow: 0 4px 20px rgba(255, 179, 249, 0.2);
+}
+
+.stepNumber {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #8e4603;
+  font-family: var(--font-title);
+}
+
+.stepLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #8e4603;
+}
+
+/* Viewer 3D Container */
+.viewer3DWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 500px;
+  margin: 0 auto 3rem;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 245, 255, 0.9) 100%),
+    url('/hero/texture1.png'); /* ← Tu imagen aquí */
+  background-size: cover;
+  background-position: center;
+  border-radius: 2rem;
+  border: 3px solid #ffb3f9;
+  box-shadow: 0 20px 60px rgba(255, 179, 249, 0.3);
+  overflow: visible;
+}
+
+.viewerLoading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e4603;
+  font-size: 1.125rem;
+}
+
+/* Anotaciones */
+.annotationsContainer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.annotation {
+  position: absolute;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.annotationLine {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: -100px;
+  left: -100px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.annotationDot {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background: #ffb3f9;
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 179, 249, 0.4);
+}
+
+.annotation:hover .annotationDot {
+  transform: scale(1.3);
+  background: #ff8bf5;
+}
+
+.annotationPulse {
+  position: absolute;
+  inset: -5px;
+  background: #ffb3f9;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.annotationTooltip {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  border: 2px solid #ffb3f9;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.annotation:hover .annotationTooltip {
+  opacity: 1;
+  top: -90px;
+}
+
+.annotationTooltip h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #8e4603;
+  margin: 0 0 0.25rem;
+}
+
+.annotationTooltip p {
+  font-size: 0.75rem;
+  color: #64493b;
+  margin: 0;
+}
+
+.viewerHint {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  color: #8e4603;
+  backdrop-filter: blur(10px);
+  animation: fadeInOut 3s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.stepsDescription {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.stepDesc h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #8e4603;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-title);
+}
+
+.stepDesc p {
+  font-size: 1rem;
+  color: #64493b;
+  line-height: 1.8;
+}
+
+/* ============================= */
+/* STEP 3: IMAGEN DE BOLSA PERSONALIZADA */
+/* ============================= */
+.step3Container {
+  margin-top: 8rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step3Container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.step3Container .stepBadge {
+  justify-content: center;
+  margin: 0 auto 3rem;
+  max-width: fit-content;
+}
+
+.bagAnimationContainer {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 550px;
+  margin: 0 auto 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================= */
+/* IMAGEN DE LA BOLSA */
+/* ============================= */
+.bagImage {
+  position: relative;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.8) translateY(30px);
+  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.25));
+}
+
+.bagAnimated {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  animation: bagBounce 0.8s ease-out 0.5s;
+}
+
+@keyframes bagBounce {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.05) translateY(-20px);
+  }
+}
+
+.bagImageElement {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  animation: gentleFloat 4s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+
+/* ============================= */
+/* ELEMENTOS DECORATIVOS */
+/* ============================= */
+.decorativeElements {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.sparkle {
+  position: absolute;
+  font-size: 2.5rem;
+  animation: sparkleFloat 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+.step3Container.visible .sparkle {
+  opacity: 1;
+}
+
+.sparkle1 {
+  left: 5%;
+  top: 10%;
+  animation-delay: 0.3s;
+}
+
+.sparkle2 {
+  right: 10%;
+  top: 15%;
+  animation-delay: 0.8s;
+}
+
+.sparkle3 {
+  left: 10%;
+  bottom: 20%;
+  animation-delay: 1.3s;
+}
+
+.sparkle4 {
+  right: 5%;
+  bottom: 25%;
+  animation-delay: 1.8s;
+}
+
+.sparkle5 {
+  left: 50%;
+  top: 5%;
+  animation-delay: 2.3s;
+}
+
+.sparkle6 {
+  right: 50%;
+  bottom: 10%;
+  animation-delay: 2.8s;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateY(-20px) scale(1.3) rotate(90deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.2) rotate(180deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-25px) scale(1.4) rotate(270deg);
+    opacity: 1;
+  }
+}
+
+/* Corazones flotantes */
+.heart {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0;
+  animation: heartFloat 4s ease-in-out infinite;
+}
+
+.step3Container.visible .heart {
+  opacity: 1;
+}
+
+.heart1 {
+  left: 20%;
+  top: 30%;
+  animation-delay: 1s;
+}
+
+.heart2 {
+  right: 20%;
+  bottom: 35%;
+  animation-delay: 2s;
+}
+
+@keyframes heartFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-30px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Confetti */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: -10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: confettiFall 3.5s ease-out forwards;
+  opacity: 0.9;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(600px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ============================= */
+/* CONTENIDO DE TEXTO */
+/* ============================= */
+.step3Content {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.step3Content h3 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #8e4603;
+  margin-bottom: 1rem;
+  font-family: var(--font-title);
+}
+
+.step3Content p {
+  font-size: 1.125rem;
+  color: #64493b;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.shippingBenefits {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.benefit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #ffb3f9;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(255, 179, 249, 0.2);
+  transition: all 0.3s ease;
+}
+
+.benefit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 179, 249, 0.3);
+  border-color: #ff8bf5;
+}
+
+.benefitIcon {
+  font-size: 1.25rem;
+}
+
+.benefit span:last-child {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #8e4603;
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+@media (max-width: 768px) {
+  .bagAnimationContainer {
+    height: 450px;
+  }
+
+  .bagImage {
+    max-width: 320px;
+  }
+
+  .shippingBenefits {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step3Content h3 {
+    font-size: 1.75rem;
+  }
+
+  .step3Content p {
+    font-size: 1rem;
+  }
+
+  .sparkle {
+    font-size: 2rem;
+  }
+
+  .heart {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bagAnimationContainer {
+    height: 400px;
+  }
+
+  .bagImage {
+    max-width: 280px;
+  }
+
+  .step3Content h3 {
+    font-size: 1.5rem;
+  }
+}
+
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+@media (max-width: 768px) {
+  .boxAnimationContainer {
+    height: 450px;
+    transform: scale(0.8);
+  }
+
+  .productFloating {
+    width: 160px;
+    height: 160px;
+  }
+
+  .shippingBox {
+    width: 250px;
+    height: 200px;
+  }
+
+  .boxLid {
+    width: 250px;
+    height: 60px;
+  }
+
+  .boxBody {
+    width: 250px;
+    height: 200px;
+    top: 60px;
+  }
+
+  .shippingBenefits {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+@media (max-width: 1024px) {
+  .stepsDescription {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .howItWorks {
+    padding: 5rem 0;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .stepNumbers {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .viewer3DWrapper {
+    height: 400px;
+  }
+
+  .boxAnimationContainer {
+    height: 350px;
+  }
+
+  .productFloating {
+    width: 200px;
+    height: 200px;
+  }
+
+  .box {
+    width: 250px;
+    height: 180px;
+  }
+
+  .shippingBenefits {
+    flex-direction: column;
+    align-items: center;
+  }
+}

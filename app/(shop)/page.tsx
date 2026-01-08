@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import ProductCarousel from "@/components/home/ProductCarousel"
 import { carouselImages, carouselConfig } from '@/lib/carousel-config'
 import FeaturesSection from "@/components/home/FeaturesSection"
+import HowItWorksSection from "@/components/home/HowItWorksSection"
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
@@ -89,58 +90,8 @@ export default function Home() {
       
       <FeaturesSection />
 
-      {/* How It Works */}
-      <section className={styles.howItWorks}>
-        <Container>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>¿Cómo Funciona?</h2>
-            <p className={styles.sectionSubtitle}>
-              Crea tu accesorio perfecto en 3 simples pasos
-            </p>
-          </div>
-          
-          <div className={styles.steps}>
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>
-                <span>01</span>
-              </div>
-              <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Elige tu Producto</h3>
-                <p className={styles.stepText}>
-                  Explora nuestra colección y selecciona la pieza base que más te guste.
-                </p>
-              </div>
-              <div className={styles.stepConnector}></div>
-            </div>
-
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>
-                <span>02</span>
-              </div>
-              <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Personaliza</h3>
-                <p className={styles.stepText}>
-                  Elige colores, acabados y agrega un grabado especial. Ve los cambios en tiempo real.
-                </p>
-              </div>
-              <div className={styles.stepConnector}></div>
-            </div>
-
-            <div className={styles.step}>
-              <div className={styles.stepNumber}>
-                <span>03</span>
-              </div>
-              <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Recibe en Casa</h3>
-                <p className={styles.stepText}>
-                  Realizamos tu pedido con cuidado y lo enviamos directamente a tu puerta.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
+      <HowItWorksSection />
+      
       {/* CTA Final */}
       <section className={styles.finalCta}>
         <Container>
