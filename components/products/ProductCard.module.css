@@ -190,12 +190,11 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-body);
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 12px rgba(166, 232, 228, 0.3);
 }
 
 .customizeButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(166, 232, 228, 0.4);
+  box-shadow: 0 8px 20px rgba(225, 232, 166, 0.4);
   background: #ffdb31;
 }
 

@@ -1,5 +1,5 @@
 .footer {
-  background: white;
+  background: #ffeafdff;
   color: #d1d5db;
   position: relative;
   overflow: hidden;
@@ -80,7 +80,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: #ffdb31;
+  background: #ffb3f9;
   background-size: 200% 100%;
   animation: shimmer 3s linear infinite;
 }
@@ -121,7 +121,7 @@
 }
 
 .privacyLink:hover {
-  color: #ffdb31;
+  color: #d3aacfff;
 }
 
 .decorativeImages {
@@ -393,7 +393,7 @@
 }
 
 .newsletterButton:hover {
-  background: linear-gradient(135deg, #ffb3f9, #ffdb31);
+  background: linear-gradient(135deg, #ffb3f9, #d3aacfff);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(166, 232, 228, 0.4);
 }
@@ -405,7 +405,7 @@
 /* Bottom Section */
 .bottomSection {
   padding: 2rem 0;
-  background: #ffdd3159;
+  background: rgb(167, 96, 157);
 }
 
 .bottomContent {
@@ -426,7 +426,7 @@
 
 .copyright {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: #fff0fdff;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -455,7 +455,7 @@
 
 .paymentText {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #fff0fdff;
   margin-right: 0.5rem;
 }
 

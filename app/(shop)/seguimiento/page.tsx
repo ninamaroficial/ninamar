@@ -61,7 +61,7 @@ export default function SeguimientoPage() {
     setOrder(null)
 
     if (!orderNumber.trim() || !email.trim()) {
-      setError('Por favor ingresa el número de orden y tu email')
+      setError('Por favor ingresa el número de orden y el email con el que realizaste la compra')
       return
     }
 

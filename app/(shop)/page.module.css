@@ -140,89 +140,6 @@
   letter-spacing: 0.02em;
 }
 
-/* ============================= */
-/* FEATURES SECTION */
-/* ============================= */
-.features {
-  padding: 6rem 0;
-  position: relative;
-  background-color: #f8fafa;
-  overflow: hidden;
-}
-
-/* Textura con opacidad */
-.features::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("/hero/texture2.png");
-  background-repeat: repeat;
-  background-size: 1920px 1080px;
-  opacity: 0.45; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Asegura que el contenido esté encima */
-.features > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Asegurar que el contenido esté encima */
-.featuresGrid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-}
-
-.feature {
-  text-align: center;
-  padding: 2rem;
-  border-radius: 1.5rem;
-  transition: all 0.3s ease;
-  border: 2px solid #ffb3f9;
-  background-color: #ffb3f94b;
-}
-
-.feature:hover {
-  border-color: #8e4603;
-  transform: translateY(-8px);
-}
-
-.featureIcon {
-  width: 80px;
-  height: 80px;
-   background-color: #ffb3f9;
-  border-radius: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin: 0 auto 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.feature:hover .featureIcon {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: #8e4603;
-}
-
-.featureTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #8e4603;
-  margin-bottom: 1rem;
-  font-family: var(--font-title);
-}
-
-.featureText {
-  font-size: 1rem;
-  color: #8e4603;
-  line-height: 1.7;
-}
 
 /* ============================= */
 /* HOW IT WORKS SECTION */
@@ -251,21 +168,6 @@
   pointer-events: none;
   z-index: 0;
 
-
-}
-
-/* ============================= */
-/* FEATURES SECTION */
-/* ============================= */
-.features {
-  padding: 6rem 0;
-  position: relative;
-  background-color: #f8fafa;
-  overflow: hidden;
-}
-
-/* Textura con opacidad */
-.features::before {
 
 }
 
@@ -562,12 +464,6 @@ background-image: url("/hero/texture1.png");
   .stat {
     padding: 10px 16px;
     font-size: 0.875rem;
-  }
-
-  /* Features */
-  .featuresGrid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
   }
 
   /* Steps */

@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: #ffffff;
+  background: white;
   overflow-x: hidden; /* ← AGREGAR para prevenir scroll horizontal */
 }
 
@@ -72,7 +72,7 @@
 .sectionTitle {
   font-size: clamp(2rem, 4vw, 2.5rem);
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 2rem;
   font-family: var(--font-title);
   text-align: center;
@@ -90,7 +90,7 @@
 
 .paragraphs p {
   font-size: 1.125rem;
-  color: #475569;
+  color: #8e4603;
   line-height: 1.8;
 }
 
@@ -114,8 +114,10 @@
 /* Values Section */
 .values {
   padding: 6rem 2rem; /* ← CAMBIAR de margin a padding */
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafa 100%);
+  background:  #ffeafdff;
   margin: 0; /* ← ELIMINAR margin negativo */
+    border-radius: 1rem;
+
 }
 
 .valuesGrid {
@@ -132,7 +134,7 @@
   background: #ffffff;
   padding: 2.5rem 2rem;
   border-radius: 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8e4603;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -158,14 +160,14 @@
 .valueTitle {
   font-size: 1.5rem;
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 1rem;
   font-family: var(--font-title);
 }
 
 .valueDescription {
   font-size: 1rem;
-  color: #64748b;
+  color: #8e4603;
   line-height: 1.6;
 }
 
@@ -188,7 +190,7 @@
 
 .commitmentText p {
   font-size: 1.125rem;
-  color: #475569;
+  color: #8e4603;
   line-height: 1.8;
   text-align: center;
 }

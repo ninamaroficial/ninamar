@@ -19,23 +19,25 @@
 .label {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #334155;
+  color: #8e4603;
 }
 
 .input,
 .textarea {
   padding: 0.875rem 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8e4603;
   border-radius: 0.5rem;
   font-size: 1rem;
   transition: all 0.2s;
   font-family: inherit;
+  background-color: rgba(255, 240, 253, 0.534);
+  color: #8e4603;
 }
 
 .input:focus,
 .textarea:focus {
   outline: none;
-  border-color: #ffeafdff;
+  border-color: #8e4603;
   box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.1);
 }
 
@@ -66,7 +68,7 @@
   gap: 0.5rem;
   padding: 1rem 2rem;
    background-color: #ffb3f9;
-  color: #0f172a;
+  color: #8e4603;
   border: none;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -78,7 +80,7 @@
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(166, 232, 228, 0.3);
+  box-shadow: 0 8px 16px rgba(230, 166, 232, 0.3);
 }
 
 .submitButton:disabled {

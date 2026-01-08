@@ -6,6 +6,7 @@ import styles from "./page.module.css"
 import type { Metadata } from 'next'
 import ProductCarousel from "@/components/home/ProductCarousel"
 import { carouselImages, carouselConfig } from '@/lib/carousel-config'
+import FeaturesSection from "@/components/home/FeaturesSection"
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
@@ -85,43 +86,8 @@ export default function Home() {
         </Container>
         
       </section>
-
-      {/* Features Section */}
-      <section className={styles.features}>
-        <Container>
-          <div className={styles.featuresGrid}>
-            <div className={styles.feature}>
-              <div className={styles.featureIcon}>
-                <Sparkles size={28} />
-              </div>
-              <h3 className={styles.featureTitle}>Personalización Total</h3>
-              <p className={styles.featureText}>
-                Elige colores, acabados y grabados. Cada pieza es única como tú.
-              </p>
-            </div>
-            
-            <div className={styles.feature}>
-              <div className={styles.featureIcon}>
-                <Shield size={28} />
-              </div>
-              <h3 className={styles.featureTitle}>Calidad Garantizada</h3>
-              <p className={styles.featureText}>
-                Materiales premium y acabados profesionales en cada accesorio.
-              </p>
-            </div>
-            
-            <div className={styles.feature}>
-              <div className={styles.featureIcon}>
-                <Truck size={28} />
-              </div>
-              <h3 className={styles.featureTitle}>Envío Gratis +$100K</h3>
-              <p className={styles.featureText}>
-                Envío a todo Colombia. Gratis en compras superiores a $100.000.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
+      
+      <FeaturesSection />
 
       {/* How It Works */}
       <section className={styles.howItWorks}>

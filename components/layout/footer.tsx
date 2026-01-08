@@ -200,27 +200,6 @@ useEffect(() => {
                 </a>
               </div>
 
-              {/* Contacto rápido para móvil */}
-              <div className={styles.quickContact}>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}>
-                    <Phone size={16} />
-                  </div>
-                  <span>+57 300 123 4567</span>
-                </div>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}>
-                    <Mail size={16} />
-                  </div>
-                  <span>ninamar.oficial@gmail.com</span>
-                </div>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}>
-                    <MapPin size={16} />
-                  </div>
-                  <span>Popayán, Cauca, Colombia</span>
-                </div>
-              </div>
             </div>
 
             {/* Links de Compañía */}
@@ -302,7 +281,7 @@ useEffect(() => {
           <div className={styles.bottomContent}>
             <div className={styles.copyright}>
               <span>© {currentYear} Niñamar.</span>
-              <span>Hecho con <span className={styles.heart}>♥</span> en Colombia</span>
+              <span>Hecho con <span className={styles.heart}>♥</span> en Popayán - Colombia</span>
             </div>
 
             {/* Métodos de Pago */}
@@ -317,12 +296,6 @@ useEffect(() => {
                   height={24}
                   className={styles.mercadopagoLogo}
                 />
-                {/* Iconos de métodos */}
-                <div className={styles.paymentIcons}>
-                  <span className={styles.paymentIcon} title="Tarjetas">💳</span>
-                  <span className={styles.paymentIcon} title="PSE">💰</span>
-                  <span className={styles.paymentIcon} title="Efectivo">🏪</span>
-                </div>
               </div>
             </div>
           </div>

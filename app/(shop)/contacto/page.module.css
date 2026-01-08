@@ -67,7 +67,7 @@
 .sectionTitle {
   font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 400;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 2rem;
   font-family: var(--font-title);
 }
@@ -85,20 +85,14 @@
 }
 
 .infoCard {
-  background: #f8fafc;
+  background-color: rgba(255, 240, 253, 0.534);
   padding: 2rem;
   border-radius: 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #8e4603;
   display: flex;
   gap: 1.25rem;
   transition: all 0.3s ease;
   overflow: hidden; /* ← AGREGAR */
-}
-
-.infoCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(166, 232, 228, 0.15);
-  border-color: #ffeafdff;
 }
 
 .iconWrapper {
@@ -109,7 +103,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0f172a;
+  color: #8e4603;
   flex-shrink: 0;
 }
 
@@ -123,7 +117,7 @@
 .infoTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 0.5rem;
   word-wrap: break-word; /* ← AGREGAR */
   overflow-wrap: break-word; /* ← AGREGAR */
@@ -132,7 +126,7 @@
 .infoLink {
   display: block;
   font-size: 1rem;
-  color: #0f766e;
+  color: #00a093;
   text-decoration: none;
   margin-bottom: 0.25rem;
   font-weight: 500;
@@ -148,14 +142,14 @@
 
 .infoText {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #8e4603;
   word-wrap: break-word; /* ← AGREGAR */
   overflow-wrap: break-word; /* ← AGREGAR */
 }
 
 /* Social Section */
 .socialSection {
-   background-color: #ffb3f9;
+   background-color: #ffeafdff;
   padding: 2.5rem;
   border-radius: 1rem;
   text-align: center;
@@ -164,7 +158,7 @@
 .socialTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #0f172a;
+  color: #8e4603;
   margin-bottom: 1.5rem;
   font-family: var(--font-title);
 }
@@ -181,8 +175,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #ffffff;
-  color: #0f172a;
+  background: #ffeafdff;
+  color: #8e4603;
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
@@ -202,7 +196,7 @@
 
 .formDescription {
   font-size: 1.0625rem;
-  color: #64748b;
+  color: #8e4603;
   line-height: 1.6;
   margin-bottom: 2rem;
 }

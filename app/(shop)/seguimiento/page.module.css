@@ -1,9 +1,26 @@
 .page {
   min-height: 100vh;
-  background: #fff3b8ff;
   overflow-x: hidden; /* ← AGREGAR para prevenir scroll horizontal */
+  padding-top: relative;
+  background-color: #fff3b8ff;
+    background-image: url("/seguimiento/texture1.png");
+background-blend-mode:lighten;
 }
 
+
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/seguimiento/texture1.png");
+
+  background-repeat: repeat;
+  background-size: 2000px 2000px;
+  opacity: 0.25; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
+  pointer-events: none;
+  z-index: -1;
+  top: 200px;
+}
 
 /* =========================================================
    HERO
