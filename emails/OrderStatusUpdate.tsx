@@ -514,7 +514,7 @@ const contactText = {
 }
 
 const contactButton = {
-  backgroundColor: '#a6e8e4',
+  backgroundColor: '#ffeafdff',
   color: '#0f172a',
   padding: '12px 32px',
   borderRadius: '8px',

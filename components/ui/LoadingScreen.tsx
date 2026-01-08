@@ -56,8 +56,8 @@ export default function LoadingScreen() {
           <svg className={styles.circle} viewBox="0 0 100 100">
             <defs>
               <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#a6e8e4" />
-                <stop offset="50%" stopColor="#8dd4cf" />
+                <stop offset="0%" stopColor="#ffeafdff" />
+                <stop offset="50%" stopColor="#d3aacfff" />
                 <stop offset="100%" stopColor="#6ec1bc" />
               </linearGradient>
             </defs>

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #a6e8e4;
-  --color-primary-dark: #8dd4cf;
-  --color-primary-light: #c5f2ef;
+  --color-primary: #ffeafdff;
+  --color-primary-dark: #d3aacfff;
+  --color-primary-light: #cfff0fdff;
   --font-title: 'Helmison Notes', cursive;
   --font-body: 'Corbel', system-ui, sans-serif;
 }

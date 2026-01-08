@@ -130,7 +130,7 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: #a6e8e4;
+  color: #ffeafdff;
   font-weight: bold;
 }
 
@@ -169,7 +169,7 @@
 }
 
 .secondaryButton:hover {
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
   color: #1f2937;
 }
 

@@ -138,7 +138,7 @@
   font-size: 2.5rem;
   font-weight: 900;
   font-family: var(--font-title);
-  background: linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 50%, #6ec1bc 100%);
+  background: linear-gradient(135deg, #ffeafdff 0%, #d3aacfff 50%, #6ec1bc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -217,7 +217,7 @@
 
 .progress {
   height: 100%;
-  background: linear-gradient(90deg, #a6e8e4, #8dd4cf, #a6e8e4);
+  background: linear-gradient(90deg, #ffeafdff, #d3aacfff, #ffeafdff);
   background-size: 200% 100%;
   border-radius: 9999px;
   animation: progressSlide 2s ease-in-out infinite;

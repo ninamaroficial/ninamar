@@ -69,7 +69,7 @@
 
 .orderNumber svg,
 .orderEmail svg {
-  color: #a6e8e4;
+  color: #ffeafdff;
   flex-shrink: 0;
 }
 
@@ -156,7 +156,7 @@
 }
 
 .secondaryButton:hover {
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
   color: #1f2937;
 }
 

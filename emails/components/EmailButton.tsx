@@ -15,7 +15,7 @@ export const EmailButton = ({ href, children }: EmailButtonProps) => {
 }
 
 const button = {
-  background: 'linear-gradient(135deg, #a6e8e4, #8dd4cf)',
+  background: 'linear-gradient(135deg, #ffeafdff, #d3aacfff)',
   color: '#0f172a',
   padding: '16px 40px',
   borderRadius: '50px',

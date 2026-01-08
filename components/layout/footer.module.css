@@ -474,7 +474,7 @@
 
 .paymentIcon:hover {
   background: rgba(166, 232, 228, 0.1);
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
   transform: translateY(-2px);
 }
 

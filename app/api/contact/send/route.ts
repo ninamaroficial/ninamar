@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
               </table>
               
               <h3 style="color: #0f172a; margin-top: 30px;">Mensaje</h3>
-              <div style="background: #ffffff; padding: 20px; border-radius: 8px; border-left: 4px solid #a6e8e4;">
+              <div style="background: #ffffff; padding: 20px; border-radius: 8px; border-left: 4px solid #ffeafdff;">
                 ${message.replace(/\n/g, '<br>')}
               </div>
               
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
                 Gracias por contactarnos. Hemos recibido tu mensaje y te responderemos lo antes posible.
               </p>
               
-              <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #a6e8e4;">
+              <div style="background: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffeafdff;">
                 <p style="margin: 0; color: #64748b; font-size: 14px;"><strong>Tu mensaje:</strong></p>
                 <p style="color: #475569; margin: 10px 0 0;">
                   ${message.replace(/\n/g, '<br>')}
@@ -160,8 +160,8 @@ export async function POST(request: NextRequest) {
                   Síguenos en redes sociales
                 </p>
                 <p style="margin: 10px 0;">
-                  <a href="https://www.instagram.com/ninamar_oficial" style="color: #a6e8e4; text-decoration: none; margin: 0 10px;">Instagram</a>
-                  <a href="https://www.facebook.com/profile.php?id=61585522993204" style="color: #a6e8e4; text-decoration: none; margin: 0 10px;">Facebook</a>
+                  <a href="https://www.instagram.com/ninamar_oficial" style="color: #ffeafdff; text-decoration: none; margin: 0 10px;">Instagram</a>
+                  <a href="https://www.facebook.com/profile.php?id=61585522993204" style="color: #ffeafdff; text-decoration: none; margin: 0 10px;">Facebook</a>
                 </p>
                 <p style="color: #94a3b8; font-size: 12px; margin: 10px 0 0;">
                   © ${new Date().getFullYear()} Niñamar. Popayán, Cauca, Colombia

@@ -23,24 +23,24 @@
 
 /* Variants */
 .primary {
-  background-color: #a6e8e4;
+  background-color: #ffeafdff;
   color: #1f2937;
-  border: 2px solid #8dd4cf;
+  border: 2px solid #d3aacfff;
 }
 
 .primary:hover {
-  background-color: #8dd4cf;
+  background-color: #d3aacfff;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
 }
 
 .primary:focus {
-  ring-color: #a6e8e4;
+  ring-color: #ffeafdff;
 }
 
 .secondary {
   background-color: #1f2937;
-  color: #a6e8e4;
+  color: #ffeafdff;
   border: 2px solid #1f2937;
 }
 
@@ -55,18 +55,18 @@
 }
 
 .outline {
-  border: 2px solid #a6e8e4;
+  border: 2px solid #ffeafdff;
   color: #1f2937;
   background-color: transparent;
 }
 
 .outline:hover {
-  background-color: #c5f2ef;
+  background-color: #cfff0fdff;
   transform: translateY(-2px);
 }
 
 .outline:focus {
-  ring-color: #a6e8e4;
+  ring-color: #ffeafdff;
 }
 
 .ghost {
@@ -75,11 +75,11 @@
 }
 
 .ghost:hover {
-  background-color: #c5f2ef;
+  background-color: #cfff0fdff;
 }
 
 .ghost:focus {
-  ring-color: #a6e8e4;
+  ring-color: #ffeafdff;
 }
 
 /* Sizes */

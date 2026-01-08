@@ -51,7 +51,7 @@ const socialLinks = {
 }
 
 const link = {
-  color: '#a6e8e4',
+  color: '#ffeafdff',
   textDecoration: 'none',
 }
 

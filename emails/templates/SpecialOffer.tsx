@@ -189,7 +189,7 @@ const couponSection = {
   padding: '24px',
   backgroundColor: '#f8fafc',
   borderRadius: '12px',
-  border: '2px dashed #a6e8e4',
+  border: '2px dashed #ffeafdff',
   margin: '0 0 24px',
 }
 
@@ -205,7 +205,7 @@ const couponCode_style = {
   display: 'inline-block',
   padding: '12px 24px',
   backgroundColor: '#0f172a',
-  color: '#a6e8e4',
+  color: '#ffeafdff',
   fontSize: '24px',
   fontWeight: '700',
   borderRadius: '8px',

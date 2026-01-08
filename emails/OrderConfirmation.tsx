@@ -280,7 +280,7 @@ const container = {
 
 // Header
 const header = {
-  background: 'linear-gradient(135deg, #a6e8e4 0%, #8dd4cf 50%, #6ec1bc 100%)',
+  background: 'linear-gradient(135deg, #ffeafdff 0%, #d3aacfff 50%, #6ec1bc 100%)',
   padding: '48px 32px',
   textAlign: 'center' as const,
 }
@@ -488,7 +488,7 @@ const itemImagePlaceholder = {
   width: '50px',
   height: '50px',
   borderRadius: '8px',
-  backgroundColor: '#a6e8e4',
+  backgroundColor: '#ffeafdff',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -669,7 +669,7 @@ const ctaText = {
 }
 
 const ctaButton = {
-  backgroundColor: '#a6e8e4',
+  backgroundColor: '#ffeafdff',
   color: '#0f172a',
   padding: '14px 32px',
   borderRadius: '8px',

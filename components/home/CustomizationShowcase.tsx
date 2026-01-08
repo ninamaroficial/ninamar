@@ -21,7 +21,7 @@ export default function CustomizationShowcase() {
       icon: "🎨",
       title: "Personaliza el Diseño",
       description: "Combina formas, tamaños y estilos para crear algo único",
-      color: "#a6e8e4"
+      color: "#ffeafdff"
     },
     {
       icon: "✨",

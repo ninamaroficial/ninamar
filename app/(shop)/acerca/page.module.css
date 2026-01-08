@@ -14,8 +14,8 @@
 
   /* Fondo integrado con tus colores */
   background:
-    radial-gradient(circle at top left, #a6e8e4 0%, transparent 55%),
-    radial-gradient(circle at bottom right,  #a6e8e4 0%, transparent 60%),
+    radial-gradient(circle at top left, #ffeafdff 0%, transparent 55%),
+    radial-gradient(circle at bottom right,  #ffeafdff 0%, transparent 60%),
     linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
 }
 
@@ -140,7 +140,7 @@
 .valueCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(166, 232, 228, 0.15);
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
 }
 
 .valueIcon {

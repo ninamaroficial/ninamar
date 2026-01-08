@@ -40,7 +40,7 @@
 
 .select:focus {
   outline: none;
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
   box-shadow: 0 0 0 3px rgba(166, 232, 228, 0.2);
 }
 

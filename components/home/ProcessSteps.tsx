@@ -23,7 +23,7 @@ export default function ProcessSteps() {
       title: "Personaliza el Diseño",
       description: "Escoge materiales, colores, piedras y acabados. Visualiza en tiempo real",
       icon: "🎨",
-      color: "#a6e8e4"
+      color: "#ffeafdff"
     },
     {
       number: "03",

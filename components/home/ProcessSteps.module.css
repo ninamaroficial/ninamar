@@ -63,7 +63,7 @@
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg, #a6e8e4, #8dd4cf);
+    background: linear-gradient(180deg, #ffeafdff, #d3aacfff);
     transform: translateX(-50%);
   }
 }
@@ -98,7 +98,7 @@
 }
 
 .stepCard:hover {
-  border-color: #a6e8e4;
+  border-color: #ffeafdff;
   box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.25);
 }
 
@@ -153,7 +153,7 @@
   bottom: -2rem;
   width: 3px;
   height: 2rem;
-  background: linear-gradient(180deg, #a6e8e4, #8dd4cf);
+  background: linear-gradient(180deg, #ffeafdff, #d3aacfff);
   transform: translateX(-50%);
   transform-origin: top;
   display: none;

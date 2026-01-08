@@ -79,7 +79,7 @@ export const metadata: Metadata = {
       {
         rel: 'mask-icon',
         url: '/favicon.svg',
-        color: '#8dd4cf',
+        color: '#d3aacfff',
       },
     ],
   },
@@ -112,7 +112,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <meta name="theme-color" content="#a6e8e4" />
+        <meta name="theme-color" content="#ffeafdff" />
         <meta name="color-scheme" content="light" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
