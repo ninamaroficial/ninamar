@@ -58,7 +58,7 @@ export default function LoadingScreen() {
               <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#ffeafdff" />
                 <stop offset="50%" stopColor="#d3aacfff" />
-                <stop offset="100%" stopColor="#6ec1bc" />
+                <stop offset="100%" stopColor="#fff3b8ff" />
               </linearGradient>
             </defs>
             <circle
