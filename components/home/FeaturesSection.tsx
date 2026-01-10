@@ -36,9 +36,18 @@ const features: Feature[] = [
 export default function FeaturesSection() {
   const [isVisible, setIsVisible] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    // Detectar si es móvil
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -53,6 +62,7 @@ export default function FeaturesSection() {
     }
 
     return () => {
+      window.removeEventListener('resize', checkMobile)
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current)
       }
@@ -60,22 +70,27 @@ export default function FeaturesSection() {
   }, [])
 
   useEffect(() => {
+    // Solo activar parallax en desktop
+    if (isMobile) return
+
     const handleScroll = () => {
       setScrollY(window.scrollY)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isMobile])
 
   const getParallaxStyle = (index: number) => {
-    if (!sectionRef.current) return {}
+    // Desactivar parallax en móvil
+    if (isMobile || !sectionRef.current) return {}
     
     const rect = sectionRef.current.getBoundingClientRect()
     const sectionTop = rect.top + window.scrollY
     const offset = scrollY - sectionTop
     
-    const parallaxSpeed = 0.15
+    // Parallax más suave
+    const parallaxSpeed = 0.08
     const yOffset = offset * parallaxSpeed * (index % 2 === 0 ? 1 : -1)
     
     return {
@@ -120,6 +135,8 @@ export default function FeaturesSection() {
                         width={520}
                         height={520}
                         className={styles.featureImage}
+                        quality={75}
+                        priority={index < 2}
                       />
                     </div>
                     <div className={styles.featureImageGlow}></div>

@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { titleFont, bodyFont } from './fonts'
 import "./globals.css";
+import { Clicker_Script } from 'next/font/google'
+
+const clickerScript = Clicker_Script({ 
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-clicker'
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://niñamar.com'),
@@ -120,7 +127,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Niñamar" />
         <link rel="canonical" href="https://niñamar.com" />
       </head>
-      <body className={`${titleFont.variable} ${bodyFont.variable}`}>
+      <body className={`${titleFont.variable} ${bodyFont.variable} ${clickerScript.variable}`}>
         {children}
       </body>
     </html>

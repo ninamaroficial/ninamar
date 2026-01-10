@@ -513,3 +513,138 @@
     padding: 1.75rem 1.25rem;
   }
 }
+
+/* ============================= */
+/* RESPONSIVE - MOBILE */
+/* ============================= */
+@media (max-width: 768px) {
+  .features {
+    padding: 4rem 0;
+  }
+
+  .featuresGrid {
+    gap: 2rem;
+    max-width: 100%;
+  }
+
+  /* Desactiva animaciones complejas en móvil */
+  .featureWrapper {
+    will-change: auto;
+  }
+
+  /* Simplifica entrada en móvil - solo vertical */
+  .featureWrapper.from-left,
+  .featureWrapper.from-right {
+    transform: translateY(20px);
+  }
+
+  .featureWrapper.visible {
+    transform: translateY(0);
+  }
+
+  /* IMÁGENES MÁS GRANDES EN MÓVIL */
+  .featureImageWrapper {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1.5rem;
+  }
+
+  .featureImageContainer {
+    padding: 18px;
+    /* Animación más suave en móvil */
+    animation: floatImageMobile 5s ease-in-out infinite;
+  }
+
+  @keyframes floatImageMobile {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  .featureImage {
+    /* Desactiva rotación en móvil */
+    animation: none;
+  }
+
+  .featureTitle {
+    font-size: 1.375rem;
+  }
+
+  .featureText {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .featureContent {
+    padding: 2.25rem 1.75rem;
+  }
+
+  /* Oculta decoración de fondo en móvil */
+  .decorCircle1,
+  .decorCircle2,
+  .decorCircle3 {
+    display: none;
+  }
+
+  /* Reduce glow en móvil */
+  .featureImageGlow {
+    opacity: 0.4;
+  }
+
+  .feature:hover .featureImageGlow {
+    opacity: 0.6;
+  }
+}
+
+/* MÓVILES PEQUEÑOS */
+@media (max-width: 480px) {
+  .featureImageWrapper {
+    width: 130px;
+    height: 130px;
+  }
+
+  .featureImageContainer {
+    padding: 16px;
+  }
+
+  .featureContent {
+    padding: 2rem 1.5rem;
+  }
+
+  .featureTitle {
+    font-size: 1.3rem;
+  }
+
+  .featureText {
+    font-size: 0.9375rem;
+  }
+}
+
+/* MÓVILES MUY PEQUEÑOS */
+@media (max-width: 375px) {
+  .featureImageWrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .featureContent {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+/* Preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .featureImageContainer,
+  .featureImage,
+  .featureDecoration span,
+  .featureImageGlow {
+    animation: none !important;
+  }
+
+  .feature:hover .featureImageContainer {
+    transform: translateY(-8px) scale(1.05);
+  }
+}

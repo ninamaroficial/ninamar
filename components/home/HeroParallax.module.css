@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ffeafdff 0%, #d3aacfff 50%, #cfff0fdff 100%);
+  background: linear-gradient(135deg, #ffeafdff 0%, #d3aacfff 50%, rgb(253, 207, 253) 100%);
 }
 
 .backgroundLayers {

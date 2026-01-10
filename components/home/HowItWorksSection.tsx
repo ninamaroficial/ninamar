@@ -34,27 +34,12 @@ const annotations = [
   }
 ]
 
-// ← Elimina las props aquí
 export default function HowItWorksSection() {
-  const [scrollProgress, setScrollProgress] = useState(0)
   const [isStep3Visible, setIsStep3Visible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const step3Ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return
-
-      const rect = sectionRef.current.getBoundingClientRect()
-      const sectionHeight = rect.height
-      const viewportHeight = window.innerHeight
-      
-      const start = rect.top
-      const progress = Math.max(0, Math.min(1, 1 - (start / (sectionHeight - viewportHeight))))
-      
-      setScrollProgress(progress)
-    }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.target === step3Ref.current) {
@@ -68,11 +53,7 @@ export default function HowItWorksSection() {
       observer.observe(step3Ref.current)
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-
     return () => {
-      window.removeEventListener('scroll', handleScroll)
       if (step3Ref.current) {
         observer.unobserve(step3Ref.current)
       }
@@ -82,27 +63,18 @@ export default function HowItWorksSection() {
   return (
     <section ref={sectionRef} className={styles.howItWorks}>
       <Container>
-        {/* Header */}
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>¿Cómo Funciona?</h2>
-          <p className={styles.sectionSubtitle}>
-            Crea tu accesorio perfecto en 3 simples pasos
-          </p>
+        {/* Header Principal */}
+        <div className={styles.mainHeader}>
+          <h2 className={styles.mainTitle}>¿Cómo Funciona?</h2>
         </div>
 
         {/* Step 1 y 2: Viewer 3D con anotaciones */}
         <div className={styles.stepsContainer}>
           <div className={styles.step3DContainer}>
-            <div className={styles.stepNumbers}>
-              <div className={styles.stepBadge}>
-                <span className={styles.stepNumber}>01</span>
-                <span className={styles.stepLabel}>Elige tu Producto</span>
-              </div>
-              <div className={styles.stepBadge}>
-                <span className={styles.stepNumber}>02</span>
-                <span className={styles.stepLabel}>Personaliza</span>
-              </div>
-            </div>
+            {/* Título Script Grande */}
+            <h3 className={styles.stepScriptTitle}>
+              Elige tu producto y personalízalo
+            </h3>
 
             {/* Contenedor del viewer 3D */}
             <div className={styles.viewer3DWrapper}>
@@ -119,7 +91,6 @@ export default function HowItWorksSection() {
                       top: `${annotation.position.y}%`,
                     }}
                   >
-
                     {/* Punto interactivo */}
                     <div className={styles.annotationDot}>
                       <div className={styles.annotationPulse}></div>
@@ -139,87 +110,77 @@ export default function HowItWorksSection() {
                 <span>🖱️ Arrastra para rotar</span>
               </div>
             </div>
-
           </div>
 
-{/* Step 3: Imagen de bolsa personalizada */}
-<div 
-  ref={step3Ref}
-  className={`${styles.step3Container} ${isStep3Visible ? styles.visible : ''}`}
->
-  <div className={styles.stepBadge}>
-    <span className={styles.stepNumber}>03</span>
-    <span className={styles.stepLabel}>Recibe en Casa</span>
-  </div>
-
-  <div className={styles.bagAnimationContainer}>
-    {/* Tu imagen de la bolsa */}
-    <div className={`${styles.bagImage} ${isStep3Visible ? styles.bagAnimated : ''}`}>
-      <Image
-        src="/hero/bolsa.png"
-        alt="Bolsa de regalo Niñamar"
-        width={400}
-        height={500}
-        className={styles.bagImageElement}
-        priority
-      />
-    </div>
-
-    {/* Elementos decorativos */}
-    <div className={styles.decorativeElements}>
-      <div className={`${styles.sparkle} ${styles.sparkle1}`}>✨</div>
-      <div className={`${styles.sparkle} ${styles.sparkle2}`}>💫</div>
-      <div className={`${styles.sparkle} ${styles.sparkle3}`}>⭐</div>
-      <div className={`${styles.sparkle} ${styles.sparkle4}`}>✨</div>
-      <div className={`${styles.sparkle} ${styles.sparkle5}`}>💖</div>
-      <div className={`${styles.sparkle} ${styles.sparkle6}`}>🎀</div>
-      
-      {/* Corazones flotantes */}
-      <div className={`${styles.heart} ${styles.heart1}`}>💕</div>
-      <div className={`${styles.heart} ${styles.heart2}`}>💗</div>
-    </div>
-
-    {/* Confetti cuando aparece */}
-    {isStep3Visible && (
-      <div className={styles.confetti}>
-        {[...Array(25)].map((_, i) => (
+          {/* Step 3: Imagen de bolsa personalizada */}
           <div 
-            key={i} 
-            className={styles.confettiPiece}
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2.5}s`,
-              backgroundColor: ['#ffb3f9', '#ff8bf5', '#ffdb31', '#ffc0e8'][Math.floor(Math.random() * 4)]
-            }}
-          />
-        ))}
-      </div>
-    )}
-  </div>
+            ref={step3Ref}
+            className={`${styles.step3Container} ${isStep3Visible ? styles.visible : ''}`}
+          >
+            {/* Título Script Grande */}
+            <h3 className={styles.stepScriptTitle}>
+              Recíbelo en casa
+            </h3>
 
-  {/* Texto descriptivo */}
-  <div className={styles.step3Content}>
-    <h3>Recibe en Casa</h3>
-    <p>
-      Tu accesorio personalizado llega en una hermosa bolsa de regalo, 
-      listo para usar o regalar. Sin costo adicional.
-    </p>
-    <div className={styles.shippingBenefits}>
-      <div className={styles.benefit}>
-        <span className={styles.benefitIcon}>🎁</span>
-        <span>Empaque de regalo</span>
-      </div>
-      <div className={styles.benefit}>
-        <span className={styles.benefitIcon}>🚚</span>
-        <span>Envío gratis +$100K</span>
-      </div>
-      <div className={styles.benefit}>
-        <span className={styles.benefitIcon}>⏱️</span>
-        <span>3-5 días hábiles</span>
-      </div>
-    </div>
-  </div>
-</div>
+            <div className={styles.bagAnimationContainer}>
+              {/* Tu imagen de la bolsa */}
+              <div className={`${styles.bagImage} ${isStep3Visible ? styles.bagAnimated : ''}`}>
+                <Image
+                  src="/hero/bolsa1.png"
+                  alt="Bolsa de regalo Niñamar"
+                  width={400}
+                  height={500}
+                  className={styles.bagImageElement}
+                  priority
+                />
+              </div>
+
+              {/* Elementos decorativos */}
+              <div className={styles.decorativeElements}>
+                <div className={`${styles.sparkle} ${styles.sparkle1}`}>✨</div>
+                <div className={`${styles.sparkle} ${styles.sparkle2}`}>💫</div>
+                <div className={`${styles.sparkle} ${styles.sparkle3}`}>⭐</div>
+                <div className={`${styles.sparkle} ${styles.sparkle4}`}>✨</div>
+                <div className={`${styles.sparkle} ${styles.sparkle5}`}>💖</div>
+                <div className={`${styles.sparkle} ${styles.sparkle6}`}>🎀</div>
+                
+                {/* Corazones flotantes */}
+                <div className={`${styles.heart} ${styles.heart1}`}>💕</div>
+                <div className={`${styles.heart} ${styles.heart2}`}>💗</div>
+              </div>
+
+              {/* Confetti cuando aparece */}
+              {isStep3Visible && (
+                <div className={styles.confetti}>
+                  {[...Array(25)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={styles.confettiPiece}
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 2.5}s`,
+                        backgroundColor: ['#ffb3f9', '#ff8bf5', '#ffdb31', '#ffc0e8'][Math.floor(Math.random() * 4)]
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Texto descriptivo */}
+            <div className={styles.step3Content}>
+              <p className={styles.step3Description}>
+                Tu accesorio personalizado llega en una hermosa bolsa de regalo, 
+                listo para usar o regalar. Sin costo adicional.
+              </p>
+              <div className={styles.shippingBenefits}>
+                <div className={styles.benefit}>
+                  <span className={styles.benefitIcon}>⏱️</span>
+                  <span>5-7 días hábiles</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>
