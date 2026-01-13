@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import type { ProductWithDetails } from "@/lib/supabase/queries"
 import { getProductCustomizations } from "@/lib/supabase/queries-client"
@@ -20,7 +19,21 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const [customizationOptions, setCustomizationOptions] = useState<any[]>([])
   const [isLoadingOptions, setIsLoadingOptions] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
   
+  // Detectar si es móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   // Obtener imágenes del producto
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -66,20 +79,23 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const handleImageClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (images.length > 0) {
+    // Solo abrir modal en desktop
+    if (!isMobile && images.length > 0) {
       setIsGalleryOpen(true)
     }
   }
 
-  // Cambiar imagen en hover (solo si hay múltiples imágenes)
+  // Cambiar imagen en hover (solo desktop)
   const handleMouseEnter = () => {
-    if (images.length > 1) {
+    if (!isMobile && images.length > 1) {
       setCurrentImageIndex(1)
     }
   }
 
   const handleMouseLeave = () => {
-    setCurrentImageIndex(0)
+    if (!isMobile) {
+      setCurrentImageIndex(0)
+    }
   }
 
   const currentImage = images[currentImageIndex] || primaryImage
@@ -87,15 +103,73 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   return (
     <>
       <article className={styles.card}>
-        {/* Imagen con hover y click para galería */}
-        <div 
-          className={styles.imageWrapper}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={handleImageClick}
-        >
-          {currentImage ? (
-            <>
+        {/* VERSIÓN MÓVIL: Carrusel con scroll */}
+        {isMobile ? (
+          <div className={styles.imageCarousel}>
+            <div className={styles.imagesWrapper} ref={scrollRef}>
+              {images.length > 0 ? (
+                images.map((image, idx) => (
+                  <div key={idx} className={styles.imageSlide}>
+                    <Image
+                      src={image.image_url}
+                      alt={image.alt_text || product.name}
+                      fill
+                      className={styles.image}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={index < 3 && idx === 0}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className={styles.imagePlaceholder}>
+                  <span className={styles.placeholderIcon}>💎</span>
+                </div>
+              )}
+            </div>
+
+            {/* Indicadores de scroll */}
+            {images.length > 1 && (
+              <div className={styles.scrollIndicators}>
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    className={styles.indicator}
+                    onClick={() => {
+                      if (scrollRef.current) {
+                        scrollRef.current.scrollTo({
+                          left: scrollRef.current.offsetWidth * idx,
+                          behavior: 'smooth'
+                        })
+                      }
+                    }}
+                    aria-label={`Ver imagen ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {/* Badge de descuento */}
+            {hasDiscount && discount > 0 && (
+              <div className={styles.badge}>
+                -{discount}%
+              </div>
+            )}
+
+            {product.stock === 0 && (
+              <div className={styles.outOfStock}>
+                Agotado
+              </div>
+            )}
+          </div>
+        ) : (
+          /* VERSIÓN DESKTOP: Imagen con hover y modal */
+          <div 
+            className={styles.imageWrapper}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleImageClick}
+          >
+            {currentImage ? (
               <Image
                 src={currentImage.image_url}
                 alt={currentImage.alt_text || product.name}
@@ -104,29 +178,29 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={index < 6}
               />
-            </>
-          ) : (
-            <div className={styles.imagePlaceholder}>
-              <span className={styles.placeholderIcon}>💎</span>
-            </div>
-          )}
-          
-          {/* ✅ Solo mostrar badge si hay descuento real */}
-          {hasDiscount && discount > 0 && (
-            <div className={styles.badge}>
-              -{discount}%
-            </div>
-          )}
+            ) : (
+              <div className={styles.imagePlaceholder}>
+                <span className={styles.placeholderIcon}>💎</span>
+              </div>
+            )}
+            
+            {/* Badge de descuento */}
+            {hasDiscount && discount > 0 && (
+              <div className={styles.badge}>
+                -{discount}%
+              </div>
+            )}
 
-          {product.stock === 0 && (
-            <div className={styles.outOfStock}>
-              Agotado
-            </div>
-          )}
-        </div>
+            {product.stock === 0 && (
+              <div className={styles.outOfStock}>
+                Agotado
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Contenido */}
-        <Link href={`/productos/${product.slug}`} className={styles.content}>
+        <div className={styles.content}>
           {product.category && (
             <p className={styles.category}>{product.category.name}</p>
           )}
@@ -139,14 +213,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <div className={styles.priceWrapper}>
             <span className={styles.price}>{formatPrice(product.price)}</span>
-            {/* ✅ Solo mostrar precio original si hasDiscount es true */}
             {hasDiscount && product.original_price != null && (
               <span className={styles.originalPrice}>
                 {formatPrice(product.original_price)}
               </span>
             )}
           </div>
-        </Link>
+        </div>
 
         {/* Footer con botón */}
         <div className={styles.footer}>
@@ -155,7 +228,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             className={styles.customizeButton}
             disabled={isLoadingOptions || product.stock === 0}
           >
-            {isLoadingOptions ? 'Cargando...' : 'Personalizar'}
+            {isLoadingOptions ? 'Cargando...' : 'Comprar'}
           </button>
         </div>
       </article>
@@ -170,8 +243,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         />
       )}
 
-      {/* Modal de galería */}
-      {isGalleryOpen && (
+      {/* Modal de galería (solo desktop) */}
+      {!isMobile && isGalleryOpen && (
         <ImageGalleryModal
           images={images}
           productName={product.name}

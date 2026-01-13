@@ -3,7 +3,7 @@ import localFont from 'next/font/local'
 
 export const titleFont = localFont({
   src: [
-      {
+    {
       path: '../public/fonts/helmison-notes.ttf',
       weight: '400',
       style: 'normal',
@@ -16,8 +16,8 @@ export const titleFont = localFont({
   ],
   variable: '--font-title',
   display: 'swap',
-  fallback: ['Georgia', 'serif'], // ← AGREGAR FALLBACK
-  preload: true, // ← ASEGURAR PRECARGA
+  fallback: ['Georgia', 'serif'],
+  preload: true,
 })
 
 export const bodyFont = localFont({
@@ -30,6 +30,6 @@ export const bodyFont = localFont({
   ],
   variable: '--font-body',
   display: 'swap',
-  fallback: ['system-ui', '-apple-system', 'Arial', 'sans-serif'], // ← AGREGAR FALLBACK
-  preload: true, // ← ASEGURAR PRECARGA
+  fallback: ['system-ui', '-apple-system', 'Arial', 'sans-serif'],
+  preload: true,
 })
