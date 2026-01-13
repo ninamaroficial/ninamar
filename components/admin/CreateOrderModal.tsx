@@ -59,11 +59,10 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
   const [orderStatus, setOrderStatus] = useState<'pending' | 'paid' | 'processing'>('pending')
   const [customerNotes, setCustomerNotes] = useState('')
 
+  const [shippingCost, setShippingCost] = useState<number>(0)
+
   // Cálculos
   const subtotal = orderItems.reduce((sum, item) => sum + item.total_price, 0)
-  const shippingCost = selectedState && selectedCity 
-    ? calculateShipping(selectedState, selectedCity, subtotal)
-    : 0
   const total = subtotal + shippingCost
 
   // Ciudades disponibles según el departamento seleccionado
@@ -217,7 +216,15 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
     setPaymentStatus('pending')
     setOrderStatus('pending')
     setCustomerNotes('')
+    setShippingCost(0)
     onClose()
+  }
+
+  const handleCalculateShipping = () => {
+    if (selectedState && selectedCity) {
+      const calculated = calculateShipping(selectedState, selectedCity, subtotal)
+      setShippingCost(calculated)
+    }
   }
 
   if (!isOpen) return null
@@ -422,12 +429,27 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
                 }).format(subtotal)}</span>
               </div>
               <div className={styles.summaryRow}>
-                <span>Envío:</span>
-                <span>{new Intl.NumberFormat('es-CO', {
-                  style: 'currency',
-                  currency: 'COP',
-                  minimumFractionDigits: 0
-                }).format(shippingCost)}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>Envío:</span>
+                  {selectedState && selectedCity && (
+                    <button
+                      type="button"
+                      onClick={handleCalculateShipping}
+                      className={styles.calculateButton}
+                      title="Calcular envío automáticamente"
+                    >
+                      <Calculator size={14} />
+                    </button>
+                  )}
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={shippingCost}
+                  onChange={(e) => setShippingCost(parseFloat(e.target.value) || 0)}
+                  className={styles.shippingInput}
+                />
               </div>
               <div className={styles.summaryRowTotal}>
                 <span>Total:</span>
