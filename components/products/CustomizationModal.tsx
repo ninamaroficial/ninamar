@@ -281,6 +281,74 @@ export default function CustomizationModal({
                 </div>
               </div>
             </div>
+{/* GALERÍA SOLO MÓVIL */}
+{currentImage && (
+  <div className={styles.mobileGallery}>
+    <div className={styles.mobileMainImage}>
+      <Image
+        src={currentImage.image_url}
+        alt={currentImage.alt_text || product.name}
+        fill
+        className={styles.productImage}
+        sizes="100vw"
+        priority
+      />
+
+      <button
+        className={styles.zoomButton}
+        onClick={() => setIsImageZoomed(true)}
+        aria-label="Zoom"
+      >
+        <ZoomIn size={20} />
+      </button>
+
+      {images.length > 1 && (
+        <>
+          <button
+            className={`${styles.imageNavButton} ${styles.prevImageButton}`}
+            onClick={handlePreviousImage}
+            aria-label="Imagen anterior"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            className={`${styles.imageNavButton} ${styles.nextImageButton}`}
+            onClick={handleNextImage}
+            aria-label="Siguiente imagen"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          <div className={styles.imageCounter}>
+            {currentImageIndex + 1} / {images.length}
+          </div>
+        </>
+      )}
+    </div>
+
+    {/* thumbnails móvil */}
+    {images.length > 1 && (
+      <div className={styles.mobileThumbs}>
+        {images.map((image, idx) => (
+          <button
+            key={idx}
+            className={`${styles.thumbnail} ${idx === currentImageIndex ? styles.thumbnailActive : ''}`}
+            onClick={() => setCurrentImageIndex(idx)}
+            aria-label={`Ver imagen ${idx + 1}`}
+          >
+            <Image
+              src={image.image_url}
+              alt={image.alt_text || `${product.name} ${idx + 1}`}
+              fill
+              className={styles.thumbnailImage}
+              sizes="80px"
+            />
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
             {/* PANEL DERECHO - Opciones scrolleables */}
             <div className={styles.optionsPanel}>
@@ -298,7 +366,7 @@ export default function CustomizationModal({
               </div>
 
               {/* Contenido scrolleable */}
-              <div className={styles.optionsContent}>
+              <div className={`${styles.optionsContent} ${isLastStep ? styles.optionsContentFinal : ""}`}>
                 {!isLastStep && currentOption ? (
                   <div className={styles.optionSection}>
                     <div className={styles.optionHeader}>

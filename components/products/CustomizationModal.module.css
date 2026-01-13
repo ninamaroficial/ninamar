@@ -942,3 +942,93 @@
     right: 0.5rem;
   }
 }
+
+/* ============================= */
+/* GALERÍA SOLO MÓVIL */
+/* ============================= */
+.mobileGallery {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .mobileGallery {
+    display: block;
+    padding: 1rem 1.5rem 0.5rem;
+    background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
+    border-bottom: 2px solid #ffb3f9;
+  }
+
+  .mobileMainImage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .mobileThumbs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 0 0.25rem;
+    overflow-x: auto;
+  }
+
+  .mobileThumbs .thumbnail {
+    min-width: 60px;
+    height: 60px;
+  }
+}
+
+/* ============================= */
+/* PASO FINAL (CANTIDAD) - MÁS COMPACTO EN MÓVIL */
+/* ============================= */
+.optionsContentFinal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1023px) {
+  .optionsContentFinal {
+    padding: 1rem 1.25rem;          /* menos padding */
+    overflow-y: hidden;             /* evita el scroll en el último paso */
+  }
+
+  .optionsContentFinal .finalStep {
+    width: 100%;
+  }
+
+  .optionsContentFinal .optionHeader {
+    margin-bottom: 1rem;            /* menos espacio */
+  }
+
+  .optionsContentFinal .quantitySelector {
+    gap: 1rem;                      /* antes 2rem */
+    margin: 1rem 0;                 /* antes 2rem 0 */
+  }
+
+  .optionsContentFinal .quantityButton {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.9rem;
+  }
+
+  .optionsContentFinal .quantityDisplay {
+    padding: 0.75rem 1.25rem;       /* más compacto */
+  }
+
+  .optionsContentFinal .quantityValue {
+    font-size: 2.2rem;              /* antes 3rem */
+  }
+
+  .optionsContentFinal .stockInfo {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .optionsContentFinal .quantityValue {
+    font-size: 2rem;
+  }
+}
