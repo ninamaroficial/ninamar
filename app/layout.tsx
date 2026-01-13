@@ -65,24 +65,18 @@ export const metadata: Metadata = {
   },
   
   // ✅ CONFIGURACIÓN DE ICONOS (FAVICON)
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/icon.png', type: 'image/png', sizes: '96x96' },
-    ],
-    shortcut: ['/favicon.ico'],
-    apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/favicon.svg',
-        color: '#d3aacfff',
-      },
-    ],
-  },
+icons: {
+  icon: [
+    { url: "/favicon.ico" }, // fallback principal
+    { url: "/favicon.svg", type: "image/svg+xml" },
+    { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+  ],
+  apple: [
+    { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+  ],
+},
+
   
   // ✅ MANIFEST (PWA)
   manifest: '/manifest.json',
@@ -119,6 +113,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Niñamar" />
         <link rel="canonical" href="https://niñamar.com" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
       <body className={`${titleFont.variable} ${bodyFont.variable}`}>
         {children}
