@@ -14,22 +14,22 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    title: "Personalización Total",
-    description: "Elige colores, acabados y grabados. Cada pieza es única como tú.",
+    title: "¡Tú lo imaginas y nosotros lo hacemos realidad!",
+    description: "Elige colores, acabados y tamaños. Cada pieza es tan única como tú",
     direction: 'left',
-    image: '/features/imagen1.png'
+    image: '/features/perTotal.png'
   },
   {
-    title: "Calidad Garantizada",
-    description: "Materiales premium y acabados profesionales en cada accesorio.",
+    title: "¡Lindo por fuera, fuerte por dentro!",
+    description: "Calidad garantizada y acabados profesionales en cada accesorio",
     direction: 'right',
-    image: '/features/imagen2.png'
+    image: '/features/calidad2.png'
   },
   {
     title: "Envío Gratis +$100K",
-    description: "Envío a todo Colombia. Gratis en compras superiores a $100.000.",
+    description: "Envío a todo Colombia. Gratis en compras superiores a $100.000",
     direction: 'left',
-    image: '/features/imagen3.png'
+    image: '/features/envioGratis.png'
   }
 ]
 
