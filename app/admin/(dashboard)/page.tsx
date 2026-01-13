@@ -3,6 +3,8 @@ import { Settings } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import CreateOrderModal from '@/components/admin/CreateOrderModal'
+import { Plus } from 'lucide-react'
 import {
   ShoppingBag,
   DollarSign,
@@ -52,6 +54,7 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [paymentFilter, setPaymentFilter] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -243,10 +246,19 @@ export default function AdminDashboardPage() {
         {/* Orders Table */}
         <div className={styles.tableSection}>
           <div className={styles.tableHeader}>
-            <h2 className={styles.tableTitle}>Órdenes Recientes</h2>
-            <p className={styles.tableSubtitle}>
-              {orders.length} órdenes encontradas
-            </p>
+            <div>
+              <h2 className={styles.tableTitle}>Órdenes Recientes</h2>
+              <p className={styles.tableSubtitle}>
+                {orders.length} órdenes encontradas
+              </p>
+            </div>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className={styles.createButton}
+            >
+              <Plus size={20} />
+              Crear Orden Manual
+            </button>
           </div>
 
           {isLoading ? (
@@ -327,6 +339,18 @@ export default function AdminDashboardPage() {
           )}
         </div>
       </div>
+
+      <CreateOrderModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => {
+          setShowCreateModal(false)
+          loadData()
+        }}
+      />
     </div>
+
+    
   )
+
 }
