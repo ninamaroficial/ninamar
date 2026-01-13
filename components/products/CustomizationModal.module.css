@@ -859,14 +859,13 @@
     flex: 0 0 auto;
   }
 
-  /* Cambiamos el alto para que NO se coma la pantalla */
-  .mobileMainImage {
-    position: relative;
-    width: 100%;
-    height: clamp(180px, 28dvh, 280px);
-    border-radius: 1rem;
-    overflow: hidden;
-  }
+.mobileMainImage {
+  position: relative;
+  width: 100%;
+  height: clamp(220px, 36dvh, 360px);
+  border-radius: 1rem;
+  overflow: hidden;
+}
 
   .mobileThumbs {
     display: flex;
@@ -1005,7 +1004,7 @@
    ========================================================= */
 @media (max-width: 480px) {
   .mobileMainImage {
-    height: clamp(170px, 26dvh, 240px);
+    height: clamp(200px, 34dvh, 300px);
   }
 
   .optionTitle {
