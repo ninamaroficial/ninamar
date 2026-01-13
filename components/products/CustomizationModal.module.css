@@ -640,7 +640,7 @@
 .imageCounter {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  left: 1rem;
   z-index: 10;
   background: rgba(0, 0, 0, 0.7);
   color: white;
