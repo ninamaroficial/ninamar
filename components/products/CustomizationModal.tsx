@@ -281,7 +281,11 @@ export default function CustomizationModal({
                 </div>
               </div>
             </div>
-{/* GALERÍA SOLO MÓVIL */}
+
+            {/* PANEL DERECHO - Opciones scrolleables */}
+            <div className={styles.optionsPanel}>
+
+              {/* GALERÍA SOLO MÓVIL */}
 {currentImage && (
   <div className={styles.mobileGallery}>
     <div className={styles.mobileMainImage}>
@@ -350,8 +354,6 @@ export default function CustomizationModal({
   </div>
 )}
 
-            {/* PANEL DERECHO - Opciones scrolleables */}
-            <div className={styles.optionsPanel}>
               {/* Progress bar */}
               <div className={styles.progressSection}>
                 <div className={styles.progressBar}>

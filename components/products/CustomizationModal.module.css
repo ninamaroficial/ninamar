@@ -953,7 +953,7 @@
 @media (max-width: 1023px) {
   .mobileGallery {
     display: block;
-    padding: 1rem 1.5rem 0.5rem;
+    padding: 0.9rem 1.25rem 0.5rem;
     background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
     border-bottom: 2px solid #ffb3f9;
   }
@@ -962,6 +962,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1;
+    max-height: 42vh;     /* 👈 evita que se coma toda la pantalla */
     border-radius: 1rem;
     overflow: hidden;
   }
@@ -969,13 +970,14 @@
   .mobileThumbs {
     display: flex;
     gap: 0.5rem;
-    padding: 0.75rem 0 0.25rem;
+    padding: 0.6rem 0 0.2rem;
     overflow-x: auto;
   }
 
+
   .mobileThumbs .thumbnail {
-    min-width: 60px;
-    height: 60px;
+    min-width: 54px;
+    height: 54px;
   }
 }
 
@@ -990,21 +992,17 @@
 
 @media (max-width: 1023px) {
   .optionsContentFinal {
-    padding: 1rem 1.25rem;          /* menos padding */
-    overflow-y: hidden;             /* evita el scroll en el último paso */
-  }
-
-  .optionsContentFinal .finalStep {
-    width: 100%;
+    padding: 1rem 1.25rem;
+    overflow-y: auto; /* 👈 no hidden; si un móvil es pequeño, que pueda scrollear */
   }
 
   .optionsContentFinal .optionHeader {
-    margin-bottom: 1rem;            /* menos espacio */
+    margin-bottom: 0.75rem;
   }
 
   .optionsContentFinal .quantitySelector {
-    gap: 1rem;                      /* antes 2rem */
-    margin: 1rem 0;                 /* antes 2rem 0 */
+    gap: 0.9rem;
+    margin: 1rem 0;
   }
 
   .optionsContentFinal .quantityButton {
@@ -1014,21 +1012,87 @@
   }
 
   .optionsContentFinal .quantityDisplay {
-    padding: 0.75rem 1.25rem;       /* más compacto */
+    padding: 0.7rem 1.1rem;
   }
 
   .optionsContentFinal .quantityValue {
-    font-size: 2.2rem;              /* antes 3rem */
+    font-size: 2.1rem;
   }
 
   .optionsContentFinal .stockInfo {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
     font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .optionsContentFinal .quantityValue {
-    font-size: 2rem;
+    font-size: 1.9rem;
+  }
+}
+
+
+/* Evita scroll horizontal accidental por sombras / transforms */
+.modal,
+.modalContent,
+.optionsPanel,
+.optionsContent {
+  min-width: 0;
+}
+
+/* ====== FIX FLEX OVERFLOW (CRÍTICO EN MÓVIL) ====== */
+.modalContent {
+  min-height: 0;
+}
+
+.optionsPanel {
+  min-height: 0;
+}
+
+.optionsContent {
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ====== MOBILE: usa DVH para evitar scroll fantasma por barra del navegador ====== */
+@media (max-width: 1023px) {
+  .modal {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .modalContent {
+    height: 100%;
+    max-height: 100%;
+  }
+
+  /* El panel derecho se vuelve “layout principal” */
+  .optionsPanel {
+    height: 100%;
+  }
+
+  /* Progress más compacto */
+  .progressSection {
+    padding: 1rem 1.25rem 0.75rem;
+  }
+
+  /* Contenido scrolleable debe ser el único que scrollea */
+  .optionsContent {
+    padding: 1.25rem;
+    overflow-y: auto;
+  }
+
+  /* Footer más compacto */
+  .footer {
+    padding: 0.9rem 1.25rem;
+  }
+
+  /* Botones más compactos para que no corten */
+  .backButton,
+  .continueButton,
+  .addToCartButton {
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    font-size: 0.95rem;
   }
 }
