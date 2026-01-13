@@ -77,12 +77,6 @@
   max-height: 900px;
 }
 
-@media (min-width: 1024px) {
-  .modalContent {
-    grid-template-columns: 400px 1fr;
-  }
-}
-
 /* ============================= */
 /* SIDEBAR PRODUCTO (IZQUIERDA) */
 /* ============================= */
@@ -556,77 +550,6 @@
 }
 
 /* ============================= */
-/* RESPONSIVE - MÓVIL */
-/* ============================= */
-@media (max-width: 1023px) {
-  .modal {
-    max-width: 100%;
-    max-height: 100vh;
-    height: 100vh;
-    border-radius: 0;
-  }
-
-  .modalContent {
-    grid-template-columns: 1fr;
-    height: 100vh;
-  }
-
-  .productSidebar {
-    display: none;
-  }
-
-  .optionsContent {
-    padding: 1.5rem;
-  }
-
-  .optionGrid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-
-  .optionTitle {
-    font-size: 1.5rem;
-  }
-
-  .footer {
-    padding: 1rem 1.5rem;
-  }
-
-  .closeButton {
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  /* Mostrar resumen flotante en móvil */
-  .mobileSummary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 1rem;
-    border-top: 2px solid #ffb3f9;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 50;
-  }
-}
-
-@media (max-width: 480px) {
-  .optionGrid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-
-  .quantitySelector {
-    gap: 1.5rem;
-  }
-
-  .quantityValue {
-    font-size: 2.5rem;
-  }
-}
-
-/* ============================= */
 /* GALERÍA DE IMÁGENES */
 /* ============================= */
 .productGallery {
@@ -873,10 +796,152 @@
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ============================= */
-/* RESPONSIVE - GALERÍA */
-/* ============================= */
+
+/* =======================================================
+   MOBILE / RESPONSIVE STRUCTURE (CUSTOMIZATION MODAL)
+   - sin duplicados
+   - scroll controlado
+   - dvh para evitar “scroll fantasma” por barra del navegador
+   ======================================================= */
+
+/* ---------------------------
+   0) FIXES BASE (ALL SIZES)
+   --------------------------- */
+
+/* Evita overflow horizontal accidental por sombras/transforms */
+.modal,
+.modalContent,
+.optionsPanel,
+.optionsContent {
+  min-width: 0;
+}
+
+/* Fix típico: para que un hijo con overflow pueda scrollear
+   dentro de grid/flex, el padre debe permitirlo */
+.modalContent,
+.optionsPanel,
+.optionsContent {
+  min-height: 0;
+}
+
+.optionsContent {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------------------------
+   1) TABLET + MOBILE (<= 1023px)
+   --------------------------- */
 @media (max-width: 1023px) {
+  /* Modal fullscreen real en móviles modernos */
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .modalContent {
+    grid-template-columns: 1fr;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  /* Oculta sidebar desktop */
+  .productSidebar {
+    display: none;
+  }
+
+  /* La galería móvil vive arriba del panel */
+  .mobileGallery {
+    display: block;
+    padding: 0.9rem 1.25rem 0.5rem;
+    background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
+    border-bottom: 2px solid #ffb3f9;
+  }
+
+  .mobileMainImage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-height: 42dvh; /* usa dvh, no vh */
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .mobileThumbs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.6rem 0 0.2rem;
+    overflow-x: auto;
+  }
+
+  .mobileThumbs .thumbnail {
+    min-width: 54px;
+    height: 54px;
+  }
+
+  /* Panel derecho es el layout principal */
+  .optionsPanel {
+    height: 100%;
+    overflow: hidden; /* clave: evita scroll doble */
+  }
+
+  /* Progress más compacto */
+  .progressSection {
+    padding: 1rem 1.25rem 0.75rem;
+  }
+
+  /* ÚNICO scroll vertical del modal (contenido) */
+  .optionsContent {
+    padding: 1.25rem;
+    overflow-y: auto;
+  }
+
+  /* Grid opciones */
+  .optionGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .optionTitle {
+    font-size: 1.5rem;
+  }
+
+  /* Footer compacto */
+  .footer {
+    padding: 0.9rem 1.25rem;
+  }
+
+  .backButton,
+  .continueButton,
+  .addToCartButton {
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* Close button */
+  .closeButton {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  /* (Opcional) si usas un resumen flotante */
+  .mobileSummary {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    border-top: 2px solid #ffb3f9;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+  }
+
+  /* Zoom nav más compacta en tablet/móvil */
   .thumbnailsContainer {
     padding: 0.75rem;
   }
@@ -905,7 +970,15 @@
   }
 }
 
+/* ---------------------------
+   2) SMALL MOBILE (<= 480px)
+   --------------------------- */
 @media (max-width: 480px) {
+  .optionGrid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  /* Ajustes de thumbs y botones de navegación */
   .thumbnail {
     min-width: 50px;
     height: 50px;
@@ -941,59 +1014,33 @@
   .zoomNextButton {
     right: 0.5rem;
   }
-}
 
-/* ============================= */
-/* GALERÍA SOLO MÓVIL */
-/* ============================= */
-.mobileGallery {
-  display: none;
-}
-
-@media (max-width: 1023px) {
-  .mobileGallery {
-    display: block;
-    padding: 0.9rem 1.25rem 0.5rem;
-    background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
-    border-bottom: 2px solid #ffb3f9;
+  /* Cantidad */
+  .quantitySelector {
+    gap: 1.5rem;
   }
 
-  .mobileMainImage {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    max-height: 42vh;     /* 👈 evita que se coma toda la pantalla */
-    border-radius: 1rem;
-    overflow: hidden;
-  }
-
-  .mobileThumbs {
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.6rem 0 0.2rem;
-    overflow-x: auto;
-  }
-
-
-  .mobileThumbs .thumbnail {
-    min-width: 54px;
-    height: 54px;
+  .quantityValue {
+    font-size: 2.5rem;
   }
 }
 
-/* ============================= */
-/* PASO FINAL (CANTIDAD) - MÁS COMPACTO EN MÓVIL */
-/* ============================= */
+/* ---------------------------
+   3) FINAL STEP (Cantidad) - layout compacto
+   --------------------------- */
+
+/* Base (todas las pantallas) */
 .optionsContentFinal {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Mobile/tablet */
 @media (max-width: 1023px) {
   .optionsContentFinal {
     padding: 1rem 1.25rem;
-    overflow-y: auto; /* 👈 no hidden; si un móvil es pequeño, que pueda scrollear */
+    overflow-y: auto; /* si pantalla es pequeña, permite scroll */
   }
 
   .optionsContentFinal .optionHeader {
@@ -1031,68 +1078,15 @@
   }
 }
 
-
-/* Evita scroll horizontal accidental por sombras / transforms */
-.modal,
-.modalContent,
-.optionsPanel,
-.optionsContent {
-  min-width: 0;
-}
-
-/* ====== FIX FLEX OVERFLOW (CRÍTICO EN MÓVIL) ====== */
-.modalContent {
-  min-height: 0;
-}
-
-.optionsPanel {
-  min-height: 0;
-}
-
-.optionsContent {
-  min-height: 0;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ====== MOBILE: usa DVH para evitar scroll fantasma por barra del navegador ====== */
-@media (max-width: 1023px) {
-  .modal {
-    height: 100dvh;
-    max-height: 100dvh;
-  }
-
+/* ---------------------------
+   4) DESKTOP (>= 1024px)
+   --------------------------- */
+@media (min-width: 1024px) {
   .modalContent {
-    height: 100%;
-    max-height: 100%;
+    grid-template-columns: 400px 1fr;
   }
 
-  /* El panel derecho se vuelve “layout principal” */
-  .optionsPanel {
-    height: 100%;
-  }
-
-  /* Progress más compacto */
-  .progressSection {
-    padding: 1rem 1.25rem 0.75rem;
-  }
-
-  /* Contenido scrolleable debe ser el único que scrollea */
-  .optionsContent {
-    padding: 1.25rem;
-    overflow-y: auto;
-  }
-
-  /* Footer más compacto */
-  .footer {
-    padding: 0.9rem 1.25rem;
-  }
-
-  /* Botones más compactos para que no corten */
-  .backButton,
-  .continueButton,
-  .addToCartButton {
-    padding: 0.9rem 1rem;
-    border-radius: 0.9rem;
-    font-size: 0.95rem;
+  .mobileGallery {
+    display: none;
   }
 }
