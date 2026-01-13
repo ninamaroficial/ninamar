@@ -1,0 +1,287 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+  
+  .closeButton:hover {
+    color: #111827;
+  }
+  
+  .form {
+    padding: 24px;
+  }
+  
+  .section {
+    margin-bottom: 32px;
+  }
+  
+  .section:last-of-type {
+    margin-bottom: 0;
+  }
+  
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .section h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .field label {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .field input,
+  .field select,
+  .field textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .field textarea {
+    resize: vertical;
+  }
+  
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  
+  .addButton:hover:not(:disabled) {
+    background: #5568d3;
+  }
+  
+  .addButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .itemsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .itemRow {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+  
+  .itemField {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .itemField label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  
+  .itemField input,
+  .itemField select {
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .readOnly {
+    background: #f3f4f6;
+    cursor: not-allowed;
+  }
+  
+  .removeButton {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  
+  .removeButton:hover {
+    background: #dc2626;
+  }
+  
+  .emptyText {
+    color: #6b7280;
+    font-style: italic;
+    text-align: center;
+    padding: 24px;
+  }
+  
+  .summary {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .summaryRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #374151;
+  }
+  
+  .summaryRowTotal {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    margin-top: 8px;
+    border-top: 2px solid #d1d5db;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .cancelButton,
+  .submitButton {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .cancelButton {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+  }
+  
+  .cancelButton:hover:not(:disabled) {
+    background: #f9fafb;
+  }
+  
+  .submitButton {
+    background: #667eea;
+    color: white;
+    border: none;
+  }
+  
+  .submitButton:hover:not(:disabled) {
+    background: #5568d3;
+  }
+  
+  .submitButton:disabled,
+  .cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .itemRow {
+      grid-template-columns: 1fr;
+    }
+  }
