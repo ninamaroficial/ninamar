@@ -11,6 +11,8 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.3s ease;
+    overscroll-behavior: contain;
+  touch-action: none;            /* evita scroll del fondo */
 }
 
 @keyframes fadeIn {
@@ -28,6 +30,8 @@
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 @keyframes slideUp {
@@ -834,11 +838,14 @@
 @media (max-width: 1023px) {
   /* Modal fullscreen real en móviles modernos */
   .modal {
-    width: 100%;
     max-width: 100%;
+    width: 100%;
     height: 100dvh;
     max-height: 100dvh;
     border-radius: 0;
+    overflow: hidden; /* reduce “scrollbar” visual */
+    touch-action: pan-y; /* permite scroll vertical dentro del modal */
+    -webkit-overflow-scrolling: touch;
   }
 
   .modalContent {
@@ -852,19 +859,22 @@
     display: none;
   }
 
-  /* La galería móvil vive arriba del panel */
+  
+
+  /* ---------- GALERÍA SOLO MÓVIL ---------- */
   .mobileGallery {
     display: block;
     padding: 0.9rem 1.25rem 0.5rem;
     background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
     border-bottom: 2px solid #ffb3f9;
+    overscroll-behavior: contain;
   }
 
   .mobileMainImage {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    max-height: 42dvh; /* usa dvh, no vh */
+    max-height: 42dvh; /* evita que se coma toda la pantalla */
     border-radius: 1rem;
     overflow: hidden;
   }
@@ -874,6 +884,8 @@
     gap: 0.5rem;
     padding: 0.6rem 0 0.2rem;
     overflow-x: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobileThumbs .thumbnail {
@@ -894,19 +906,47 @@
 
   /* ÚNICO scroll vertical del modal (contenido) */
   .optionsContent {
-    padding: 1.25rem;
+    flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 1rem;
   }
-
-  /* Grid opciones */
-  .optionGrid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-
+  
+  
+  /* ---------- AJUSTE DE PROPORCIONES (cards y tipografía) ---------- */
   .optionTitle {
-    font-size: 1.5rem;
+    font-size: 1.25rem; /* antes 1.5rem */
+    line-height: 1.2;
   }
 
+  .optionDescription {
+    font-size: 0.95rem;
+  }
+
+  .optionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .optionCard {
+    padding: 0.9rem;
+    gap: 0.6rem;
+    border-radius: 0.9rem;
+  }
+
+  .colorPreview {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+
+  .optionValue {
+    font-size: 0.95rem;
+  }
+
+  .optionPrice {
+    font-size: 0.85rem;
+  }
   /* Footer compacto */
   .footer {
     padding: 0.9rem 1.25rem;
@@ -967,6 +1007,57 @@
   .zoomCounter {
     font-size: 1rem;
     padding: 0.625rem 1.25rem;
+  }
+
+  /* ---------- PASO FINAL (CANTIDAD) ---------- */
+  .optionsContentFinal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1.25rem;
+    overflow-y: auto; /* si el móvil es pequeño, que scrollee el contenido interno */
+    overscroll-behavior: contain;
+  }
+
+  .optionsContentFinal .optionHeader {
+    margin-bottom: 0.75rem;
+  }
+
+  .optionsContentFinal .quantitySelector {
+    gap: 0.9rem;
+    margin: 1rem 0;
+  }
+
+  .optionsContentFinal .quantityButton {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.9rem;
+  }
+
+  .optionsContentFinal .quantityDisplay {
+    padding: 0.7rem 1.1rem;
+  }
+
+  .optionsContentFinal .quantityValue {
+    font-size: 2.1rem;
+  }
+
+  .optionsContentFinal .stockInfo {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* Mostrar resumen flotante en móvil (si lo usas) */
+  .mobileSummary {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    border-top: 2px solid #ffb3f9;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 50;
   }
 }
 
@@ -1073,10 +1164,19 @@
 }
 
 @media (max-width: 480px) {
-  .optionsContentFinal .quantityValue {
-    font-size: 1.9rem;
+  .optionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .optionTitle {
+    font-size: 1.15rem;
+  }
+
+  .optionCard {
+    padding: 0.8rem;
   }
 }
+
 
 /* ---------------------------
    4) DESKTOP (>= 1024px)

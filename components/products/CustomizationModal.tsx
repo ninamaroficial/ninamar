@@ -50,17 +50,33 @@ export default function CustomizationModal({
       ? [{ image_url: product.image_url, alt_text: product.name, is_primary: true }]
       : []
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
+useEffect(() => {
+  if (!isOpen) return
+
+  const scrollY = window.scrollY
+  const body = document.body
+
+  // Lock real iOS: fija el body para que no “ruede” atrás
+  body.style.position = "fixed"
+  body.style.top = `-${scrollY}px`
+  body.style.left = "0"
+  body.style.right = "0"
+  body.style.width = "100%"
+
+  return () => {
+    // Restore
+    const top = body.style.top
+    body.style.position = ""
+    body.style.top = ""
+    body.style.left = ""
+    body.style.right = ""
+    body.style.width = ""
+
+    const y = top ? Math.abs(parseInt(top, 10)) : 0
+    window.scrollTo(0, y)
+  }
+}, [isOpen])
+
 
   const calculateTotalPrice = () => {
     let total = product.price
