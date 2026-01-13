@@ -800,81 +800,70 @@
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+/* =========================================================
+   MOBILE ONLY (<=768px) — NO toca PC
+   ========================================================= */
+@media (max-width: 768px) {
+  /* evita autoscaling de texto iOS */
+  .modal,
+  .optionsPanel {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
-/* =======================================================
-   MOBILE / RESPONSIVE STRUCTURE (CUSTOMIZATION MODAL)
-   - sin duplicados
-   - scroll controlado
-   - dvh para evitar “scroll fantasma” por barra del navegador
-   ======================================================= */
+  /* overlay: evita scroll chaining */
+  .overlay {
+    overscroll-behavior: contain;
+    touch-action: none;
+  }
 
-/* ---------------------------
-   0) FIXES BASE (ALL SIZES)
-   --------------------------- */
-
-/* Evita overflow horizontal accidental por sombras/transforms */
-.modal,
-.modalContent,
-.optionsPanel,
-.optionsContent {
-  min-width: 0;
-}
-
-/* Fix típico: para que un hijo con overflow pueda scrollear
-   dentro de grid/flex, el padre debe permitirlo */
-.modalContent,
-.optionsPanel,
-.optionsContent {
-  min-height: 0;
-}
-
-.optionsContent {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ---------------------------
-   1) TABLET + MOBILE (<= 1023px)
-   --------------------------- */
-@media (max-width: 1023px) {
-  /* Modal fullscreen real en móviles modernos */
+  /* modal fullscreen real */
   .modal {
     max-width: 100%;
     width: 100%;
     height: 100dvh;
     max-height: 100dvh;
     border-radius: 0;
-    overflow: hidden; /* reduce “scrollbar” visual */
-    touch-action: pan-y; /* permite scroll vertical dentro del modal */
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
   }
 
   .modalContent {
     grid-template-columns: 1fr;
     height: 100%;
     max-height: 100%;
+    min-height: 0; /* CRÍTICO */
   }
 
-  /* Oculta sidebar desktop */
   .productSidebar {
     display: none;
   }
 
-  
-
-  /* ---------- GALERÍA SOLO MÓVIL ---------- */
-  .mobileGallery {
-    display: block;
-    padding: 0.9rem 1.25rem 0.5rem;
-    background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
-    border-bottom: 2px solid #ffb3f9;
-    overscroll-behavior: contain;
+  /* panel derecho como layout principal */
+  .optionsPanel {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* evita scroll doble */
+    min-height: 0;    /* CRÍTICO */
   }
 
+  /* =========================
+     GALERÍA MÓVIL (controlada)
+     ========================= */
+  .mobileGallery {
+    display: block;
+    padding: 0.75rem 1rem 0.5rem;
+    background: linear-gradient(180deg, #fef5ff 0%, #ffffff 100%);
+    border-bottom: 2px solid #ffb3f9;
+    flex: 0 0 auto;
+  }
+
+  /* Cambiamos el alto para que NO se coma la pantalla */
   .mobileMainImage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1;
-    max-height: 42dvh; /* evita que se coma toda la pantalla */
+    height: clamp(180px, 28dvh, 280px);
     border-radius: 1rem;
     overflow: hidden;
   }
@@ -882,62 +871,88 @@
   .mobileThumbs {
     display: flex;
     gap: 0.5rem;
-    padding: 0.6rem 0 0.2rem;
+    padding: 0.5rem 0 0.1rem;
     overflow-x: auto;
-    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 
   .mobileThumbs .thumbnail {
-    min-width: 54px;
-    height: 54px;
+    min-width: 52px;
+    height: 52px;
   }
 
-  /* Panel derecho es el layout principal */
-  .optionsPanel {
-    height: 100%;
-    overflow: hidden; /* clave: evita scroll doble */
-  }
-
-  /* Progress más compacto */
+  /* =========================
+     PROGRESS compacto
+     ========================= */
   .progressSection {
-    padding: 1rem 1.25rem 0.75rem;
+    flex: 0 0 auto;
+    padding: 0.75rem 1rem 0.6rem;
   }
 
-  /* ÚNICO scroll vertical del modal (contenido) */
+  /* =========================
+     ÚNICO SCROLL del modal
+     ========================= */
   .optionsContent {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0; /* CRÍTICO */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding: 1rem;
+    padding: 0.9rem 1rem 1rem;
   }
-  
-  
-  /* ---------- AJUSTE DE PROPORCIONES (cards y tipografía) ---------- */
+
+  /* =========================
+     FOOTER fijo abajo
+     ========================= */
+  .footer {
+    flex: 0 0 auto;
+    padding: 0.8rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .backButton,
+  .continueButton,
+  .addToCartButton {
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* close */
+  .closeButton {
+    top: 0.65rem;
+    right: 0.65rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  /* =========================
+     PROPORCIONES cards / texto
+     ========================= */
   .optionTitle {
-    font-size: 1.25rem; /* antes 1.5rem */
+    font-size: 1.2rem;
     line-height: 1.2;
   }
 
   .optionDescription {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .optionGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: 0.7rem;
   }
 
   .optionCard {
-    padding: 0.9rem;
-    gap: 0.6rem;
+    padding: 0.85rem;
+    gap: 0.55rem;
     border-radius: 0.9rem;
   }
 
   .colorPreview {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 3.1rem;
+    height: 3.1rem;
   }
 
   .optionValue {
@@ -947,85 +962,22 @@
   .optionPrice {
     font-size: 0.85rem;
   }
-  /* Footer compacto */
-  .footer {
-    padding: 0.9rem 1.25rem;
-  }
 
-  .backButton,
-  .continueButton,
-  .addToCartButton {
-    padding: 0.9rem 1rem;
-    border-radius: 0.9rem;
-    font-size: 0.95rem;
-  }
-
-  /* Close button */
-  .closeButton {
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  /* (Opcional) si usas un resumen flotante */
-  .mobileSummary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 1rem;
-    border-top: 2px solid #ffb3f9;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 50;
-  }
-
-  /* Zoom nav más compacta en tablet/móvil */
-  .thumbnailsContainer {
-    padding: 0.75rem;
-  }
-
-  .thumbnail {
-    min-width: 60px;
-    height: 60px;
-  }
-
-  .zoomNavButton {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .zoomPrevButton {
-    left: 1rem;
-  }
-
-  .zoomNextButton {
-    right: 1rem;
-  }
-
-  .zoomCounter {
-    font-size: 1rem;
-    padding: 0.625rem 1.25rem;
-  }
-
-  /* ---------- PASO FINAL (CANTIDAD) ---------- */
+  /* =========================
+     PASO FINAL (Cantidad)
+     ========================= */
   .optionsContentFinal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem 1.25rem;
-    overflow-y: auto; /* si el móvil es pequeño, que scrollee el contenido interno */
-    overscroll-behavior: contain;
+    display: block;
+    padding: 0.9rem 1rem 1rem;
   }
 
   .optionsContentFinal .optionHeader {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
   }
 
   .optionsContentFinal .quantitySelector {
-    gap: 0.9rem;
-    margin: 1rem 0;
+    gap: 0.85rem;
+    margin: 0.85rem 0;
   }
 
   .optionsContentFinal .quantityButton {
@@ -1035,145 +987,38 @@
   }
 
   .optionsContentFinal .quantityDisplay {
-    padding: 0.7rem 1.1rem;
+    padding: 0.65rem 1rem;
   }
 
   .optionsContentFinal .quantityValue {
-    font-size: 2.1rem;
+    font-size: 2rem;
   }
 
   .optionsContentFinal .stockInfo {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-  }
-
-  /* Mostrar resumen flotante en móvil (si lo usas) */
-  .mobileSummary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 1rem;
-    border-top: 2px solid #ffb3f9;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 50;
-  }
-}
-
-/* ---------------------------
-   2) SMALL MOBILE (<= 480px)
-   --------------------------- */
-@media (max-width: 480px) {
-  .optionGrid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-
-  /* Ajustes de thumbs y botones de navegación */
-  .thumbnail {
-    min-width: 50px;
-    height: 50px;
-  }
-
-  .imageNavButton {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .prevImageButton {
-    left: 0.5rem;
-  }
-
-  .nextImageButton {
-    right: 0.5rem;
-  }
-
-  .zoomButton {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .zoomNavButton {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .zoomPrevButton {
-    left: 0.5rem;
-  }
-
-  .zoomNextButton {
-    right: 0.5rem;
-  }
-
-  /* Cantidad */
-  .quantitySelector {
-    gap: 1.5rem;
-  }
-
-  .quantityValue {
-    font-size: 2.5rem;
-  }
-}
-
-/* ---------------------------
-   3) FINAL STEP (Cantidad) - layout compacto
-   --------------------------- */
-
-/* Base (todas las pantallas) */
-.optionsContentFinal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Mobile/tablet */
-@media (max-width: 1023px) {
-  .optionsContentFinal {
-    padding: 1rem 1.25rem;
-    overflow-y: auto; /* si pantalla es pequeña, permite scroll */
-  }
-
-  .optionsContentFinal .optionHeader {
-    margin-bottom: 0.75rem;
-  }
-
-  .optionsContentFinal .quantitySelector {
-    gap: 0.9rem;
-    margin: 1rem 0;
-  }
-
-  .optionsContentFinal .quantityButton {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.9rem;
-  }
-
-  .optionsContentFinal .quantityDisplay {
-    padding: 0.7rem 1.1rem;
-  }
-
-  .optionsContentFinal .quantityValue {
-    font-size: 2.1rem;
-  }
-
-  .optionsContentFinal .stockInfo {
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
     font-size: 0.9rem;
   }
 }
 
+/* =========================================================
+   SMALL MOBILE (<=480px) — solo móvil pequeño
+   ========================================================= */
 @media (max-width: 480px) {
-  .optionGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .mobileMainImage {
+    height: clamp(170px, 26dvh, 240px);
   }
 
   .optionTitle {
-    font-size: 1.15rem;
+    font-size: 1.12rem;
   }
 
   .optionCard {
-    padding: 0.8rem;
+    padding: 0.78rem;
+  }
+
+  .mobileThumbs .thumbnail {
+    min-width: 48px;
+    height: 48px;
   }
 }
 
