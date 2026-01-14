@@ -117,7 +117,7 @@ export async function sendOrderStatusUpdateEmail(
 
   try {
     await resend.emails.send({
-      from: '💎 Niñamar <pedidos@xn--niamar-xwa.com>',
+      from: 'Niñamar <pedidos@xn--niamar-xwa.com>',
       to: customerEmail,
       subject: `${statusInfo.subject} - Pedido #${orderNumber}`,
       html: `
