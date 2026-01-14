@@ -165,25 +165,27 @@
   z-index: 10;
 }
 
-/* DOT: ahora es BUTTON (tap-friendly) */
 .annotationDot {
   position: relative;
-  width: 20px;
-  height: 20px;
-
-  /* ✅ reset button */
-  padding: 0;
-  appearance: none;
-  -webkit-appearance: none;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #ffb3f9 0%, #ff8bf5 100%);
   border: 3px solid white;
   border-radius: 50%;
-  background: #ffb3f9;
   cursor: pointer;
-
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 179, 249, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 139, 245, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  
+  /* ✅ Mejorar táctil en móvil */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
-
 /* accesibilidad: foco visible */
 .annotationDot:focus-visible {
   outline: 3px solid rgba(255, 139, 245, 0.6);
@@ -591,4 +593,39 @@
     margin-top: -150px;
     margin-bottom: -100px;
   }
+}
+
+/* Responsive - Móvil */
+@media (max-width: 768px) {
+
+  /* ✅ Tooltips adaptados para móvil */
+  .annotationTooltip {
+    min-width: 200px;
+    max-width: 260px;
+    padding: 0.875rem 1rem;
+  }
+
+  .annotationTooltip h4 {
+    font-size: 0.9375rem;
+  }
+
+  .annotationTooltip p {
+    font-size: 0.8125rem;
+  }
+
+  /* ✅ Ajustar posición para evitar que salga de pantalla */
+  .annotation:first-child .annotationTooltip {
+    left: 0;
+    transform: none;
+  }
+
+  .annotation:first-child .annotationTooltip::before,
+  .annotation:first-child .annotationTooltip::after {
+    left: 20px;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+
 }

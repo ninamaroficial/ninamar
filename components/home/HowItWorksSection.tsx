@@ -56,13 +56,23 @@ const annotations = [
 
 export default function HowItWorksSection() {
   const [isStep3Visible, setIsStep3Visible] = useState(false)
-
-  // ✅ Nuevo: control de tooltip en móvil (tap)
   const [activeAnnotationId, setActiveAnnotationId] = useState<number | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
   const annotationsRef = useRef<HTMLDivElement | null>(null)
-
   const sectionRef = useRef<HTMLElement>(null)
   const step3Ref = useRef<HTMLDivElement>(null)
+
+  // Detectar si es móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -81,9 +91,9 @@ export default function HowItWorksSection() {
     }
   }, [])
 
-  // ✅ Nuevo: cerrar tooltip al tocar fuera (móvil/desktop)
+  // ✅ MEJORADO: Cerrar tooltip al tocar/hacer click fuera
   useEffect(() => {
-    const onPointerDown = (e: PointerEvent) => {
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
       if (!annotationsRef.current) return
       const target = e.target as Node
       if (!annotationsRef.current.contains(target)) {
@@ -91,8 +101,14 @@ export default function HowItWorksSection() {
       }
     }
 
-    document.addEventListener("pointerdown", onPointerDown)
-    return () => document.removeEventListener("pointerdown", onPointerDown)
+    // Escuchar ambos eventos
+    document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('touchstart', handleOutsideClick, { passive: true })
+    
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+      document.removeEventListener('touchstart', handleOutsideClick)
+    }
   }, [])
 
   const toggleAnnotation = (id: number) => {
@@ -144,7 +160,7 @@ export default function HowItWorksSection() {
             <div className={styles.viewer3DWrapper}>
               <ProductViewer3D modelPath="/models/producto-optimized.glb" />
 
-              {/* ✅ Anotaciones sobre el modelo (actualizado) */}
+              {/* ✅ MEJORADO: Anotaciones con soporte táctil */}
               <div className={styles.annotationsContainer} ref={annotationsRef}>
                 {annotations.map((annotation) => {
                   const isActive = activeAnnotationId === annotation.id
@@ -158,13 +174,21 @@ export default function HowItWorksSection() {
                         top: `${annotation.position.y}%`,
                       }}
                     >
-                      {/* ✅ Punto interactivo ahora es botón (tap-friendly) */}
                       <button
                         type="button"
                         className={styles.annotationDot}
                         aria-label={annotation.label}
                         aria-expanded={isActive}
                         onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          toggleAnnotation(annotation.id)
+                        }}
+                        onTouchStart={(e) => {
+                          e.stopPropagation()
+                        }}
+                        onTouchEnd={(e) => {
+                          e.preventDefault()
                           e.stopPropagation()
                           toggleAnnotation(annotation.id)
                         }}
@@ -173,7 +197,11 @@ export default function HowItWorksSection() {
                       </button>
 
                       {/* Tooltip */}
-                      <div className={styles.annotationTooltip} role="tooltip">
+                      <div 
+                        className={styles.annotationTooltip} 
+                        role="tooltip"
+                        aria-hidden={!isActive}
+                      >
                         <h4>{annotation.label}</h4>
                         <p>{annotation.description}</p>
                       </div>
@@ -184,7 +212,7 @@ export default function HowItWorksSection() {
 
               {/* Instrucciones de interacción */}
               <div className={styles.viewerHint}>
-                <span>🖱️ Arrastra para rotar</span>
+                <span>{isMobile ? '👆 Toca los puntos' : '🖱️ Arrastra para rotar'}</span>
               </div>
             </div>
           </div>

@@ -365,7 +365,7 @@
 /* ============================= */
 .finalCta {
   padding: 8rem 0;
-  background: #ffb3f9;
+  background: #f8f2d2;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -376,11 +376,10 @@
   content: '';
   position: absolute;
   inset: 0;
-background-image: url("/hero/texture1.png");
-
+  background-image: url("/hero/banner.png");
   background-repeat: repeat;
-  background-size: 1920px 1080px;
-  opacity: 0.15; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
+  background-size: 1920px 400px;
+  opacity: 0.25; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
   pointer-events: none;
   z-index: 0;}
 
@@ -394,10 +393,11 @@ background-image: url("/hero/texture1.png");
 }
 
 .finalCtaTitle {
+  margin-top: -150px;
   font-size: 3.5rem;
   font-weight: 900;
   color: #8e4603;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   font-family: var(--font-title);
   line-height: 1.2;
 }

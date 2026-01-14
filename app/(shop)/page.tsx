@@ -96,7 +96,12 @@ export default function Home() {
       <section className={styles.finalCta}>
         <Container>
           <div className={styles.finalCtaContent}>
-
+            <h2 className={styles.finalCtaTitle}>
+              ¿Lista para crear tu accesorio único?
+            </h2>
+            <p className={styles.finalCtaText}>
+              Diseña, personaliza y recibe una pieza única hecha especialmente para ti
+            </p>
             <Link href="/productos">
               <Button size="lg" className={styles.finalCtaButton}>
                 Explorar Colección
