@@ -80,17 +80,13 @@
   position: relative;
   z-index: 1;
   display: grid;
-
-  /* en vez de 1fr, columnas del ancho real de la tarjeta */
   grid-template-columns: repeat(3, minmax(320px, 1fr));
-
   gap: 2rem;
-  max-width: 1200px;        /* un poquito más para 3 cards grandes */
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.25rem;
-
-  justify-content: center;  /* 👈 centra el bloque de columnas completo */
-  justify-items: center;    /* centra items dentro de celda */
+  justify-content: center;
+  justify-items: center;
 }
 
 /* Wrapper para cada feature con animación parallax */
@@ -99,8 +95,8 @@
   opacity: 0;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
-  max-width: 360px; /* 👈 tamaño consistente por card */
-
+  max-width: 360px;
+  width: 100%;
 }
 
 /* Animaciones de entrada desde los lados */
@@ -163,10 +159,11 @@
   padding: 2rem 1.75rem 0.75rem;
 }
 
+/* Wrapper de la imagen */
 .featureImageWrapper {
   position: relative;
-  width: 320px;     /* antes 260 */
-  height: 320px;    /* antes 260 */
+  width: 320px;
+  height: 320px;
   margin: 0 auto 1.75rem;
 }
 
@@ -181,10 +178,14 @@
   justify-content: center;
   padding: 20px;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Animación de flotación constante */
   animation: floatImage 4s ease-in-out infinite;
 }
 
+.feature:hover .featureImageContainer {
+  transform: translateY(-12px) rotate(-5deg) scale(1.08);
+  box-shadow: 0 20px 45px rgba(255, 179, 249, 0.55);
+  animation-play-state: paused;
+}
 
 /* Animación de flotación para las imágenes */
 @keyframes floatImage {
@@ -216,14 +217,12 @@
 }
 
 .featureImage {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   object-fit: contain;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(1.0) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
-  /* Rotación sutil constante */
   animation: rotateSubtle 6s ease-in-out infinite;
-  
 }
 
 .feature:hover .featureImage {
@@ -247,7 +246,7 @@
   }
 }
 
-/* Glow animado detrás de la imagen - SIEMPRE VISIBLE Y ANIMADO */
+/* Glow animado detrás de la imagen */
 .featureImageGlow {
   position: absolute;
   inset: -14px;
@@ -310,7 +309,7 @@
   color: #8e4603;
 }
 
-/* Decoración inferior con puntos - ANIMADOS CONSTANTEMENTE */
+/* Decoración inferior con puntos */
 .featureDecoration {
   display: flex;
   justify-content: center;
@@ -386,7 +385,7 @@
   opacity: 1;
 }
 
-/* Efecto de borde animado - SIEMPRE ANIMADO */
+/* Efecto de borde animado */
 .feature::before {
   content: "";
   position: absolute;
@@ -423,6 +422,10 @@
     max-width: 550px;
   }
 
+  .featureWrapper {
+    max-width: 100%;
+  }
+
   .featureWrapper.from-left,
   .featureWrapper.from-right {
     transform: translateY(30px);
@@ -433,8 +436,8 @@
   }
 
   .featureImageWrapper {
-    width: 220px;   /* antes 150 */
-    height: 220px;
+    width: 280px;
+    height: 280px;
   }
 }
 
@@ -449,87 +452,7 @@
   .featuresGrid {
     gap: 2rem;
     max-width: 100%;
-  }
-
-  /* IMÁGENES MÁS GRANDES EN MÓVIL */
-  .featureImageWrapper {
-    width: 200px;   /* antes 140 */
-    height: 200px;
-    margin-bottom: 1.25rem;
-  }
-
-  .featureImageContainer {
-    padding: 14px;
-    animation: floatImageMobile 5s ease-in-out infinite;
-  }
-
-  .featureTitle {
-    font-size: 1.375rem;
-  }
-
-  .featureText {
-    font-size: 1rem;
-    line-height: 1.8;
-  }
-
-  .featureContent {
-    padding: 2.25rem 1.75rem;
-  }
-
-  .decorCircle1,
-  .decorCircle2,
-  .decorCircle3 {
-    display: none;
-  }
-}
-
-/* MÓVILES PEQUEÑOS - IMÁGENES AÚN MÁS GRANDES */
-@media (max-width: 480px) {
-  .featureImageWrapper {
-    width: 130px;
-    height: 130px;
-  }
-
-  .featureImageContainer {
-    padding: 16px;
-  }
-
-  .featureContent {
-    padding: 2rem 1.5rem;
-  }
-
-  .featureTitle {
-    font-size: 1.3rem;
-  }
-
-  .featureText {
-    font-size: 0.9375rem;
-  }
-}
-
-/* MÓVILES MUY PEQUEÑOS */
-@media (max-width: 375px) {
-  .featureImageWrapper {
-    width: 120px;
-    height: 120px;
-  }
-
-  .featureContent {
-    padding: 1.75rem 1.25rem;
-  }
-}
-
-/* ============================= */
-/* RESPONSIVE - MOBILE */
-/* ============================= */
-@media (max-width: 768px) {
-  .features {
-    padding: 4rem 0;
-  }
-
-  .featuresGrid {
-    gap: 2rem;
-    max-width: 100%;
+    padding: 0 1rem;
   }
 
   /* Desactiva animaciones complejas en móvil */
@@ -549,14 +472,13 @@
 
   /* IMÁGENES MÁS GRANDES EN MÓVIL */
   .featureImageWrapper {
-    width: 140px;
-    height: 140px;
+    width: 240px;
+    height: 240px;
     margin-bottom: 1.5rem;
   }
 
   .featureImageContainer {
-    padding: 18px;
-    /* Animación más suave en móvil */
+    padding: 16px;
     animation: floatImageMobile 5s ease-in-out infinite;
   }
 
@@ -570,21 +492,20 @@
   }
 
   .featureImage {
-    /* Desactiva rotación en móvil */
     animation: none;
   }
 
   .featureTitle {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   .featureText {
-    font-size: 1rem;
-    line-height: 1.8;
+    font-size: 0.9375rem;
+    line-height: 1.7;
   }
 
   .featureContent {
-    padding: 2.25rem 1.75rem;
+    padding: 2rem 1.5rem;
   }
 
   /* Oculta decoración de fondo en móvil */
@@ -607,36 +528,40 @@
 /* MÓVILES PEQUEÑOS */
 @media (max-width: 480px) {
   .featureImageWrapper {
-    width: 130px;
-    height: 130px;
+    width: 200px;
+    height: 200px;
   }
 
   .featureImageContainer {
-    padding: 16px;
+    padding: 14px;
   }
 
   .featureContent {
-    padding: 2rem 1.5rem;
+    padding: 1.75rem 1.25rem;
   }
 
   .featureTitle {
-    font-size: 1.3rem;
+    font-size: 1.125rem;
   }
 
   .featureText {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
 }
 
 /* MÓVILES MUY PEQUEÑOS */
 @media (max-width: 375px) {
   .featureImageWrapper {
-    width: 120px;
-    height: 120px;
+    width: 180px;
+    height: 180px;
   }
 
   .featureContent {
-    padding: 1.75rem 1.25rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .featureTitle {
+    font-size: 1rem;
   }
 }
 

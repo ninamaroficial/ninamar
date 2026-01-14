@@ -14,7 +14,7 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    title: "¡Tú lo imaginas y nosotros lo hacemos realidad!",
+    title: "¡Tú lo imaginas y Niñamar lo hace realidad!",
     description: "Elige colores, acabados y tamaños. Cada pieza es tan única como tú",
     direction: 'left',
     image: '/features/perTotal.png'

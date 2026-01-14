@@ -30,63 +30,91 @@
   z-index: 1;
 }
 
-.mainTitle {
-  font-family: var(--font-title);
-  font-size: 5rem;
-  font-weight: 400;
-  color: #8e4603;
-  margin: 0;
-  line-height: 1.2;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+.titleImageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1900px;
+  height: auto;
+  margin: 0 auto;
   animation: fadeInScale 1s ease-out;
+  margin-bottom: -200px;
+  margin-top: -200px;
 }
 
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.titleImage {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(142, 70, 3, 0.2));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 /* ============================= */
-/* TÍTULOS DE SCRIPT GRANDES */
+/* TÍTULOS DE PASOS CON IMAGEN */
 /* ============================= */
+.stepTitleWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto 3rem;
+  animation: slideInFromLeft 0.8s ease-out;
+  margin-bottom: -200px;
+}
+
+/* Título específico para el segundo paso */
+.stepTitleWrapper2 {
+  margin-top: -200px;
+  margin-bottom: -100px;
+}
+
+.stepTitleImage,
+.stepTitleImage2 {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.stepTitleImage {
+  filter: drop-shadow(3px 3px 6px rgba(255, 139, 245, 0.3));
+}
+
+.stepTitleImage2 {
+  filter: drop-shadow(3px 3px 6px rgba(139, 255, 230, 0.3));
+}
+
+/* (Si algún día usas el texto original para SEO) */
 .stepScriptTitle {
-    font-family: var(--font-title);
-  font-size: 4rem; 
-  font-weight: 200;
-  color: #d3aacfff;
+  font-family: var(--font-title);
+  font-size: 4rem;
+  font-weight: 600;
+  color: #ff8bf5;
   text-align: center;
   margin: 0 0 3rem;
   line-height: 1.3;
-  text-shadow: 3px 3px 6px rgba(236, 139, 255, 0.3);
-  animation: slideInFromLeft 0.8s ease-out;
+  text-shadow: 3px 3px 6px rgba(255, 139, 245, 0.3);
+  display: none;
 }
 
+/* ============================= */
+/* ANIMACIONES GENERALES */
+/* ============================= */
 @keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideInFromRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .stepsContainer {
@@ -99,9 +127,9 @@
 /* ============================= */
 .step3DContainer {
   margin-bottom: 8rem;
+  margin-top: -400px;
 }
 
-/* Viewer 3D Container */
 .viewer3DWrapper {
   position: relative;
   width: 100%;
@@ -122,11 +150,13 @@
   font-size: 1.125rem;
 }
 
-/* Anotaciones */
+/* ============================= */
+/* ANOTACIONES (DOT + TOOLTIP) */
+/* ============================= */
 .annotationsContainer {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  pointer-events: none; /* permite que solo los dots sean interactivos */
 }
 
 .annotation {
@@ -135,18 +165,32 @@
   z-index: 10;
 }
 
+/* DOT: ahora es BUTTON (tap-friendly) */
 .annotationDot {
   position: relative;
   width: 20px;
   height: 20px;
-  background: #ffb3f9;
+
+  /* ✅ reset button */
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
   border: 3px solid white;
   border-radius: 50%;
+  background: #ffb3f9;
   cursor: pointer;
+
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(255, 179, 249, 0.4);
 }
 
+/* accesibilidad: foco visible */
+.annotationDot:focus-visible {
+  outline: 3px solid rgba(255, 139, 245, 0.6);
+  outline-offset: 4px;
+}
+
+/* Hover desktop */
 .annotation:hover .annotationDot {
   transform: scale(1.3);
   background: #ff8bf5;
@@ -159,17 +203,12 @@
   border-radius: 50%;
   opacity: 0.5;
   animation: pulse 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.5); opacity: 0; }
 }
 
 .annotationTooltip {
@@ -183,11 +222,13 @@
   border: 2px solid #ffb3f9;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
+
   opacity: 0;
   pointer-events: none;
   transition: all 0.3s ease;
 }
 
+/* Hover desktop */
 .annotation:hover .annotationTooltip {
   opacity: 1;
   top: -90px;
@@ -206,6 +247,57 @@
   margin: 0;
 }
 
+/* ============================= */
+/* TOOLTIP: COMPORTAMIENTO MÓVIL (TAP) */
+/* Requiere class .annotationActive en el wrapper .annotation */
+/* ============================= */
+@media (max-width: 1023px) {
+  /* iOS: evita hover “pegajoso” */
+  .annotation:hover .annotationTooltip {
+    opacity: 0;
+    top: -80px;
+  }
+
+  /* ✅ cuando está activo por tap */
+  .annotationActive .annotationTooltip {
+    opacity: 1;
+    top: -90px;
+    pointer-events: auto;
+  }
+
+  .annotationActive .annotationDot {
+    transform: scale(1.3);
+    background: #ff8bf5;
+  }
+
+  /* Área más grande para el dedo */
+  .annotationDot {
+    width: 26px;
+    height: 26px;
+  }
+
+  .annotationPulse {
+    inset: -7px;
+  }
+
+  /* Tooltip flexible y no se sale */
+  .annotationTooltip {
+    max-width: 70vw;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* Extra recomendado para iOS/Android táctil */
+@media (hover: none) and (pointer: coarse) {
+  .annotation:hover .annotationTooltip {
+    opacity: 0;
+  }
+}
+
+/* ============================= */
+/* HINT DEL VIEWER */
+/* ============================= */
 .viewerHint {
   position: absolute;
   bottom: 1rem;
@@ -222,11 +314,11 @@
 
 @keyframes fadeInOut {
   0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  50%      { opacity: 1; }
 }
 
 /* ============================= */
-/* STEP 3: IMAGEN DE BOLSA PERSONALIZADA */
+/* STEP 3: IMAGEN DE BOLSA */
 /* ============================= */
 .step3Container {
   margin-top: 8rem;
@@ -252,9 +344,7 @@
   perspective: 1000px;
 }
 
-/* ============================= */
-/* IMAGEN DE LA BOLSA */
-/* ============================= */
+/* Imagen bolsa */
 .bagImage {
   position: relative;
   z-index: 10;
@@ -271,12 +361,8 @@
 }
 
 @keyframes bagBounce {
-  0%, 100% {
-    transform: scale(1) translateY(0);
-  }
-  50% {
-    transform: scale(1.05) translateY(-20px);
-  }
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%      { transform: scale(1.05) translateY(-20px); }
 }
 
 .bagImageElement {
@@ -287,16 +373,12 @@
 }
 
 @keyframes gentleFloat {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(2deg);
-  }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-15px) rotate(2deg); }
 }
 
 /* ============================= */
-/* ELEMENTOS DECORATIVOS */
+/* DECORACIONES (12 ICONOS) */
 /* ============================= */
 .decorativeElements {
   position: absolute;
@@ -305,76 +387,52 @@
   z-index: 5;
 }
 
+/* Sparkles (1–6 + 9–12) */
 .sparkle {
   position: absolute;
-  font-size: 2.5rem;
-  animation: sparkleFloat 3s ease-in-out infinite;
+  width: 52px;
+  height: 52px;
+  animation: sparkleFloat 6s ease-in-out infinite;
   opacity: 0;
+}
+
+.sparkle :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(255, 179, 249, 0.35));
 }
 
 .step3Container.visible .sparkle {
   opacity: 1;
 }
 
-.sparkle1 {
-  left: 5%;
-  top: 10%;
-  animation-delay: 0.3s;
-}
+/* posiciones */
+.sparkle1 { left: 5%;  top: 10%;  animation-delay: 0.3s; }
+.sparkle2 { right: 10%; top: 15%; animation-delay: 0.8s; }
+.sparkle3 { left: 10%; bottom: 20%; animation-delay: 1.3s; }
+.sparkle4 { right: 5%; bottom: 25%; animation-delay: 1.8s; }
+.sparkle5 { left: 50%; top: 5%;  animation-delay: 2.3s; }
+.sparkle6 { right: 50%; bottom: 10%; animation-delay: 2.8s; }
 
-.sparkle2 {
-  right: 10%;
-  top: 15%;
-  animation-delay: 0.8s;
-}
-
-.sparkle3 {
-  left: 10%;
-  bottom: 20%;
-  animation-delay: 1.3s;
-}
-
-.sparkle4 {
-  right: 5%;
-  bottom: 25%;
-  animation-delay: 1.8s;
-}
-
-.sparkle5 {
-  left: 50%;
-  top: 5%;
-  animation-delay: 2.3s;
-}
-
-.sparkle6 {
-  right: 50%;
-  bottom: 10%;
-  animation-delay: 2.8s;
-}
+.sparkle7 { left: 12%; top: 55%;  animation-delay: 0.6s; }
+.sparkle8 { right: 12%; top: 55%; animation-delay: 1.1s; }
+.sparkle9 { left: 35%; bottom: 8%; animation-delay: 1.9s; }
+.sparkle10 { right: 35%; bottom: 12%; animation-delay: 2.4s; }
 
 @keyframes sparkleFloat {
-  0%, 100% {
-    transform: translateY(0) scale(1) rotate(0deg);
-    opacity: 0.5;
-  }
-  25% {
-    transform: translateY(-20px) scale(1.3) rotate(90deg);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-10px) scale(1.2) rotate(180deg);
-    opacity: 0.8;
-  }
-  75% {
-    transform: translateY(-25px) scale(1.4) rotate(270deg);
-    opacity: 1;
-  }
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.5; }
+  25%      { transform: translateY(-20px) scale(1.3) rotate(90deg); opacity: 1; }
+  50%      { transform: translateY(-10px) scale(1.2) rotate(180deg); opacity: 0.8; }
+  75%      { transform: translateY(-25px) scale(1.4) rotate(270deg); opacity: 1; }
 }
 
-/* Corazones flotantes */
+/* Hearts (7–8) */
 .heart {
   position: absolute;
-  font-size: 2rem;
+  width: 44px;
+  height: 44px;
   opacity: 0;
   animation: heartFloat 4s ease-in-out infinite;
 }
@@ -383,30 +441,25 @@
   opacity: 1;
 }
 
-.heart1 {
-  left: 20%;
-  top: 30%;
-  animation-delay: 1s;
+.heart :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(255, 179, 249, 0.35));
 }
 
-.heart2 {
-  right: 20%;
-  bottom: 35%;
-  animation-delay: 2s;
-}
+.heart1 { left: 20%; top: 30%; animation-delay: 1s; }
+.heart2 { right: 20%; bottom: 35%; animation-delay: 2s; }
 
 @keyframes heartFloat {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-30px) scale(1.2);
-    opacity: 1;
-  }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+  50%      { transform: translateY(-30px) scale(1.2); opacity: 1; }
 }
 
-/* Confetti */
+/* ============================= */
+/* CONFETTI */
+/* ============================= */
 .confetti {
   position: absolute;
   inset: 0;
@@ -487,63 +540,55 @@
 /* RESPONSIVE */
 /* ============================= */
 @media (max-width: 768px) {
-  .howItWorks {
-    padding: 5rem 0;
+  .howItWorks { padding: 5rem 0; }
+  .mainHeader { margin-bottom: 3rem; }
+
+  .titleImageWrapper {
+    max-width: 90%;
+    margin-top: -50px;
   }
 
-  .mainTitle {
-    font-size: 3.5rem;
-  }
-
-  .stepScriptTitle {
-    font-size: 2.75rem;
+  .stepTitleWrapper {
+    max-width: 90%;
     margin-bottom: 2rem;
   }
 
-  .viewer3DWrapper {
-    height: 400px;
+  .stepTitleWrapper2 {
+    max-width: 85%;
+    margin-top: -200px;
+    margin-bottom: -100px;
   }
 
-  .bagAnimationContainer {
-    height: 450px;
-  }
+  .viewer3DWrapper { height: 400px; }
 
-  .bagImage {
-    max-width: 320px;
-  }
+  .bagAnimationContainer { height: 450px; }
+  .bagImage { max-width: 320px; }
 
   .shippingBenefits {
     flex-direction: column;
     align-items: center;
   }
 
-  .step3Description {
-    font-size: 1rem;
-  }
-
-  .sparkle {
-    font-size: 2rem;
-  }
-
-  .heart {
-    font-size: 1.5rem;
-  }
+  .step3Description { font-size: 1rem; }
 }
 
 @media (max-width: 480px) {
-  .mainTitle {
-    font-size: 2.5rem;
+  .mainHeader { margin-bottom: 2rem; }
+
+  .titleImageWrapper { max-width: 95%; }
+
+  .bagAnimationContainer { height: 400px; }
+  .bagImage { max-width: 280px; }
+
+  .stepTitleWrapper {
+    max-width: 95%;
+    margin-top: 300px;
+    margin-bottom: -80px;
   }
 
-  .stepScriptTitle {
-    font-size: 2rem;
-  }
-
-  .bagAnimationContainer {
-    height: 400px;
-  }
-
-  .bagImage {
-    max-width: 280px;
+  .stepTitleWrapper2 {
+    max-width: 85%;
+    margin-top: -150px;
+    margin-bottom: -100px;
   }
 }
