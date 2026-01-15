@@ -5,9 +5,6 @@ import Link from "next/link"
 import { XCircle } from "lucide-react"
 import styles from "./page.module.css"
 
-// Forzar renderizado dinámico para evitar errores de pre-rendering
-export const dynamic = 'force-dynamic'
-
 export default function FailurePage() {
   return (
     <div className={styles.page}>
