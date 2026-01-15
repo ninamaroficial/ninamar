@@ -58,9 +58,14 @@ export default function HowItWorksSection() {
   const [isStep3Visible, setIsStep3Visible] = useState(false)
   const [activeAnnotationId, setActiveAnnotationId] = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [isMainTitleVisible, setIsMainTitleVisible] = useState(false)
+  const [isStep1Visible, setIsStep1Visible] = useState(false)
   const annotationsRef = useRef<HTMLDivElement | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const step3Ref = useRef<HTMLDivElement>(null)
+  const mainHeaderRef = useRef<HTMLDivElement>(null)
+  const step1Ref = useRef<HTMLDivElement>(null)
   const isTogglingRef = useRef(false)
 
   // Detectar si es móvil
@@ -68,27 +73,61 @@ export default function HowItWorksSection() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-    
+
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    
+
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Efecto parallax basado en scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return
+
+      const section = sectionRef.current
+      const rect = section.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+
+      // Calcular progreso de scroll de la sección (0 = top fuera de vista, 1 = bottom fuera de vista)
+      const scrollTop = -rect.top
+      const sectionHeight = rect.height
+      const progress = Math.max(0, Math.min(1, scrollTop / (sectionHeight + windowHeight)))
+
+      setScrollProgress(progress)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Llamar una vez al montar
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Observer para animaciones de entrada
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.target === step3Ref.current) {
-          setIsStep3Visible(entry.isIntersecting)
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === step3Ref.current) {
+            setIsStep3Visible(entry.isIntersecting)
+          } else if (entry.target === mainHeaderRef.current) {
+            setIsMainTitleVisible(entry.isIntersecting)
+          } else if (entry.target === step1Ref.current) {
+            setIsStep1Visible(entry.isIntersecting)
+          }
+        })
       },
-      { threshold: 0.3 }
+      { threshold: 0.2, rootMargin: '0px 0px -100px 0px' }
     )
 
     if (step3Ref.current) observer.observe(step3Ref.current)
+    if (mainHeaderRef.current) observer.observe(mainHeaderRef.current)
+    if (step1Ref.current) observer.observe(step1Ref.current)
 
     return () => {
       if (step3Ref.current) observer.unobserve(step3Ref.current)
+      if (mainHeaderRef.current) observer.unobserve(mainHeaderRef.current)
+      if (step1Ref.current) observer.unobserve(step1Ref.current)
     }
   }, [])
 
@@ -141,8 +180,17 @@ export default function HowItWorksSection() {
     <section ref={sectionRef} className={styles.howItWorks}>
       <Container>
         {/* Header Principal */}
-        <div className={styles.mainHeader}>
-          <div className={styles.titleImageWrapper}>
+        <div
+          ref={mainHeaderRef}
+          className={`${styles.mainHeader} ${isMainTitleVisible ? styles.parallaxVisible : ''}`}
+        >
+          <div
+            className={styles.titleImageWrapper}
+            style={{
+              transform: `translateY(${scrollProgress * 150}px) scale(${1 - scrollProgress * 0.15})`,
+              opacity: 1 - scrollProgress * 0.5
+            }}
+          >
             <Image
               src="/hero/titles/como-funciona.png"
               alt="¿Cómo Funciona?"
@@ -157,9 +205,18 @@ export default function HowItWorksSection() {
 
         {/* Step 1 y 2: Viewer 3D con anotaciones */}
         <div className={styles.stepsContainer}>
-          <div className={styles.step3DContainer}>
+          <div
+            ref={step1Ref}
+            className={`${styles.step3DContainer} ${isStep1Visible ? styles.parallaxVisible : ''}`}
+          >
             {/* Título Script Grande */}
-            <div className={styles.stepTitleWrapper}>
+            <div
+              className={styles.stepTitleWrapper}
+              style={{
+                transform: `translateY(${scrollProgress * -80}px) scale(${1 + scrollProgress * 0.1})`,
+                opacity: 1 - scrollProgress * 0.4
+              }}
+            >
               <Image
                 src="/hero/titles/elige-tu-producto.png"
                 alt="Elige tu producto y personalízalo"
@@ -172,14 +229,26 @@ export default function HowItWorksSection() {
             </div>
 
             {/* Texto descriptivo */}
-            <div className={styles.step3Content}>
+            <div
+              className={styles.step3Content}
+              style={{
+                transform: `translateY(${scrollProgress * -60}px)`,
+                opacity: 1 - scrollProgress * 0.3
+              }}
+            >
               <p className={styles.step3Description}>
                 Elige entre diferentes tipos de broches, colores y acabados
               </p>
             </div>
 
             {/* Contenedor del viewer 3D */}
-            <div className={styles.viewer3DWrapper}>
+            <div
+              className={styles.viewer3DWrapper}
+              style={{
+                transform: `translateY(${scrollProgress * -40}px) scale(${1 - scrollProgress * 0.15})`,
+                opacity: 1 - scrollProgress * 0.2
+              }}
+            >
               <ProductViewer3D modelPath="/models/producto-optimized.glb" />
 
               {/* ✅ MEJORADO: Anotaciones con soporte táctil */}
@@ -239,10 +308,16 @@ export default function HowItWorksSection() {
           {/* Step 3: Imagen de bolsa personalizada */}
           <div
             ref={step3Ref}
-            className={`${styles.step3Container} ${isStep3Visible ? styles.visible : ''}`}
+            className={`${styles.step3Container} ${isStep3Visible ? styles.visible : ''} ${isStep3Visible ? styles.parallaxVisible : ''}`}
           >
             {/* Título */}
-            <div className={`${styles.stepTitleWrapper} ${styles.stepTitleWrapper2}`}>
+            <div
+              className={`${styles.stepTitleWrapper} ${styles.stepTitleWrapper2}`}
+              style={{
+                transform: `translateY(${scrollProgress * -100}px) scale(${1 + scrollProgress * 0.12})`,
+                opacity: 1 - scrollProgress * 0.35
+              }}
+            >
               <Image
                 src="/hero/titles/personalizalo.png"
                 alt="Recíbelo en casa"
@@ -253,7 +328,13 @@ export default function HowItWorksSection() {
               />
             </div>
 
-            <div className={styles.bagAnimationContainer}>
+            <div
+              className={styles.bagAnimationContainer}
+              style={{
+                transform: `translateY(${scrollProgress * -70}px) scale(${1 - scrollProgress * 0.1})`,
+                opacity: 1 - scrollProgress * 0.25
+              }}
+            >
               <div className={`${styles.bagImage} ${isStep3Visible ? styles.bagAnimated : ''}`}>
                 <Image
                   src="/hero/bolsa1.png"
@@ -299,7 +380,13 @@ export default function HowItWorksSection() {
               )}
             </div>
 
-            <div className={styles.step3Content}>
+            <div
+              className={styles.step3Content}
+              style={{
+                transform: `translateY(${scrollProgress * -50}px)`,
+                opacity: 1 - scrollProgress * 0.3
+              }}
+            >
               <p className={styles.step3Description}>
                 En un par de días recíbelo en casa, disfrútalo y dale un toque de color y creatividad a tus outfits
               </p>

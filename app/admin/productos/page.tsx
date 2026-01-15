@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Plus, Edit, Trash2, Eye, EyeOff, Package } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, EyeOff, Package, Folder } from 'lucide-react'
 import styles from './page.module.css'
 
 interface Product {
@@ -120,10 +120,16 @@ export default function ProductosAdminPage() {
           <h1 className={styles.title}>Productos</h1>
           <p className={styles.subtitle}>{products.length} producto(s) en total</p>
         </div>
-        <Link href="/admin/productos/nuevo" className={styles.addButton}>
-          <Plus size={20} />
-          Nuevo Producto
-        </Link>
+        <div className={styles.headerActions}>
+          <Link href="/admin/categorias" className={styles.secondaryButton}>
+            <Folder size={20} />
+            Categorías
+          </Link>
+          <Link href="/admin/productos/nuevo" className={styles.addButton}>
+            <Plus size={20} />
+            Nuevo Producto
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

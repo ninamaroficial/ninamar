@@ -317,6 +317,122 @@
 }
 
 /* =========================================================
+   DROPDOWN MENU (DESKTOP)
+========================================================= */
+
+.dropdownContainer {
+  position: relative;
+}
+
+.navLinkWithDropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+
+.dropdownContainer:hover .chevron {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  /* Animación más suave y dinámica */
+  transition:
+    opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  transform: translateX(-50%) translateY(-8px) scale(0.96);
+
+  z-index: 1000;
+  min-width: 280px;
+}
+
+.dropdownShow {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.dropdownContent {
+  background: #ffdd31;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border: 3px solid #ffb3f9;
+
+  /* Textura de fondo */
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdownContent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/header/Textura1.png");
+  background-repeat: repeat;
+  background-size: 400px 400px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dropdownContent > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  color: #7e4603;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  margin-bottom: 0.5rem;
+
+  /* Animación más fluida */
+  transition:
+    background 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #ffb3f9;
+  transform: translateX(6px) scale(1.02);
+}
+
+.dropdownItem:last-child {
+  margin-bottom: 0;
+}
+
+.dropdownDivider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffb3f9, transparent);
+  margin: 0.5rem 0;
+}
+
+/* =========================================================
    ACTIONS
 ========================================================= */
 
@@ -335,7 +451,6 @@
   height: 48px;
 
   background: #fdde52c7;
-  border: 2px solid #ffe87f;
   border-radius: 50%;
 
   cursor: pointer;
@@ -350,7 +465,6 @@
   width: 48px;
   height: 48px;
 
-  border: 2px solid #7e4603;
   border-radius: 50%;
 
   cursor: pointer;
@@ -500,6 +614,86 @@
   background: #ffb3f9;
   border-color: #7e4603;
   font-weight: 700;
+}
+
+/* =========================================================
+   MOBILE DROPDOWN / SUBMENU
+========================================================= */
+
+.mobileDropdownContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileMenuLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mobileChevron {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.mobileChevronOpen {
+  transform: rotate(90deg);
+}
+
+.mobileSubMenu {
+  max-height: 0;
+  overflow: hidden;
+  margin-left: 1rem;
+
+  /* Animación más fluida y dinámica */
+  transition:
+    max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mobileSubMenuOpen {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  transform: translateY(0);
+}
+
+.mobileSubMenuItem {
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid transparent;
+  font: inherit;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #7e4603;
+
+  text-align: left;
+  border-radius: 0.75rem;
+  width: 100%;
+
+  /* Animación más suave */
+  transition:
+    background 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobileSubMenuItem:hover {
+  background: rgba(255, 179, 249, 0.3);
+  border-color: #ffb3f9;
+  transform: translateX(6px) scale(1.02);
 }
 
 .mobileCartButton {
