@@ -93,7 +93,9 @@ export default function HowItWorksSection() {
 
   // ✅ MEJORADO: Cerrar tooltip al tocar/hacer click fuera
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+    let touchEndTimeout: NodeJS.Timeout
+
+    const handleOutsideClick = (e: MouseEvent) => {
       if (!annotationsRef.current) return
       const target = e.target as Node
       if (!annotationsRef.current.contains(target)) {
@@ -101,13 +103,28 @@ export default function HowItWorksSection() {
       }
     }
 
-    // Escuchar ambos eventos
+    const handleOutsideTouch = (e: TouchEvent) => {
+      if (!annotationsRef.current) return
+      const target = e.target as Node
+
+      // Pequeño delay para que el stopPropagation del botón funcione primero
+      touchEndTimeout = setTimeout(() => {
+        if (!annotationsRef.current?.contains(target)) {
+          setActiveAnnotationId(null)
+        }
+      }, 10)
+    }
+
+    // mousedown para desktop
     document.addEventListener('mousedown', handleOutsideClick)
-    document.addEventListener('touchstart', handleOutsideClick, { passive: true })
-    
+
+    // touchend para móvil con delay
+    document.addEventListener('touchend', handleOutsideTouch, { passive: true })
+
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick)
-      document.removeEventListener('touchstart', handleOutsideClick)
+      document.removeEventListener('touchend', handleOutsideTouch)
+      if (touchEndTimeout) clearTimeout(touchEndTimeout)
     }
   }, [])
 
@@ -180,14 +197,15 @@ export default function HowItWorksSection() {
                         aria-label={annotation.label}
                         aria-expanded={isActive}
                         onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          toggleAnnotation(annotation.id)
-                        }}
-                        onTouchStart={(e) => {
-                          e.stopPropagation()
+                          // Solo para desktop (mouse)
+                          if (e.detail !== 0) {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            toggleAnnotation(annotation.id)
+                          }
                         }}
                         onTouchEnd={(e) => {
+                          // Para móvil (touch)
                           e.preventDefault()
                           e.stopPropagation()
                           toggleAnnotation(annotation.id)
