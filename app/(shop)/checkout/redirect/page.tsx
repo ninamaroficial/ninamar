@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import styles from './page.module.css'
 
-export default function CheckoutRedirectPage() {
+function RedirectContent() {
   const searchParams = useSearchParams()
   const paymentUrl = searchParams.get('url')
 
@@ -48,5 +48,20 @@ export default function CheckoutRedirectPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutRedirectPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.spinner}></div>
+          <h1 className={styles.title}>Cargando...</h1>
+        </div>
+      </div>
+    }>
+      <RedirectContent />
+    </Suspense>
   )
 }
