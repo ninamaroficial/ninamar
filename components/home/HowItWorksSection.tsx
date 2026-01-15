@@ -92,58 +92,49 @@ export default function HowItWorksSection() {
     }
   }, [])
 
-  // ✅ MEJORADO: Cerrar tooltip al tocar/hacer click fuera
+  // ✅ Cerrar tooltip al hacer click/tocar fuera
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (!annotationsRef.current) return
-      if (isTogglingRef.current) return // Ignorar si estamos en medio de un toggle
+    if (activeAnnotationId === null) return
 
-      const target = e.target as Node
-      if (!annotationsRef.current.contains(target)) {
+    const handleClickOutside = (e: Event) => {
+      if (isTogglingRef.current) return
+
+      const target = e.target as HTMLElement
+
+      // Verificar si el click/touch fue dentro de las anotaciones
+      const clickedInsideAnnotation = target.closest('[data-annotation]')
+
+      if (!clickedInsideAnnotation) {
         setActiveAnnotationId(null)
       }
     }
 
-    const handleOutsideTouch = (e: TouchEvent) => {
-      if (!annotationsRef.current) return
-      if (isTogglingRef.current) {
-        // Resetear la bandera después de un breve delay
-        setTimeout(() => {
-          isTogglingRef.current = false
-        }, 100)
-        return
-      }
-
-      const target = e.target as Node
-      if (!annotationsRef.current.contains(target)) {
-        setActiveAnnotationId(null)
-      }
-    }
-
-    // mousedown para desktop
-    document.addEventListener('mousedown', handleOutsideClick)
-
-    // touchend para móvil
-    document.addEventListener('touchend', handleOutsideTouch)
+    // Pequeño delay para evitar que se cierre inmediatamente al abrir
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside)
+      document.addEventListener('touchend', handleClickOutside)
+    }, 100)
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-      document.removeEventListener('touchend', handleOutsideTouch)
+      clearTimeout(timeoutId)
+      document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener('touchend', handleClickOutside)
     }
-  }, [])
+  }, [activeAnnotationId])
 
   const toggleAnnotation = (id: number) => {
     isTogglingRef.current = true
+
     setActiveAnnotationId(prev => {
       const newId = prev === id ? null : id
       console.log('Toggle annotation:', { from: prev, to: newId, id })
       return newId
     })
 
-    // Resetear la bandera después de un breve delay
+    // Resetear la bandera
     setTimeout(() => {
       isTogglingRef.current = false
-    }, 100)
+    }, 150)
   }
 
   return (
@@ -204,22 +195,14 @@ export default function HowItWorksSection() {
                         left: `${annotation.position.x}%`,
                         top: `${annotation.position.y}%`,
                       }}
+                      data-annotation={annotation.id}
                     >
                       <button
                         type="button"
                         className={styles.annotationDot}
                         aria-label={annotation.label}
                         aria-expanded={isActive}
-                        onClick={(e) => {
-                          // Solo para desktop (mouse)
-                          if (e.detail !== 0) {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            toggleAnnotation(annotation.id)
-                          }
-                        }}
-                        onTouchEnd={(e) => {
-                          // Para móvil (touch)
+                        onPointerDown={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
                           toggleAnnotation(annotation.id)
@@ -229,10 +212,14 @@ export default function HowItWorksSection() {
                       </button>
 
                       {/* Tooltip */}
-                      <div 
-                        className={styles.annotationTooltip} 
+                      <div
+                        className={styles.annotationTooltip}
                         role="tooltip"
                         aria-hidden={!isActive}
+                        style={{
+                          // Forzar display para debug
+                          display: isActive ? 'block' : 'none'
+                        }}
                       >
                         <h4>{annotation.label}</h4>
                         <p>{annotation.description}</p>
