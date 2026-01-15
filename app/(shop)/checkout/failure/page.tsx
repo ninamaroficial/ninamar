@@ -5,6 +5,8 @@ import Link from "next/link"
 import { XCircle } from "lucide-react"
 import styles from "./page.module.css"
 
+export const dynamic = 'force-dynamic'
+
 export default function FailurePage() {
   return (
     <div className={styles.page}>
