@@ -14,7 +14,9 @@ export default function ShopLayout({
   return (
     <CartProvider>
       <LoadingScreen />
-      <Header />
+      <Suspense fallback={null}>
+        <Header />
+      </Suspense>
       <main>
         <Suspense fallback={<LoadingScreen />}>
           {children}

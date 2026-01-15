@@ -1,19 +1,12 @@
-import { Suspense } from 'react'
-import UnsubscribeContent from './UnsubscribeContent'
+import { Suspense } from "react"
+import UnsubscribeClient from "./UnsubscribeClient"
+
+export const dynamic = "force-dynamic"
 
 export default function UnsubscribePage() {
   return (
-    <Suspense fallback={
-      <div style={{ 
-        minHeight: '80vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center' 
-      }}>
-        <p>Cargando...</p>
-      </div>
-    }>
-      <UnsubscribeContent />
+    <Suspense fallback={<div>Cargando...</div>}>
+      <UnsubscribeClient />
     </Suspense>
   )
 }
