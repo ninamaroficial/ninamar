@@ -140,6 +140,17 @@
   overflow: visible;
 }
 
+/* ✅ Asegurar que el canvas no bloquee eventos de anotaciones */
+.viewer3DWrapper > div:first-child {
+  position: absolute !important;
+  inset: 0;
+  z-index: 1;
+}
+
+.viewer3DWrapper canvas {
+  touch-action: pan-y pinch-zoom !important;
+}
+
 .viewerLoading {
   width: 100%;
   height: 100%;
@@ -157,6 +168,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none; /* permite que solo los dots sean interactivos */
+  z-index: 100; /* Por encima del canvas 3D */
 }
 
 .annotation {

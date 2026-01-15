@@ -61,6 +61,7 @@ export default function HowItWorksSection() {
   const annotationsRef = useRef<HTMLDivElement | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const step3Ref = useRef<HTMLDivElement>(null)
+  const isTogglingRef = useRef(false)
 
   // Detectar si es móvil
   useEffect(() => {
@@ -93,10 +94,10 @@ export default function HowItWorksSection() {
 
   // ✅ MEJORADO: Cerrar tooltip al tocar/hacer click fuera
   useEffect(() => {
-    let touchEndTimeout: NodeJS.Timeout
-
     const handleOutsideClick = (e: MouseEvent) => {
       if (!annotationsRef.current) return
+      if (isTogglingRef.current) return // Ignorar si estamos en medio de un toggle
+
       const target = e.target as Node
       if (!annotationsRef.current.contains(target)) {
         setActiveAnnotationId(null)
@@ -105,31 +106,44 @@ export default function HowItWorksSection() {
 
     const handleOutsideTouch = (e: TouchEvent) => {
       if (!annotationsRef.current) return
-      const target = e.target as Node
+      if (isTogglingRef.current) {
+        // Resetear la bandera después de un breve delay
+        setTimeout(() => {
+          isTogglingRef.current = false
+        }, 100)
+        return
+      }
 
-      // Pequeño delay para que el stopPropagation del botón funcione primero
-      touchEndTimeout = setTimeout(() => {
-        if (!annotationsRef.current?.contains(target)) {
-          setActiveAnnotationId(null)
-        }
-      }, 10)
+      const target = e.target as Node
+      if (!annotationsRef.current.contains(target)) {
+        setActiveAnnotationId(null)
+      }
     }
 
     // mousedown para desktop
     document.addEventListener('mousedown', handleOutsideClick)
 
-    // touchend para móvil con delay
-    document.addEventListener('touchend', handleOutsideTouch, { passive: true })
+    // touchend para móvil
+    document.addEventListener('touchend', handleOutsideTouch)
 
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick)
       document.removeEventListener('touchend', handleOutsideTouch)
-      if (touchEndTimeout) clearTimeout(touchEndTimeout)
     }
   }, [])
 
   const toggleAnnotation = (id: number) => {
-    setActiveAnnotationId(prev => (prev === id ? null : id))
+    isTogglingRef.current = true
+    setActiveAnnotationId(prev => {
+      const newId = prev === id ? null : id
+      console.log('Toggle annotation:', { from: prev, to: newId, id })
+      return newId
+    })
+
+    // Resetear la bandera después de un breve delay
+    setTimeout(() => {
+      isTogglingRef.current = false
+    }, 100)
   }
 
   return (
