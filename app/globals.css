@@ -13,6 +13,12 @@ body {
   font-weight: 800;
 }
 
+/* Optimización CLS - Prevenir layout shift del contenido principal */
+main {
+  min-height: 100vh;
+  contain: layout style;
+}
+
 .font-title {
   font-family: var(--font-title);
 }

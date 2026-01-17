@@ -5,6 +5,9 @@ import Container from "@/components/ui/Container"
 import styles from './FeaturesSection.module.css'
 import Image from 'next/image'
 
+// Deshabilitar animaciones complejas en móvil para mejorar rendimiento
+const isMobileDevice = () => typeof window !== 'undefined' && window.innerWidth <= 768
+
 interface Feature {
   title: string
   description: string
@@ -70,11 +73,15 @@ export default function FeaturesSection() {
   }, [])
 
   useEffect(() => {
-    // Solo activar parallax en desktop
+    // Deshabilitar parallax en móvil para mejor rendimiento
     if (isMobile) return
 
     const handleScroll = () => {
-      setScrollY(window.scrollY)
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(() => setScrollY(window.scrollY))
+      } else {
+        setScrollY(window.scrollY)
+      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })

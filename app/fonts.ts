@@ -15,9 +15,10 @@ export const titleFont = localFont({
     },
   ],
   variable: '--font-title',
-  display: 'swap',
+  display: 'optional', // Cambio de 'swap' a 'optional' para prevenir FOUT y CLS
   fallback: ['Georgia', 'serif'],
   preload: true,
+  adjustFontFallback: 'Arial', // Ajusta métricas del fallback para minimizar CLS
 })
 
 export const bodyFont = localFont({
@@ -29,7 +30,8 @@ export const bodyFont = localFont({
     },
   ],
   variable: '--font-body',
-  display: 'swap',
+  display: 'optional', // Cambio de 'swap' a 'optional' para prevenir FOUT y CLS
   fallback: ['system-ui', '-apple-system', 'Arial', 'sans-serif'],
   preload: true,
+  adjustFontFallback: 'Arial', // Ajusta métricas del fallback para minimizar CLS
 })

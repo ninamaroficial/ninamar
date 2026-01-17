@@ -18,25 +18,27 @@ interface ProductCarouselProps {
   autoPlayInterval?: number
 }
 
-export default function ProductCarousel({ 
-  images, 
-  autoPlayInterval = 5000 
+export default function ProductCarousel({
+  images,
+  autoPlayInterval = 5000
 }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [direction, setDirection] = useState<'left' | 'right'>('right')
-  const [isMobile, setIsMobile] = useState(false) // ✅ Estado para detectar móvil
+  const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
-  // ✅ Detectar si es móvil
+  // Detectar cliente y móvil
   useEffect(() => {
+    setIsClient(true)
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-    
+
     checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
+    window.addEventListener('resize', checkMobile, { passive: true })
+
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
@@ -109,10 +111,10 @@ export default function ProductCarousel({
               fill
               className={styles.image}
               sizes="100vw"
-              quality={75}
+              quality={isMobile ? 70 : 75}
               priority={index === 0}
               fetchPriority={index === 0 ? "high" : "auto"}
-              unoptimized={true}
+              loading={index === 0 ? "eager" : "lazy"}
             />
             
             {/* Gradient overlay */}

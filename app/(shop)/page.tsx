@@ -4,10 +4,17 @@ import Link from "next/link"
 import { Sparkles, Package, Truck, Shield, ArrowRight, Star } from "lucide-react"
 import styles from "./page.module.css"
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import ProductCarousel from "@/components/home/ProductCarousel"
 import { carouselImages, carouselConfig } from '@/lib/carousel-config'
-import FeaturesSection from "@/components/home/FeaturesSection"
-import HowItWorksSection from "@/components/home/HowItWorksSection"
+
+// Lazy load componentes pesados below-the-fold
+const FeaturesSection = dynamic(() => import("@/components/home/FeaturesSection"), {
+  ssr: true,
+})
+const HowItWorksSection = dynamic(() => import("@/components/home/HowItWorksSection"), {
+  ssr: true,
+})
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',

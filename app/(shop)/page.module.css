@@ -16,6 +16,8 @@
   max-height: 800px;
   overflow: hidden;
   background: #000;
+  /* Optimización CLS - Aislar el hero para prevenir layout shifts */
+  contain: layout style paint;
 }
 
 /* Carrusel a pantalla completa */
