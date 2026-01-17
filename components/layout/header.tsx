@@ -292,9 +292,17 @@ export default function Header() {
                 <div key={item.name} className={styles.mobileDropdownContainer}>
                   <button
                     type="button"
-                    onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                    onClick={() => {
+                      // Si ya está abierto, navegar a /productos
+                      if (isCategoriesOpen) {
+                        navigateWithTransition('/productos')
+                      } else {
+                        // Si está cerrado, abrirlo
+                        setIsCategoriesOpen(true)
+                      }
+                    }}
                     className={`${styles.mobileMenuLink} ${
-                      pathname.startsWith('/productos') ? styles.active : ""
+                      pathname === '/productos' && !searchParams.get('categoria') ? styles.active : ""
                     }`}
                   >
                     <span>{item.name}</span>
@@ -306,12 +314,23 @@ export default function Header() {
 
                   {/* Submenu Mobile */}
                   <div className={`${styles.mobileSubMenu} ${isCategoriesOpen ? styles.mobileSubMenuOpen : ''}`}>
+                    <button
+                      type="button"
+                      onClick={() => navigateWithTransition('/productos')}
+                      className={`${styles.mobileSubMenuItem} ${
+                        pathname === '/productos' && !searchParams.get('categoria') ? styles.active : ""
+                      }`}
+                    >
+                      Ver Todos
+                    </button>
                     {categories.map((category) => (
                       <button
                         key={category.id}
                         type="button"
                         onClick={() => navigateWithTransition(`/productos?categoria=${category.slug}`)}
-                        className={styles.mobileSubMenuItem}
+                        className={`${styles.mobileSubMenuItem} ${
+                          searchParams.get('categoria') === category.slug ? styles.active : ""
+                        }`}
                       >
                         {category.name}
                       </button>
