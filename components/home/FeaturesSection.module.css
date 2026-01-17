@@ -8,16 +8,33 @@
   overflow: hidden;
 }
 
-/* Textura de fondo */
+/* Textura de fondo - OPTIMIZADA: Removida imagen pesada (2.5MB) */
 .features::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("/hero/textureHeroSec1.png");
+  /* ❌ Imagen PNG pesada removida (2.5MB):
+     background-image: url("/hero/textureHeroSec1.png"); */
+
+  /* ✅ Reemplazo con patrón CSS ligero */
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 179, 249, 0.03) 10px,
+      rgba(255, 179, 249, 0.03) 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 219, 49, 0.03) 10px,
+      rgba(255, 219, 49, 0.03) 20px
+    );
   background-repeat: repeat;
-  background-size: 1520px 780px;
-  margin-left: 0px;
-  opacity: 0.25;
+  background-size: 40px 40px;
+  opacity: 1;
   pointer-events: none;
   z-index: 0;
 }

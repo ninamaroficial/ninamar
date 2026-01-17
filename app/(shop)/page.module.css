@@ -376,12 +376,31 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url("/hero/banner.png");
+  /* ❌ Imagen PNG pesada removida (980KB):
+     background-image: url("/hero/banner.png"); */
+
+  /* ✅ Reemplazo con patrón CSS ligero */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 15px,
+      rgba(142, 70, 3, 0.04) 15px,
+      rgba(142, 70, 3, 0.04) 30px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 15px,
+      rgba(255, 179, 249, 0.04) 15px,
+      rgba(255, 179, 249, 0.04) 30px
+    );
   background-repeat: repeat;
-  background-size: 1920px 400px;
-  opacity: 0.25; /* 👈 ajusta aquí (0.1 – 0.4 suele ir bien) */
+  background-size: 30px 30px;
+  opacity: 1;
   pointer-events: none;
-  z-index: 0;}
+  z-index: 0;
+}
 
 .finalCtaContent {
   text-align: center;

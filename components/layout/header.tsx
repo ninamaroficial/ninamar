@@ -215,11 +215,15 @@ export default function Header() {
               aria-label="Carrito de compras"
               type="button"
             >
-              <img
+              <Image
                 src="/header/carrito2.png"
                 alt=""
+                width={48}
+                height={48}
                 className={styles.cartIcon}
                 aria-hidden="true"
+                quality={85}
+                priority
               />
 
               {isMounted && totalItems > 0 && (

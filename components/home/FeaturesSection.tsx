@@ -135,8 +135,10 @@ export default function FeaturesSection() {
                         width={520}
                         height={520}
                         className={styles.featureImage}
+                        sizes="(max-width: 480px) 200px, (max-width: 768px) 240px, (max-width: 1024px) 280px, 320px"
                         quality={75}
-                        priority={index < 2}
+                        priority={index === 0}
+                        loading={index === 0 ? undefined : "lazy"}
                       />
                     </div>
                     <div className={styles.featureImageGlow}></div>
