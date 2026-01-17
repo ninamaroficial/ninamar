@@ -63,13 +63,13 @@ export default function ProductCarousel({
     setCurrentIndex(index)
   }
 
-  // Auto-play
+  // Auto-play - pausar en móvil para ahorrar recursos
   useEffect(() => {
-    if (!isAutoPlaying) return
+    if (!isAutoPlaying || isMobile) return
 
     const interval = setInterval(goToNext, autoPlayInterval)
     return () => clearInterval(interval)
-  }, [isAutoPlaying, autoPlayInterval, goToNext])
+  }, [isAutoPlaying, autoPlayInterval, goToNext, isMobile])
 
   // Reset transition
   useEffect(() => {

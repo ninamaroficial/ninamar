@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
+  // Experimental: Optimizar chunks
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
+
   // Headers de seguridad
   async headers() {
     return [

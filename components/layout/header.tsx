@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ShoppingCart, Package, Menu, X, ChevronDown, ChevronRight } from "lucide-react"
+import { ShoppingCart, Menu, X, ChevronDown, Package, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useCart } from "@/lib/context/CartContext"
 import styles from "./header.module.css"
