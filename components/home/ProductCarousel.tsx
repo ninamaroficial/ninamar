@@ -111,6 +111,7 @@ export default function ProductCarousel({
               sizes="100vw"
               quality={75}
               priority={index === 0}
+              fetchPriority={index === 0 ? "high" : "auto"}
               unoptimized={true}
             />
             

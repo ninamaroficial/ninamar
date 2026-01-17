@@ -55,6 +55,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsLoaded(true)
   }, [])
 
+  // Prevenir renderizado hasta que se cargue el carrito
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   // Guardar carrito en localStorage cuando cambie
   useEffect(() => {
     if (isLoaded) {
@@ -99,8 +105,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCart = () => setIsOpen(true)
   const closeCart = () => setIsOpen(false)
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-  const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0)
+  // Calcular totales solo después de montar para evitar hydration mismatch
+  const totalItems = isMounted ? items.reduce((sum, item) => sum + item.quantity, 0) : 0
+  const totalPrice = isMounted ? items.reduce((sum, item) => sum + item.totalPrice, 0) : 0
 
   return (
     <CartContext.Provider value={{

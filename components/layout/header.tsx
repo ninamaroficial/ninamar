@@ -14,6 +14,7 @@ interface Category {
   id: string
   name: string
   slug: string
+  image_url?: string
 }
 
 export default function Header() {
@@ -29,6 +30,7 @@ export default function Header() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false) // Para móvil
   const [showDropdown, setShowDropdown] = useState(false) // Para desktop
   const [dropdownTimeout, setDropdownTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   const navigation = [
     { name: "Inicio", href: "/" },
@@ -37,6 +39,11 @@ export default function Header() {
     { name: "Acerca de Niñamar", href: "/acerca" },
     { name: "Contacto", href: "/contacto" },
   ]
+
+  // Marcar como montado para prevenir hydration mismatch
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Cargar categorías
   useEffect(() => {
@@ -136,7 +143,7 @@ export default function Header() {
       </div>
 
       {/* Main Header */}
-      <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
+      <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""} ${showDropdown ? styles.headerExpanded : ""}`}>
         <div className={styles.headerContent}>
           {/* Logo */}
           <Link
@@ -181,25 +188,6 @@ export default function Header() {
                       {item.name}
                       <ChevronDown size={18} className={styles.chevron} />
                     </button>
-
-                    {/* Dropdown Desktop */}
-                    <div className={`${styles.dropdown} ${showDropdown ? styles.dropdownShow : ''}`}>
-                      <div className={styles.dropdownContent}>
-                        {categories.map((category) => (
-                          <Link
-                            key={category.id}
-                            href={`/productos?categoria=${category.slug}`}
-                            className={styles.dropdownItem}
-                            onClick={(e) => {
-                              e.preventDefault()
-                              navigateWithTransition(`/productos?categoria=${category.slug}`)
-                            }}
-                          >
-                            {category.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 )
               }
@@ -234,7 +222,7 @@ export default function Header() {
                 aria-hidden="true"
               />
 
-              {totalItems > 0 && (
+              {isMounted && totalItems > 0 && (
                 <span className={styles.cartBadge}>{totalItems}</span>
               )}
             </button>
@@ -248,6 +236,45 @@ export default function Header() {
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+          </div>
+        </div>
+
+        {/* Dropdown Categories - Parte del header */}
+        <div
+          className={`${styles.categoriesBar} ${showDropdown ? styles.categoriesBarShow : ''}`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className={styles.categoriesContent}>
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/productos?categoria=${category.slug}`}
+                className={styles.categoryCard}
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigateWithTransition(`/productos?categoria=${category.slug}`)
+                }}
+              >
+                {category.image_url && (
+                  <div className={styles.categoryCardImage}>
+                    <Image
+                      src={category.image_url}
+                      alt={category.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 240px, 280px"
+                      className={styles.categoryImage}
+                      loading="lazy"
+                      quality={85}
+                    />
+                    <div className={styles.categoryCardOverlay} />
+                  </div>
+                )}
+                <div className={styles.categoryCardContent}>
+                  <h3 className={styles.categoryCardName}>{category.name}</h3>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </header>
@@ -314,7 +341,7 @@ export default function Header() {
           >
             <ShoppingCart size={22} />
             <span>Ver Carrito</span>
-            {totalItems > 0 && (
+            {isMounted && totalItems > 0 && (
               <span className={styles.mobileCartBadge}>{totalItems}</span>
             )}
           </button>
