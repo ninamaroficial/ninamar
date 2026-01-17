@@ -26,9 +26,6 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
 
-  // Optimización de fuentes
-  optimizeFonts: true,
-
   // Headers de seguridad
   async headers() {
     return [
