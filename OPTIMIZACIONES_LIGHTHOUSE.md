@@ -1,14 +1,80 @@
 # 🚀 Optimizaciones Aplicadas - Lighthouse Performance
 
-## 📊 Resultados Iniciales
-- Performance: 83 → **Objetivo: 90+**
+## 📊 Resultados Lighthouse
+
+### Primera iteración (sin optimizaciones)
+- Performance: 83
 - Accessibility: 98 ✅
 - Best Practices: 100 ✅
 - SEO: 100 ✅
 
+### Segunda iteración (después de primeras optimizaciones)
+- Performance: 67 ❌
+- **CLS (Cumulative Layout Shift): 1.228** ❌ (objetivo: < 0.1)
+- **Speed Index: 3.1s** ⚠️ (objetivo: < 2.5s)
+- Layout shift culprits: Footer (0.629 + 0.550)
+
+### **Objetivo: Performance 90+, CLS < 0.1**
+
 ---
 
 ## 🔧 Problemas Identificados y Soluciones
+
+### 0. 🚨 **CRÍTICO: CLS del Footer - Layout Shifts Masivos**
+
+**Problema**: El footer generaba imágenes decorativas aleatoriamente en `useEffect`, causando un Cumulative Layout Shift de 1.228 (12x el límite recomendado).
+
+**Causa raíz**:
+- Las imágenes decorativas se generaban dinámicamente en el cliente
+- Las posiciones eran aleatorias en cada carga
+- No había espacio reservado para el footer
+
+**Solución Aplicada**:
+```tsx
+// ❌ ANTES: Generación aleatoria en runtime (causaba CLS)
+const [decorativeImages, setDecorativeImages] = useState<DecoItem[]>([])
+
+useEffect(() => {
+  const imgs = [...footerImages].sort(() => 0.5 - Math.random()).slice(0, DECOR_COUNT)
+  const slots = [...SLOTS].sort(() => 0.5 - Math.random()).slice(0, imgs.length)
+  setDecorativeImages(imgs.map((src, i) => ({ src, slot: slots[i] })))
+}, [])
+
+// ✅ DESPUÉS: Posiciones fijas en build time (sin CLS)
+const decorativeImages: DecoItem[] = footerImages.slice(0, DECOR_COUNT).map((src, i) => ({
+  src,
+  slot: SLOTS[i]
+}))
+```
+
+```css
+/* footer.module.css */
+.footer {
+  /* Reservar espacio mínimo para prevenir layout shift */
+  min-height: 400px;
+}
+
+.decorativeImage {
+  /* Optimización de rendimiento */
+  will-change: transform;
+  contain: layout style paint; /* Aislar el elemento */
+}
+```
+
+```tsx
+// Optimizar imágenes del footer
+<Image
+  loading="lazy"  // Carga diferida
+  quality={60}    // Menor calidad para decoración
+/>
+```
+
+**Impacto**:
+- CLS esperado: 1.228 → < 0.1 (reducción del 92%)
+- Footer ahora tiene posiciones predecibles
+- Espacio reservado previene shifts
+
+---
 
 ### 1. ✅ **LCP (Largest Contentful Paint) - fetchpriority=high**
 
@@ -31,25 +97,23 @@
 
 ---
 
-### 2. ✅ **Network Dependency Tree - Preconnect/DNS-Prefetch**
+### 2. ⚠️ **Network Dependency Tree - Preconnect Removido**
 
-**Problema**: Conexiones a servidores de imágenes (Unsplash, Supabase) tardaban más porque no había preconnect.
+**Problema inicial**: Conexiones a servidores de imágenes (Unsplash, Supabase) tardaban más.
 
-**Solución Aplicada**:
+**Primera solución (no funcionó)**:
 ```tsx
-// app/layout.tsx
-<head>
-  <link rel="preconnect" href="https://images.unsplash.com" />
-  <link rel="dns-prefetch" href="https://images.unsplash.com" />
-  <link rel="preconnect" href={SUPABASE_URL} />
-  <link rel="dns-prefetch" href={SUPABASE_URL} />
-</head>
+// ❌ Lighthouse reportó "Unused preconnect"
+<link rel="preconnect" href="https://images.unsplash.com" />
+<link rel="preconnect" href={SUPABASE_URL} />
 ```
 
-**Impacto**:
-- Establece conexión temprana con servidores de imágenes
-- Reduce latencia en ~100-200ms
-- Mejora el Network dependency tree
+**Solución final**:
+- **Removido** los preconnects porque no se usan en la página de inicio
+- Lighthouse penaliza preconnects no utilizados
+- Solo agregar preconnect si la página realmente usa ese origen
+
+**Nota**: Si en el futuro la página de inicio usa imágenes de Unsplash/Supabase, agregar preconnect solo en esa página específica.
 
 ---
 

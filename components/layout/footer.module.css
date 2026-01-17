@@ -3,6 +3,8 @@
   color: #d1d5db;
   position: relative;
   overflow: hidden;
+  /* Prevenir layout shift reservando espacio mínimo */
+  min-height: 400px;
 }
 
 /* ... estilos existentes ... */
@@ -152,7 +154,9 @@
   transform: translate(-50%, -50%) rotate(var(--r));
   animation: floatSlow var(--d) ease-in-out infinite;
 
+  /* Optimización de rendimiento */
   will-change: transform;
+  contain: layout style paint;
 }
 
 

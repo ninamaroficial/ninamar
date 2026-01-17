@@ -81,18 +81,12 @@ type DecoItem = {
   slot: (typeof SLOTS)[number]
 }
 
-const [decorativeImages, setDecorativeImages] = useState<DecoItem[]>([])
-
-useEffect(() => {
-  // elegir imágenes aleatorias
-  const imgs = [...footerImages].sort(() => 0.5 - Math.random()).slice(0, DECOR_COUNT)
-
-  // elegir slots aleatorios (sin repetirse)
-  const slots = [...SLOTS].sort(() => 0.5 - Math.random()).slice(0, imgs.length)
-
-  setDecorativeImages(imgs.map((src, i) => ({ src, slot: slots[i] })))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [])
+// ✅ OPTIMIZACIÓN CLS: Calcular posiciones en build time, no en runtime
+// Esto previene layout shifts porque las imágenes siempre están en las mismas posiciones
+const decorativeImages: DecoItem[] = footerImages.slice(0, DECOR_COUNT).map((src, i) => ({
+  src,
+  slot: SLOTS[i]
+}))
 
 
 
@@ -136,28 +130,29 @@ useEffect(() => {
 
   return (
     <footer className={styles.footer}>
-{decorativeImages.length > 0 && (
-  <div className={styles.decorativeImages} aria-hidden="true">
-    {decorativeImages.map((item, index) => (
-      <Image
-        key={`${item.src}-${index}`}
-        src={item.src}
-        alt=""
-        width={item.slot.size}
-        height={item.slot.size}
-        className={styles.decorativeImage}
-        style={{
-          // CSS variables para posición / tamaño / rotación
-          ["--x" as any]: item.slot.x,
-          ["--y" as any]: item.slot.y,
-          ["--s" as any]: `${item.slot.size}px`,
-          ["--r" as any]: `${item.slot.rot}deg`,
-          ["--d" as any]: `${item.slot.dur}s`,
-        }}
-      />
-    ))}
-  </div>
-)}
+      {/* ✅ OPTIMIZACIÓN CLS: Imágenes decorativas con contenedor de altura fija */}
+      <div className={styles.decorativeImages} aria-hidden="true">
+        {decorativeImages.map((item, index) => (
+          <Image
+            key={`${item.src}-${index}`}
+            src={item.src}
+            alt=""
+            width={item.slot.size}
+            height={item.slot.size}
+            className={styles.decorativeImage}
+            loading="lazy"
+            quality={60}
+            style={{
+              // CSS variables para posición / tamaño / rotación
+              ["--x" as any]: item.slot.x,
+              ["--y" as any]: item.slot.y,
+              ["--s" as any]: `${item.slot.size}px`,
+              ["--r" as any]: `${item.slot.rot}deg`,
+              ["--d" as any]: `${item.slot.dur}s`,
+            }}
+          />
+        ))}
+      </div>
 
 
       {/* Sección Superior */}
