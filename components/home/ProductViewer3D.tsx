@@ -17,6 +17,43 @@ function Model({ modelPath, scale = 1 }: ModelProps) {
   useEffect(() => {
     console.log('Modelo cargado:', scene)
     console.log('Scale aplicado:', scale)
+
+    // Recorrer el modelo y asegurar que los materiales funcionen
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh
+        if (mesh.material) {
+          // Si es un array de materiales
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((mat) => {
+              const material = mat as THREE.MeshStandardMaterial
+              // Si hay error en las texturas, usar color sólido
+              if (material.map) {
+                material.map.onError = () => {
+                  console.warn('Texture error, using color fallback')
+                  material.map = null
+                  material.color.setHex(0xffb3f9) // Color rosa de tu marca
+                  material.needsUpdate = true
+                }
+              }
+              material.needsUpdate = true
+            })
+          } else {
+            const material = mesh.material as THREE.MeshStandardMaterial
+            // Si hay error en las texturas, usar color sólido
+            if (material.map) {
+              material.map.onError = () => {
+                console.warn('Texture error, using color fallback')
+                material.map = null
+                material.color.setHex(0xffb3f9) // Color rosa de tu marca
+                material.needsUpdate = true
+              }
+            }
+            material.needsUpdate = true
+          }
+        }
+      }
+    })
   }, [scene, scale])
 
   // Animación sutil de flotación
@@ -27,9 +64,9 @@ function Model({ modelPath, scale = 1 }: ModelProps) {
   })
 
   return (
-    <primitive 
+    <primitive
       ref={modelRef}
-      object={scene} 
+      object={scene}
       scale={scale}
       position={[0, -2, 0]}
     />
@@ -51,36 +88,20 @@ function LoadingFallback() {
   )
 }
 
-export default function ProductViewer3D({ 
-  modelPath, 
-  autoRotate = true,
-  scale = 2 
-}: ProductViewer3DProps) {
-  const [error, setError] = useState<string | null>(null)
+// Precargar el modelo
+useGLTF.preload('/models/producto-compressed.glb')
 
+export default function ProductViewer3D({
+  modelPath,
+  autoRotate = true,
+  scale = 2
+}: ProductViewer3DProps) {
   useEffect(() => {
     console.log('ProductViewer3D montado')
     console.log('Model path:', modelPath)
     console.log('Scale:', scale)
     console.log('AutoRotate:', autoRotate)
   }, [modelPath, scale, autoRotate])
-
-  if (error) {
-    return (
-      <div style={{ 
-        width: '100%', 
-        height: '100%', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        color: '#8e4603',
-        padding: '20px',
-        textAlign: 'center'
-      }}>
-        Error cargando modelo: {error}
-      </div>
-    )
-  }
 
   return (
     <Canvas
@@ -94,9 +115,9 @@ export default function ProductViewer3D({
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
         <pointLight position={[-10, -10, -10]} intensity={0.5} />
         <directionalLight position={[0, 5, 5]} intensity={0.5} />
-        
-        {/* Entorno para reflejos */}
-        <Environment preset="studio" />
+
+        {/* Entorno para reflejos - usando archivo local */}
+        <Environment files="/hdri/studio_small_03_1k.hdr" />
 
         {/* Modelo */}
         <Model modelPath={modelPath} scale={scale} />

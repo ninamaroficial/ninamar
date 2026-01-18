@@ -249,7 +249,7 @@ export default function HowItWorksSection() {
                 opacity: 1 - scrollProgress * 0.2
               }}
             >
-              <ProductViewer3D modelPath="/models/producto-optimized.glb" />
+              <ProductViewer3D modelPath="/models/producto-compressed.glb" />
 
               {/* ✅ MEJORADO: Anotaciones con soporte táctil */}
               <div className={styles.annotationsContainer} ref={annotationsRef}>

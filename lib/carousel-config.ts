@@ -8,7 +8,7 @@ export interface CarouselImage {
 // ✅ Configuración centralizada del carrusel
 export const carouselImages: CarouselImage[] = [
   {
-    url: '/carousel/imagen-1.jpg',
+    url: '/carousel/imagen-inicial.png',
     urlMobile: '/carousel/mobile/imagen-mobile-1.jpg', // ← Versión vertical
     alt: 'Aretes arcoíris',
     title: 'Aretes aretesanales con forma de arcoíris'
