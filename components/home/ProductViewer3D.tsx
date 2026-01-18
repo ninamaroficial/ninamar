@@ -17,43 +17,6 @@ function Model({ modelPath, scale = 1 }: ModelProps) {
   useEffect(() => {
     console.log('Modelo cargado:', scene)
     console.log('Scale aplicado:', scale)
-
-    // Recorrer el modelo y asegurar que los materiales funcionen
-    scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh
-        if (mesh.material) {
-          // Si es un array de materiales
-          if (Array.isArray(mesh.material)) {
-            mesh.material.forEach((mat) => {
-              const material = mat as THREE.MeshStandardMaterial
-              // Si hay error en las texturas, usar color sólido
-              if (material.map) {
-                material.map.onError = () => {
-                  console.warn('Texture error, using color fallback')
-                  material.map = null
-                  material.color.setHex(0xffb3f9) // Color rosa de tu marca
-                  material.needsUpdate = true
-                }
-              }
-              material.needsUpdate = true
-            })
-          } else {
-            const material = mesh.material as THREE.MeshStandardMaterial
-            // Si hay error en las texturas, usar color sólido
-            if (material.map) {
-              material.map.onError = () => {
-                console.warn('Texture error, using color fallback')
-                material.map = null
-                material.color.setHex(0xffb3f9) // Color rosa de tu marca
-                material.needsUpdate = true
-              }
-            }
-            material.needsUpdate = true
-          }
-        }
-      }
-    })
   }, [scene, scale])
 
   // Animación sutil de flotación
