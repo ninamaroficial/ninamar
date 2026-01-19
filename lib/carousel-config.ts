@@ -9,13 +9,19 @@ export interface CarouselImage {
 export const carouselImages: CarouselImage[] = [
   {
     url: '/carousel/imagen-inicial.png',
-    urlMobile: '/carousel/mobile/imagen-mobile-1.jpg', // ← Versión vertical
+    urlMobile: '/carousel/mobile/imagen-inicial-mobile.png', // ← Versión vertical
     alt: 'Aretes arcoíris',
     title: 'Aretes aretesanales con forma de arcoíris'
   },
-  {
-    url: '/carousel/imagen-2.jpg',
+    {
+    url: '/carousel/imagen-inicial-arcoiris.png',
     urlMobile: '/carousel/mobile/imagen-mobile-2.jpg',
+    alt: 'Aretes bananita',
+    title: 'Aretes artesanales con forma de banana'
+  },
+  {
+    url: '/carousel/imagen-inicial22.png',
+    urlMobile: '/carousel/mobile/imagen-inicial-mobile-2.png',
     alt: 'Aretes bananita',
     title: 'Aretes artesanales con forma de banana'
   },
