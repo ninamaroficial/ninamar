@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import type { ProductWithDetails } from "@/lib/supabase/queries"
-import { getProductCustomizations } from "@/lib/supabase/queries-client"
-import CustomizationModal from "./CustomizationModal"
 import ImageGalleryModal from "./ImageGalleryModal"
 import styles from "./ProductCard.module.css"
 
@@ -14,10 +13,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isGalleryOpen, setIsGalleryOpen] = useState(false)
-  const [customizationOptions, setCustomizationOptions] = useState<any[]>([])
-  const [isLoadingOptions, setIsLoadingOptions] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -55,25 +51,6 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       currency: 'COP',
       minimumFractionDigits: 0
     }).format(price)
-  }
-
-  const handleCustomizeClick = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    if (customizationOptions.length === 0) {
-      setIsLoadingOptions(true)
-      try {
-        const options = await getProductCustomizations(product.id)
-        setCustomizationOptions(options)
-      } catch (error) {
-        console.error('Error loading customization options:', error)
-      } finally {
-        setIsLoadingOptions(false)
-      }
-    }
-    
-    setIsModalOpen(true)
   }
 
   const handleImageClick = (e: React.MouseEvent) => {
@@ -223,25 +200,20 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
         {/* Footer con botón */}
         <div className={styles.footer}>
-          <button 
-            onClick={handleCustomizeClick}
+          <Link
+            href={`/productos/${product.slug}/personalizar`}
             className={styles.customizeButton}
-            disabled={isLoadingOptions || product.stock === 0}
+            aria-disabled={product.stock === 0}
+            onClick={(e) => {
+              if (product.stock === 0) {
+                e.preventDefault()
+              }
+            }}
           >
-            {isLoadingOptions ? 'Cargando...' : 'Comprar'}
-          </button>
+            Comprar
+          </Link>
         </div>
       </article>
-
-      {/* Modal de personalización */}
-      {isModalOpen && (
-        <CustomizationModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          product={product}
-          options={customizationOptions}
-        />
-      )}
 
       {/* Modal de galería (solo desktop) */}
       {!isMobile && isGalleryOpen && (

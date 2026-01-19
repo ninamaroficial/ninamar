@@ -285,6 +285,7 @@
 }
 
 .customizeButton {
+  display: block;
   width: 100%;
   background: linear-gradient(135deg, #ffdb31 0%, #ffc107 100%);
   color: #8e4603;
@@ -299,6 +300,8 @@
   box-shadow: 0 4px 12px rgba(255, 219, 49, 0.3);
   position: relative;
   overflow: hidden;
+  text-align: center;
+  text-decoration: none;
 }
 
 /* Efecto ripple (solo desktop) */
@@ -322,19 +325,20 @@
   }
 }
 
-.customizeButton:hover:not(:disabled) {
+.customizeButton:hover:not([aria-disabled="true"]) {
   box-shadow: 0 8px 20px rgba(255, 219, 49, 0.4);
   transform: translateY(-2px);
 }
 
-.customizeButton:active:not(:disabled) {
+.customizeButton:active:not([aria-disabled="true"]) {
   transform: translateY(0);
 }
 
-.customizeButton:disabled {
+.customizeButton[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
   background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+  pointer-events: none;
 }
 
 /* ============================= */

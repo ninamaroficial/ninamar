@@ -53,27 +53,29 @@ export default function CustomizationModal({
 useEffect(() => {
   if (!isOpen) return
 
-  const scrollY = window.scrollY
+  // Guardar posición actual del scroll
+  const savedScrollY = window.scrollY
   const body = document.body
 
-  // Lock real iOS: fija el body para que no “ruede” atrás
+  // Prevenir scroll del body sin mover la posición
   body.style.position = "fixed"
-  body.style.top = `-${scrollY}px`
+  body.style.top = `-${savedScrollY}px`
   body.style.left = "0"
   body.style.right = "0"
   body.style.width = "100%"
+  body.style.overflow = "hidden"
 
   return () => {
-    // Restore
-    const top = body.style.top
+    // Restaurar body
     body.style.position = ""
     body.style.top = ""
     body.style.left = ""
     body.style.right = ""
     body.style.width = ""
+    body.style.overflow = ""
 
-    const y = top ? Math.abs(parseInt(top, 10)) : 0
-    window.scrollTo(0, y)
+    // Restaurar posición de scroll
+    window.scrollTo(0, savedScrollY)
   }
 }, [isOpen])
 

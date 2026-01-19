@@ -3,16 +3,19 @@
 /* ============================= */
 .overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(10px);
-  z-index: 2000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.3s ease;
-    overscroll-behavior: contain;
-  touch-action: none;            /* evita scroll del fondo */
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 @keyframes fadeIn {
@@ -25,12 +28,13 @@
   background: white;
   border-radius: 1.5rem;
   max-width: 1200px;
-  width: 100%;
+  width: 90%;
+  margin: 2rem;
   max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    touch-action: pan-y;
+  touch-action: pan-y;
   overscroll-behavior: contain;
 }
 
@@ -569,7 +573,7 @@
 }
 
 .productImage {
-  object-fit: cover;
+  object-fit: contain; /* Cambiar a contain para mostrar imagen completa */
   transition: transform 0.3s ease;
 }
 
@@ -698,7 +702,7 @@
 }
 
 .thumbnailImage {
-  object-fit: cover;
+  object-fit: contain; /* Cambiar a contain para mostrar imagen completa en thumbnails */
 }
 
 /* ============================= */
@@ -825,6 +829,7 @@
     max-height: 100dvh;
     border-radius: 0;
     overflow: hidden;
+    margin: 0;
   }
 
   .modalContent {
