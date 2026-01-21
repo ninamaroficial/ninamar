@@ -39,6 +39,7 @@ export default function CustomizationPage({
   const [currentStep, setCurrentStep] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false) // ✅ Nuevo estado
 
   const totalSteps = options.length + 1
 
@@ -143,9 +144,8 @@ export default function CustomizationPage({
         </div>
 
         <div className={styles.content}>
-          {/* Columna izquierda: Galería de imágenes y resumen */}
+          {/* Columna izquierda: Galería de imágenes */}
           <aside className={styles.sidebar}>
-            {/* Galería de imágenes */}
             <div className={styles.gallery}>
               <div className={styles.mainImageContainer}>
                 {images.length > 0 ? (
@@ -220,8 +220,160 @@ export default function CustomizationPage({
                 </div>
               )}
             </div>
+          </aside>
+{/* Columna central: Opciones */}
+<div className={styles.mainContent}>
+  {/* Progress bar */}
+  <div className={styles.progress}>
+    <div className={styles.progressBar}>
+      <div
+        className={styles.progressFill}
+        style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
+      />
+    </div>
+    <p className={styles.progressText}>
+      Paso {currentStep + 1} de {totalSteps}
+    </p>
+  </div>
 
-            {/* Resumen de personalización */}
+  {/* Contenido del paso actual */}
+  <div className={styles.stepContent}>
+    {currentStep < options.length ? (
+      // Paso de selección de opción
+      <div className={styles.optionSection}>
+        <div className={styles.optionHeader}>
+          <h2 className={styles.optionTitle}>
+            {currentOption.name}
+            {currentOption.is_required && (
+              <span className={styles.required}>*</span>
+            )}
+          </h2>
+          {currentOption.is_required && (
+            <p className={styles.optionDescription}>
+              Este campo es obligatorio
+            </p>
+          )}
+        </div>
+
+        <div className={styles.optionGrid}>
+          {currentOption.values.map((value) => {
+            const isSelected = selectedOptions[currentOption.id] === value.id
+
+            return (
+              <button
+                key={value.id}
+                onClick={() => handleOptionSelect(currentOption.id, value.id)}
+                className={`${styles.optionCard} ${
+                  isSelected ? styles.optionCardActive : ''
+                }`}
+              >
+                {value.hex_color && (
+                  <span
+                    className={styles.colorPreview}
+                    style={{ backgroundColor: value.hex_color }}
+                  />
+                )}
+
+                <div className={styles.optionInfo}>
+                  <span className={styles.optionValue}>{value.value}</span>
+                  {value.additional_price > 0 && (
+                    <span className={styles.optionPrice}>
+                      +{formatPrice(value.additional_price)}
+                    </span>
+                  )}
+                </div>
+
+                {isSelected && (
+                  <div className={styles.selectedBadge}>
+                    <Check size={16} />
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    ) : (
+      // Paso final: Cantidad
+      <div className={styles.finalStep}>
+        <div className={styles.optionHeader}>
+          <h2 className={styles.optionTitle}>¿Cuántos quieres?</h2>
+          <p className={styles.optionDescription}>
+            Selecciona la cantidad que deseas
+          </p>
+        </div>
+
+        <div className={styles.quantitySelector}>
+          <button
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            className={styles.quantityButton}
+            disabled={quantity <= 1}
+            aria-label="Reducir cantidad"
+          >
+            <Minus size={20} />
+          </button>
+
+          <div className={styles.quantityDisplay}>
+            <span className={styles.quantityValue}>{quantity}</span>
+            <span className={styles.quantityLabel}>
+              {quantity === 1 ? 'unidad' : 'unidades'}
+            </span>
+          </div>
+
+          <button
+            onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+            className={styles.quantityButton}
+            disabled={quantity >= product.stock}
+            aria-label="Aumentar cantidad"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
+
+        {product.stock > 0 && (
+          <p className={styles.stockInfo}>
+            <strong>{product.stock}</strong> unidades disponibles
+          </p>
+        )}
+      </div>
+    )}
+  </div>
+
+  {/* Navegación */}
+  <div className={styles.navigation}>
+    {currentStep > 0 && (
+      <button
+        onClick={() => setCurrentStep(currentStep - 1)}
+        className={styles.navButton}
+      >
+        <ChevronLeft size={20} />
+        Anterior
+      </button>
+    )}
+
+    {!isLastStep ? (
+      <button
+        onClick={() => setCurrentStep(currentStep + 1)}
+        className={styles.navButtonPrimary}
+        disabled={!canContinue}
+      >
+        Continuar
+        <ChevronRight size={20} />
+      </button>
+    ) : (
+      <button
+        onClick={handleAddToCart}
+        className={styles.addToCartButton}
+      >
+        <ShoppingCart size={20} />
+        Agregar al carrito
+      </button>
+    )}
+  </div>
+</div>
+
+          {/* Columna derecha: Resumen de personalización */}
+          <aside className={styles.summaryColumn}>
             <div className={styles.summary}>
               <h3 className={styles.summaryTitle}>Tu personalización</h3>
 
@@ -284,158 +436,116 @@ export default function CustomizationPage({
               </div>
             </div>
           </aside>
+        </div>
 
-          {/* Columna derecha: Opciones */}
-          <main className={styles.mainContent}>
-            {/* Progress bar */}
-            <div className={styles.progress}>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-                />
+ {/* ✅ NUEVO: Resumen flotante móvil */}
+        <div className={styles.mobileSummary}>
+          <div className={styles.mobileSummaryContent}>
+            <div className={styles.mobilePriceInfo}>
+              <div className={styles.mobilePriceLabel}>Total</div>
+              <div className={styles.mobilePriceValue}>
+                {formatPrice(calculateTotalPrice())}
               </div>
-              <p className={styles.progressText}>
-                Paso {currentStep + 1} de {totalSteps}
-              </p>
             </div>
 
-            {/* Contenido del paso actual */}
-            <div className={styles.stepContent}>
-              {currentStep < options.length ? (
-                // Paso de selección de opción
-                <div className={styles.optionSection}>
-                  <div className={styles.optionHeader}>
-                    <h2 className={styles.optionTitle}>
-                      {currentOption.name}
-                      {currentOption.is_required && (
-                        <span className={styles.required}>*</span>
-                      )}
-                    </h2>
-                    {currentOption.is_required && (
-                      <p className={styles.optionDescription}>
-                        Este campo es obligatorio
-                      </p>
-                    )}
-                  </div>
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              className={styles.mobileDetailsButton}
+              style={{ position: 'relative' }}
+            >
+              Detalles
+              {quantity > 1 && (
+                <span className={styles.mobileQuantityBadge}>{quantity}</span>
+              )}
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
 
-                  <div className={styles.optionGrid}>
-                    {currentOption.values.map((value) => {
-                      const isSelected = selectedOptions[currentOption.id] === value.id
+        {/* ✅ NUEVO: Drawer de detalles móvil */}
+        <>
+          <div
+            className={`${styles.mobileDrawerOverlay} ${isDrawerOpen ? 'open' : ''}`}
+            onClick={() => setIsDrawerOpen(false)}
+          />
 
-                      return (
-                        <button
-                          key={value.id}
-                          onClick={() => handleOptionSelect(currentOption.id, value.id)}
-                          className={`${styles.optionCard} ${
-                            isSelected ? styles.optionCardActive : ''
-                          }`}
-                        >
-                          {value.hex_color && (
+          <div className={`${styles.mobileDrawer} ${isDrawerOpen ? styles.mobileDrawerOpen : ''}`}>
+            <div className={styles.mobileDrawerHeader}>
+              <h3 className={styles.mobileDrawerTitle}>
+                ✨ Tu personalización
+              </h3>
+              <button
+                onClick={() => setIsDrawerOpen(false)}
+                className={styles.mobileDrawerClose}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className={styles.mobileDrawerContent}>
+              <div className={styles.mobileDrawerList}>
+                {options.map((option) => {
+                  const selectedValue = option.values.find(
+                    (v) => v.id === selectedOptions[option.id]
+                  )
+
+                  return (
+                    <div
+                      key={option.id}
+                      className={`${styles.mobileDrawerItem} ${selectedValue ? 'selected' : ''}`}
+                    >
+                      <div className={styles.mobileDrawerItemHeader}>
+                        <span className={styles.mobileDrawerLabel}>{option.name}</span>
+                        {selectedValue && <Check size={16} style={{ color: '#10b981' }} />}
+                      </div>
+
+                      {selectedValue ? (
+                        <div className={styles.mobileDrawerValue}>
+                          {selectedValue.hex_color && (
                             <span
-                              className={styles.colorPreview}
-                              style={{ backgroundColor: value.hex_color }}
+                              className={styles.mobileColorDot}
+                              style={{ backgroundColor: selectedValue.hex_color }}
                             />
                           )}
-
-                          <div className={styles.optionInfo}>
-                            <span className={styles.optionValue}>{value.value}</span>
-                            {value.additional_price > 0 && (
-                              <span className={styles.optionPrice}>
-                                +{formatPrice(value.additional_price)}
-                              </span>
-                            )}
-                          </div>
-
-                          {isSelected && (
-                            <div className={styles.selectedBadge}>
-                              <Check size={16} />
-                            </div>
+                          <span>{selectedValue.value}</span>
+                          {selectedValue.additional_price > 0 && (
+                            <span className={styles.mobileAdditionalPrice}>
+                              +{formatPrice(selectedValue.additional_price)}
+                            </span>
                           )}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              ) : (
-                // Paso final: Cantidad
-                <div className={styles.finalStep}>
-                  <div className={styles.optionHeader}>
-                    <h2 className={styles.optionTitle}>¿Cuántos quieres?</h2>
-                    <p className={styles.optionDescription}>
-                      Selecciona la cantidad que deseas
-                    </p>
-                  </div>
-
-                  <div className={styles.quantitySelector}>
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className={styles.quantityButton}
-                      disabled={quantity <= 1}
-                      aria-label="Reducir cantidad"
-                    >
-                      <Minus size={20} />
-                    </button>
-
-                    <div className={styles.quantityDisplay}>
-                      <span className={styles.quantityValue}>{quantity}</span>
-                      <span className={styles.quantityLabel}>
-                        {quantity === 1 ? 'unidad' : 'unidades'}
-                      </span>
+                        </div>
+                      ) : (
+                        <p className={styles.mobileDrawerEmpty}>No seleccionado</p>
+                      )}
                     </div>
+                  )
+                })}
 
-                    <button
-                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                      className={styles.quantityButton}
-                      disabled={quantity >= product.stock}
-                      aria-label="Aumentar cantidad"
-                    >
-                      <Plus size={20} />
-                    </button>
+                {/* Cantidad */}
+                <div className={`${styles.mobileDrawerItem} selected`}>
+                  <div className={styles.mobileDrawerItemHeader}>
+                    <span className={styles.mobileDrawerLabel}>Cantidad</span>
+                    <Check size={16} style={{ color: '#10b981' }} />
                   </div>
-
-                  {product.stock > 0 && (
-                    <p className={styles.stockInfo}>
-                      <strong>{product.stock}</strong> unidades disponibles
-                    </p>
-                  )}
+                  <div className={styles.mobileDrawerValue}>
+                    <span>{quantity} {quantity === 1 ? 'unidad' : 'unidades'}</span>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Navegación */}
-            <div className={styles.navigation}>
-              {currentStep > 0 && (
-                <button
-                  onClick={() => setCurrentStep(currentStep - 1)}
-                  className={styles.navButton}
-                >
-                  <ChevronLeft size={20} />
-                  Anterior
-                </button>
-              )}
-
-              {!isLastStep ? (
-                <button
-                  onClick={() => setCurrentStep(currentStep + 1)}
-                  className={styles.navButtonPrimary}
-                  disabled={!canContinue}
-                >
-                  Continuar
-                  <ChevronRight size={20} />
-                </button>
-              ) : (
-                <button
-                  onClick={handleAddToCart}
-                  className={styles.addToCartButton}
-                >
-                  <ShoppingCart size={20} />
-                  Agregar al carrito
-                </button>
-              )}
+              {/* Total */}
+              <div className={styles.mobileDrawerTotal}>
+                <div className={styles.mobileDrawerTotalRow}>
+                  <span className={styles.mobileDrawerTotalLabel}>Total</span>
+                  <span className={styles.mobileDrawerTotalPrice}>
+                    {formatPrice(calculateTotalPrice())}
+                  </span>
+                </div>
+              </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </>
+
       </Container>
 
       {/* Modal de zoom de imagen */}
