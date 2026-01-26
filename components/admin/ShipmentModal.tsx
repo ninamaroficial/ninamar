@@ -133,7 +133,7 @@ export default function ShipmentModal({
               name="tracking_number"
               value={formData.tracking_number}
               onChange={handleChange}
-              placeholder="Ej: 123456789"
+              placeholder="3005469257"
               className={`${styles.input} ${errors.tracking_number ? styles.inputError : ''}`}
             />
             {errors.tracking_number && (

@@ -58,7 +58,7 @@ export default function ContactoPage() {
                 </div>
                 <div className={styles.infoContent}>
                   <h3 className={styles.infoTitle}>Teléfono / WhatsApp</h3>
-                  <a href="tel:+573001234567" className={styles.infoLink}>
+                  <a href="cel:+573005469257" className={styles.infoLink}>
                     +57 300 123 4567
                   </a>
                   <p className={styles.infoText}>
