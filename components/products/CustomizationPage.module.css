@@ -12,9 +12,6 @@
   max-width: 1400px !important;
 }
 
-.mobileDrawer{
- visibility:hidden;
-}
 
 /* ============================= */
 /* HEADER */
@@ -514,7 +511,7 @@
 /* ============================= */
 .summaryColumn {
   position: sticky;
-  top: 1.5rem;
+  top: 2.5rem;
   min-height: 500px; /* ← Altura mínima base */
 }
 
@@ -527,6 +524,9 @@
   min-height: 500px; /* ← Altura mínima */
   display: flex;
   flex-direction: column;
+  max-height: calc(100vh - 3rem); /* Evita que se corte en pantallas más bajas */
+  overflow-y: auto; /* Permite hacer scroll dentro del panel si es necesario */
+  overscroll-behavior: contain; /* Evita saltos de scroll al llegar al borde */
 }
 
 .summaryTitle {
@@ -680,6 +680,15 @@
   display: none; /* Oculto en desktop */
 }
 
+@media (min-width: 1025px) {
+  .mobileSummary,
+  .mobileDrawer,
+  .mobileDrawerOverlay {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}
+
 /* ============================= */
 /* RESPONSIVE - MÓVIL */
 /* ============================= */
@@ -745,9 +754,10 @@
     background: white;
     border-top: 2px solid #ffb3f9;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 2000;
+    z-index: 9999;
     padding: 1rem 1.5rem;
     pointer-events: auto;
+    cursor: pointer;
   }
 
   .mobileSummaryContent {
@@ -757,10 +767,12 @@
     gap: 1rem;
     max-width: 600px;
     margin: 0 auto;
+    pointer-events: none;
   }
 
   .mobilePriceInfo {
     flex: 1;
+    pointer-events: none;
   }
 
   .mobilePriceLabel {
@@ -810,6 +822,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    pointer-events: auto;
   }
 
   .mobileDetailsButton:active {
@@ -826,7 +839,7 @@
     background: white;
     border-radius: 1.5rem 1.5rem 0 0;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 2100;
+    z-index: 10001;
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: 70vh;
@@ -841,7 +854,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 2050;
+    z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;

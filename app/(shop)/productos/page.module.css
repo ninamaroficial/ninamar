@@ -83,7 +83,7 @@
    SIDEBAR
 ========================================================= */
 .sidebar {
-  display: none;
+  display: block; /* Mostrar el botón flotante de filtros en móvil */
 }
 
 @media (min-width: 1024px) {

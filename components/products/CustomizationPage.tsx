@@ -132,6 +132,9 @@ export default function CustomizationPage({
     window.open(images[currentImageIndex].image_url, "_blank")
   }
 
+  const openMobileDrawer = () => setIsDrawerOpen(true)
+  const closeMobileDrawer = () => setIsDrawerOpen(false)
+
   return (
     <div className={styles.page}>
       <Container className={styles.container}>
@@ -438,7 +441,7 @@ export default function CustomizationPage({
         </div>
 
  {/* ✅ NUEVO: Resumen flotante móvil */}
-        <div className={styles.mobileSummary}>
+        <div className={styles.mobileSummary} onClick={openMobileDrawer} role="button" aria-label="Ver detalles de personalización">
           <div className={styles.mobileSummaryContent}>
             <div className={styles.mobilePriceInfo}>
               <div className={styles.mobilePriceLabel}>Total</div>
@@ -449,7 +452,10 @@ export default function CustomizationPage({
 
             <button
               type="button"
-              onClick={() => setIsDrawerOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation()
+                openMobileDrawer()
+              }}
               className={styles.mobileDetailsButton}
               style={{ position: 'relative' }}
             >
@@ -466,7 +472,7 @@ export default function CustomizationPage({
         <>
           <div
             className={`${styles.mobileDrawerOverlay} ${isDrawerOpen ? 'open' : ''}`}
-            onClick={() => setIsDrawerOpen(false)}
+            onClick={closeMobileDrawer}
           />
 
           <div className={`${styles.mobileDrawer} ${isDrawerOpen ? styles.mobileDrawerOpen : ''}`}>
@@ -475,7 +481,7 @@ export default function CustomizationPage({
                 ✨ Tu personalización
               </h3>
               <button
-                onClick={() => setIsDrawerOpen(false)}
+                onClick={closeMobileDrawer}
                 className={styles.mobileDrawerClose}
               >
                 <X size={20} />

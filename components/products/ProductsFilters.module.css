@@ -47,8 +47,9 @@
     align-items: center;
     gap: 0.5rem;
     position: fixed;
-    bottom: 2rem;
+    top: 15.75rem; /* Baja el botón para que quede debajo del hero pero antes de los productos */
     right: 1.5rem;
+    bottom: auto;
      background-color: #ffb3f9;
     color: #0f172a;
     border: none;
