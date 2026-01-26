@@ -125,7 +125,7 @@ export default function ContactoPage() {
                   Facebook
                 </a>
                 <a 
-                  href="https://wa.me/573001234567" 
+                  href="https://wa.me/573005469257" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.socialLink}

@@ -403,7 +403,7 @@ export default function CheckoutPage() {
                         value={formData.customer_document}
                         onChange={handleInputChange}
                         className={`${styles.input} ${errors.customer_document ? styles.inputError : ''}`}
-                        placeholder="1234567890"
+                        placeholder="3005469257"
                       />
                       {errors.customer_document && (
                         <span className={styles.error}>{errors.customer_document}</span>
@@ -437,7 +437,7 @@ export default function CheckoutPage() {
                         value={formData.customer_phone}
                         onChange={handleInputChange}
                         className={`${styles.input} ${errors.customer_phone ? styles.inputError : ''}`}
-                        placeholder="3001234567"
+                        placeholder="3005469257"
                       />
                       {errors.customer_phone && (
                         <span className={styles.error}>{errors.customer_phone}</span>
