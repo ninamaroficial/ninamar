@@ -57,6 +57,91 @@ export default function CheckoutPage() {
     }).format(price)
   }
 
+  const renderSummary = () => (
+    <div className={styles.summary}>
+      <div className={styles.summaryHeader}>
+        <ShoppingBag className={styles.summaryIcon} />
+        <h2 className={styles.summaryTitle}>Resumen del Pedido</h2>
+      </div>
+
+      <div className={styles.summaryItems}>
+        {items.map((item) => (
+          <div key={item.id} className={styles.summaryItem}>
+            <div className={styles.itemImage}>
+              {item.productImage ? (
+                <Image
+                  src={item.productImage}
+                  alt={item.productName}
+                  fill
+                  className={styles.image}
+                  sizes="80px"
+                />
+              ) : (
+                <div className={styles.imagePlaceholder}>💎</div>
+              )}
+            </div>
+            <div className={styles.itemDetails}>
+              <h3 className={styles.itemName}>{item.productName}</h3>
+              <p className={styles.itemQuantity}>Cantidad: {item.quantity}</p>
+              {item.selectedOptions.map((opt: any) => (
+                <p key={opt.optionId} className={styles.itemOption}>
+                  {opt.optionName}: {opt.valueName}
+                </p>
+              ))}
+            </div>
+            <div className={styles.itemPrice}>
+              {formatPrice(item.totalPrice)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Totals */}
+      <div className={styles.totals}>
+        <div className={styles.totalRow}>
+          <span>Subtotal</span>
+          <span>{formatPrice(subtotal)}</span>
+        </div>
+
+        <div className={styles.totalRow}>
+          <span>Envío</span>
+          <span>
+            {shippingCost === 0
+              ? (subtotal >= FREE_SHIPPING_THRESHOLD ? '¡GRATIS!' : 'Por calcular')
+              : formatPrice(shippingCost)
+            }
+          </span>
+        </div>
+
+        {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && formData.shipping_state && (
+          <div className={styles.shippingMessage}>
+            {getShippingMessage(formData.shipping_state, formData.shipping_city, subtotal)}
+          </div>
+        )}
+
+        {subtotal >= FREE_SHIPPING_THRESHOLD && (
+          <div className={styles.freeShippingBanner}>
+            ✨ ¡Felicidades! Tienes envío gratis
+          </div>
+        )}
+
+        <div className={`${styles.totalRow} ${styles.totalFinal}`}>
+          <span>Total</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+      </div>
+
+      <div className={styles.securePayment}>
+        <span className={styles.secureIcon}>🔒</span>
+        <p className={styles.secureText}>
+          Pago seguro con MercadoPago
+          <br />
+          <small>PSE, Tarjetas, Efectivo y más</small>
+        </p>
+      </div>
+    </div>
+  )
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -467,12 +552,24 @@ export default function CheckoutPage() {
                     </label>
                   </div>
 
+                  <p className={`${styles.donationNote} ${styles.donationNoteStandalone}`}>
+                    <span aria-hidden="true" className={styles.donationNoteIcon}>
+                      ❤️
+                    </span>
+                    Destinamos el 5% de tu compra a una causa benéfica cada mes.
+                  </p>
+
                   {!acceptTerms && (
                     <p className={styles.termsWarning}>
                       * Debes aceptar los términos para continuar
                     </p>
                   )}
                 </div>
+                {/* Resumen (móvil) */}
+                <div className={styles.summaryMobile}>
+                  {renderSummary()}
+                </div>
+
                 {/* Botón de envío */}
                 <button
                   type="submit"
@@ -496,88 +593,7 @@ export default function CheckoutPage() {
 
             {/* Resumen del pedido */}
             <div className={styles.summarySection}>
-              <div className={styles.summary}>
-                <div className={styles.summaryHeader}>
-                  <ShoppingBag className={styles.summaryIcon} />
-                  <h2 className={styles.summaryTitle}>Resumen del Pedido</h2>
-                </div>
-
-                <div className={styles.summaryItems}>
-                  {items.map((item) => (
-                    <div key={item.id} className={styles.summaryItem}>
-                      <div className={styles.itemImage}>
-                        {item.productImage ? (
-                          <Image
-                            src={item.productImage}
-                            alt={item.productName}
-                            fill
-                            className={styles.image}
-                            sizes="80px"
-                          />
-                        ) : (
-                          <div className={styles.imagePlaceholder}>💎</div>
-                        )}
-                      </div>
-                      <div className={styles.itemDetails}>
-                        <h3 className={styles.itemName}>{item.productName}</h3>
-                        <p className={styles.itemQuantity}>Cantidad: {item.quantity}</p>
-                        {item.selectedOptions.map((opt: any) => (
-                          <p key={opt.optionId} className={styles.itemOption}>
-                            {opt.optionName}: {opt.valueName}
-                          </p>
-                        ))}
-                      </div>
-                      <div className={styles.itemPrice}>
-                        {formatPrice(item.totalPrice)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Totals */}
-                <div className={styles.totals}>
-                  <div className={styles.totalRow}>
-                    <span>Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
-                  </div>
-
-                  <div className={styles.totalRow}>
-                    <span>Envío</span>
-                    <span>
-                      {shippingCost === 0
-                        ? (subtotal >= FREE_SHIPPING_THRESHOLD ? '¡GRATIS!' : 'Por calcular')
-                        : formatPrice(shippingCost)
-                      }
-                    </span>
-                  </div>
-
-                  {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && formData.shipping_state && (
-                    <div className={styles.shippingMessage}>
-                      {getShippingMessage(formData.shipping_state, formData.shipping_city, subtotal)}
-                    </div>
-                  )}
-
-                  {subtotal >= FREE_SHIPPING_THRESHOLD && (
-                    <div className={styles.freeShippingBanner}>
-                      ✨ ¡Felicidades! Tienes envío gratis
-                    </div>
-                  )}
-
-                  <div className={`${styles.totalRow} ${styles.totalFinal}`}>
-                    <span>Total</span>
-                    <span>{formatPrice(total)}</span>
-                  </div>
-                </div>
-
-                <div className={styles.securePayment}>
-                  <span className={styles.secureIcon}>🔒</span>
-                  <p className={styles.secureText}>
-                    Pago seguro con MercadoPago
-                    <br />
-                    <small>PSE, Tarjetas, Efectivo y más</small>
-                  </p>
-                </div>
-              </div>
+              {renderSummary()}
             </div>
           </div>
         </div>

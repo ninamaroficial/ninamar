@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `Personaliza tu ${product.name} | Niñamar`,
-    description: `Personaliza tu ${product.name} - ${product.short_description || 'Accesorios únicos hechos a mano'}`,
+    title: `${product.name} | Niñamar`,
+    description: `${product.name} - ${product.short_description || 'Accesorios únicos hechos a mano'}`,
   }
 }
 

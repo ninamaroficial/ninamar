@@ -210,9 +210,16 @@
 
 /* Resumen */
 .summarySection {
+  display: block;
   position: sticky;
-  top: 6rem;
+  top: 0;
   height: fit-content;
+  align-self: flex-start;
+}
+
+.summaryMobile {
+  display: none;
+  margin-top: 0;
 }
 
 .summary {
@@ -409,6 +416,44 @@
   font-size: 0.9375rem;
   color: #475569;
   line-height: 1.6;
+}
+
+.donationNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.95rem;
+  color: #0b3a38;
+  line-height: 1.5;
+  font-weight: 800;
+  text-align: center;
+  width: 100%;
+  background: linear-gradient(120deg, rgba(255, 186, 241, 0.32), rgba(166, 232, 228, 0.38));
+  border: 1px solid rgba(255, 186, 241, 0.75);
+  border-radius: 0.85rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.donationNoteStandalone {
+  margin-left: 0;
+}
+
+.donationNoteIcon {
+  font-size: 1.05rem;
+}
+
+@media (max-width: 1023px) {
+  .summarySection {
+    display: none;
+  }
+
+  .summaryMobile {
+    display: block;
+    margin-top: 1.5rem;
+  }
 }
 
 .checkboxText .link {

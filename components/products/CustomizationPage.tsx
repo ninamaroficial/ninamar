@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { X, Plus, Minus, ShoppingCart, ChevronRight, Check, ZoomIn, ChevronLeft, ArrowLeft } from "lucide-react"
+import { X, Plus, Minus, ShoppingCart, ChevronRight, Check, ChevronLeft, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import type { ProductWithDetails } from "@/lib/supabase/queries"
@@ -38,7 +38,6 @@ export default function CustomizationPage({
   const [quantity, setQuantity] = useState(1)
   const [currentStep, setCurrentStep] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isImageZoomed, setIsImageZoomed] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false) // ✅ Nuevo estado
 
   const totalSteps = options.length + 1
@@ -128,6 +127,11 @@ export default function CustomizationPage({
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
   }
 
+  const handleOpenFullImage = () => {
+    if (images.length === 0) return
+    window.open(images[currentImageIndex].image_url, "_blank")
+  }
+
   return (
     <div className={styles.page}>
       <Container className={styles.container}>
@@ -140,7 +144,7 @@ export default function CustomizationPage({
             <ArrowLeft size={20} />
             <span>Volver</span>
           </button>
-          <h1 className={styles.pageTitle}>Personaliza tu {product.name}</h1>
+          <div className={styles.pageTitleSpacer} aria-hidden="true" />
         </div>
 
         <div className={styles.content}>
@@ -157,6 +161,7 @@ export default function CustomizationPage({
                       className={styles.mainImage}
                       sizes="(max-width: 768px) 100vw, 50vw"
                       priority
+                      onClick={handleOpenFullImage}
                     />
 
                     {images.length > 1 && (
@@ -182,13 +187,7 @@ export default function CustomizationPage({
                       </>
                     )}
 
-                    <button
-                      onClick={() => setIsImageZoomed(true)}
-                      className={styles.zoomButton}
-                      aria-label="Ver imagen completa"
-                    >
-                      <ZoomIn size={20} />
-                    </button>
+                    <div className={styles.imageHint}>Toca o haz clic para ver grande</div>
                   </>
                 ) : (
                   <div className={styles.imagePlaceholder}>
@@ -449,6 +448,7 @@ export default function CustomizationPage({
             </div>
 
             <button
+              type="button"
               onClick={() => setIsDrawerOpen(true)}
               className={styles.mobileDetailsButton}
               style={{ position: 'relative' }}
@@ -548,28 +548,6 @@ export default function CustomizationPage({
 
       </Container>
 
-      {/* Modal de zoom de imagen */}
-      {isImageZoomed && images.length > 0 && (
-        <div className={styles.zoomOverlay} onClick={() => setIsImageZoomed(false)}>
-          <button
-            onClick={() => setIsImageZoomed(false)}
-            className={styles.zoomCloseButton}
-            aria-label="Cerrar zoom"
-          >
-            <X size={24} />
-          </button>
-
-          <div className={styles.zoomContent} onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={images[currentImageIndex].image_url}
-              alt={images[currentImageIndex].alt_text || product.name}
-              fill
-              className={styles.zoomedImage}
-              sizes="100vw"
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }
