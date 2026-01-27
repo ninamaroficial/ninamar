@@ -190,7 +190,7 @@ export default function PrivacidadPage() {
               <p><strong>Niñamar</strong></p>
               <p>Popayán, Cauca, Colombia</p>
               <p>Email: <a href="mailto:ninamar.oficial@gmail.com" className={styles.link}>ninamar.oficial@gmail.com</a></p>
-              <p>Teléfono: <a href="cel:+573005469257" className={styles.link}>+57 300 123 4567</a></p>
+              <p>Teléfono: <a href="cel:+573005469257" className={styles.link}>+573005469257</a></p>
             </div>
           </section>
 

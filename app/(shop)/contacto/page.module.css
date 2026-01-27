@@ -8,14 +8,19 @@
 ========================================================= */
 .hero {
   position: relative;
-  padding: 3.5rem 0 2.5rem;
+  padding: 5.5rem 0 4.5rem;
   overflow: hidden;
+  min-height: 320px;
 
-  /* Fondo integrado con tus colores */
+  /* Fondo con banner visible y velo suave */
   background:
-    radial-gradient(circle at top left, #ffeafdff 0%, transparent 55%),
-    radial-gradient(circle at bottom right,  #ffeafdff 0%, transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 253, 242, 0.22) 100%),
+    radial-gradient(circle at top left, rgba(255, 234, 253, 0.35) 0%, transparent 55%),
+    radial-gradient(circle at bottom right, rgba(255, 234, 253, 0.35) 0%, transparent 60%),
+    url('/banners/coleccion.png');
+  background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
 }
 
 /* Capa de contenido por encima de todo */
@@ -219,6 +224,10 @@
 @media (max-width: 768px) {
   .hero {
     padding: 4rem 0 3rem;
+    min-height: 160px;
+    background-size: 120% 120%, 120% 120%, 120% 120%, cover;
+    background-position: center 55%;
+    margin-bottom: -20px;
   }
 
   .content {

@@ -11,14 +11,14 @@
 ========================================================= */
 .hero {
   position: relative;
-  padding: 3.5rem 0 2.5rem;
+  padding: 5.5rem 0 4.5rem;
   overflow: hidden;
-
-  /* Fondo integrado con tus colores */
-  background:
-    radial-gradient(circle at top left, #ffeafdff 0%, transparent 55%),
-    radial-gradient(circle at bottom right, #ffeafdff 0%, transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
+  min-height: 280px;
+  /* Fondo con banner visible y un velo suave para legibilidad */
+  background: url('/banners/coleccion.png');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
 }
 
 /* Capa de contenido por encima de todo */
@@ -209,6 +209,12 @@
 @media (max-width: 768px) {
   .hero {
     padding: 4rem 0 3rem;
+    min-height: 160px;
+    margin-bottom: -20px;
+  background-position: center 60%;
+
+    /* Baja ligeramente el enfoque del banner en móvil */
+
   }
 
   .heroTitle {

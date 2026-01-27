@@ -30,7 +30,7 @@ const features: Feature[] = [
   },
   {
     title: "Envío Gratis +$100K",
-    description: "Envío a todo Colombia. Gratis en compras superiores a $100.000",
+    description: "Envío a todo Colombia. Gratis en compras superiores a $120.000",
     direction: 'left',
     image: '/features/envioGratis.png'
   }

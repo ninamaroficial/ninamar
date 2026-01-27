@@ -1,24 +1,24 @@
 // Tarifas de envío por departamento y ciudad (en COP)
 export const SHIPPING_RATES: Record<string, number> = {
   // Principales ciudades - más económico
-  'Bogotá D.C.': 8000,
-  'Cundinamarca': 10000,
-  'Antioquia': 12000,
-  'Valle del Cauca': 12000,
+  'Bogotá D.C.': 18000,
+  'Cundinamarca': 18000,
+  'Antioquia': 18000,
+  'Valle del Cauca': 10000,
   
   // Región Andina
-  'Boyacá': 15000,
-  'Santander': 15000,
+  'Boyacá': 18000,
+  'Santander': 18000,
   'Norte de Santander': 18000,
-  'Tolima': 15000,
+  'Tolima': 18000,
   'Huila': 16000,
-  'Caldas': 14000,
-  'Risaralda': 14000,
-  'Quindío': 14000,
+  'Caldas': 18000,
+  'Risaralda': 18000,
+  'Quindío': 18000,
   
   // Región Caribe
   'Atlántico': 18000,
-  'Bolívar': 18000,
+  'Bolívar': 22000,
   'Magdalena': 20000,
   'Cesar': 20000,
   'La Guajira': 25000,
@@ -27,7 +27,7 @@ export const SHIPPING_RATES: Record<string, number> = {
   'San Andrés y Providencia': 35000,
   
   // Región Pacífica
-  'Cauca': 16000, // Tarifa general del departamento
+  'Cauca': 10000, // Tarifa general del departamento
   'Nariño': 18000,
   'Chocó': 25000,
   
@@ -51,7 +51,7 @@ export const CITY_SHIPPING_RATES: Record<string, number> = {
   'Popayán': 5000, // Tarifa especial para Popayán (sede principal)
 }
 
-export const FREE_SHIPPING_THRESHOLD = 100000 // $100,000 COP
+export const FREE_SHIPPING_THRESHOLD = 120000 // $120,000 COP
 
 export function calculateShipping(state: string, city: string, total: number): number {
   // Envío gratis si el total es mayor o igual al umbral

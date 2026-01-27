@@ -332,6 +332,40 @@
   color: #0f172a;
 }
 
+/* Desactiva efectos hover en dispositivos táctiles para evitar estados pegados */
+@media (hover: none) {
+  .mobileFilterButton:hover {
+    transform: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .categoryItem:hover {
+    background: transparent;
+    border-color: transparent;
+    color: #8e4603;
+  }
+
+  .applyButton:hover {
+    background: #ffeafdff;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .priceRangeButton:hover {
+    background: transparent;
+    border-color: #8e4603;
+    color: #8e4603;
+  }
+
+  .clearButton:hover {
+    color: #8e4603;
+  }
+
+  .mobileCloseButton:hover {
+    background: #f8fafc;
+  }
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

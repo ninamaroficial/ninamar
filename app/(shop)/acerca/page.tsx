@@ -22,10 +22,7 @@ export default function AcercaPage() {
       <section className={styles.hero}>
         <Container>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Nuestra Historia</h1>
-            <p className={styles.heroSubtitle}>
-              Cada accesorio cuenta una historia, y esta es la nuestra
-            </p>
+
           </div>
         </Container>
       </section>

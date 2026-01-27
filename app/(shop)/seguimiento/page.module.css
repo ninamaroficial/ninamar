@@ -2,9 +2,10 @@
   min-height: 100vh;
   overflow-x: hidden; /* ← AGREGAR para prevenir scroll horizontal */
   padding-top: relative;
-  background-color: #fff3b8ff;
-    background-image: url("/seguimiento/texture1.png");
-background-blend-mode:lighten;
+  background:
+    linear-gradient(rgba(255, 243, 184, 0.88), rgba(255, 243, 184, 0.88)),
+    url("/seguimiento/texture1.png");
+  background-size: 1000px 1000px, 1000px 1000px;
 }
 
 
@@ -27,15 +28,15 @@ background-blend-mode:lighten;
 ========================================================= */
 .hero {
   position: relative;
-  padding: 3.5rem 0 2.5rem;
+  padding: 5.5rem 0 4.5rem;
   overflow: hidden;
+  min-height: 320px;
 
-  /* Fondo integrado con tus colores */
-  background:
-    radial-gradient(circle at top left, #ffeafdff 0%, transparent 55%),
-    radial-gradient(circle at bottom right,  #ffeafdff 0%, transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #fffdf2 100%);
-
+  /* Fondo solo con el banner, sin filtros */
+  background: url('/banners/rastrea.png');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
     margin-bottom: 100px;
 
 }
@@ -684,7 +685,16 @@ background-blend-mode:lighten;
 @media (max-width: 768px) {
   .page {
     padding: 2rem 0;
+      background-size: 500px 500px;
+
   }
+  .hero {
+    margin-top: -32px;
+    padding: 4rem 0 3rem;
+    min-height: 160px;
+    background-position: 25% 55%;
+  }
+
 
   .title {
     font-size: 2rem;

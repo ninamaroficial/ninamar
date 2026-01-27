@@ -33,10 +33,7 @@ export default async function ProductsPage({
 <section className={styles.hero}>
   <Container>
     <div className={styles.heroContent}>
-      <h1 className={styles.heroTitle}>Colección</h1>
-      <p className={styles.heroSubtitle}>
-        accesorios únicos diseñados con amor
-      </p>
+
     </div>
   </Container>
 </section>

@@ -22,10 +22,7 @@ export default function ContactoPage() {
 <section className={styles.hero}>
   <Container>
     <div className={styles.heroContent}>
-      <h1 className={styles.heroTitle}>Contáctanos</h1>
-      <p className={styles.heroSubtitle}>
-       Estamos aquí para ayudarte a crear el accesorio perfecto
-      </p>
+
     </div>
   </Container>
 </section>
@@ -58,8 +55,8 @@ export default function ContactoPage() {
                 </div>
                 <div className={styles.infoContent}>
                   <h3 className={styles.infoTitle}>Teléfono / WhatsApp</h3>
-                  <a href="cel:+573005469257" className={styles.infoLink}>
-                    +57 300 123 4567
+                  <a href="cel:+57 300 546 9257" className={styles.infoLink}>
+                    +57 300 546 9257
                   </a>
                   <p className={styles.infoText}>
                     Lun - Sáb: 9:00 AM - 6:00 PM

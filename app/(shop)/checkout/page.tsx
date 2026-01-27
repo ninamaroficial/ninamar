@@ -119,11 +119,7 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {subtotal >= FREE_SHIPPING_THRESHOLD && (
-          <div className={styles.freeShippingBanner}>
-            ✨ ¡Felicidades! Tienes envío gratis
-          </div>
-        )}
+        {subtotal >= FREE_SHIPPING_THRESHOLD }
 
         <div className={`${styles.totalRow} ${styles.totalFinal}`}>
           <span>Total</span>

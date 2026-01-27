@@ -38,7 +38,7 @@ export default function TerminosPage() {
               <p>Nombre comercial: Niñamar</p>
               <p>Ubicación: Popayán, Cauca, Colombia</p>
               <p>Email: ninamar.oficial@gmail.com</p>
-              <p>Teléfono: +57 300 123 4567</p>
+              <p>Teléfono: +573005469257</p>
             </div>
           </section>
 
@@ -112,7 +112,7 @@ export default function TerminosPage() {
             </p>
             <p className={styles.text}>
               <strong>Costos de envío:</strong> Los costos de envío se calculan según la ubicación y el peso del paquete. 
-              Ofrecemos envío gratis para compras superiores a $100.000 COP.
+              Ofrecemos envío gratis para compras superiores a $120.000 COP.
             </p>
             <p className={styles.text}>
               <strong>Tiempo de entrega:</strong> Una vez enviado el pedido, el tiempo de entrega es de 2 a 5 días hábiles 
@@ -238,7 +238,7 @@ export default function TerminosPage() {
               <p>Email: <a href="mailto:ninamar.oficial@gmail.com
 " className={styles.link}>ninamar.oficial@gmail.com
 </a></p>
-              <p>Teléfono: <a href="cel:+573005469257" className={styles.link}>+57 300 123 4567</a></p>
+              <p>Teléfono: <a href="cel:+573005469257" className={styles.link}>+573005469257</a></p>
               <p>Dirección: Popayán, Cauca, Colombia</p>
             </div>
           </section>

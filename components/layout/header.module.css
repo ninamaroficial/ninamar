@@ -826,6 +826,75 @@
 }
 
 /* =========================================================
+   TOUCH DEVICES: DISABLE HOVER EFFECTS
+========================================================= */
+
+@media (hover: none) {
+  .logo:hover {
+    transform: none;
+  }
+
+  .navLink:hover,
+  .navLink:active {
+    color: #8e4603;
+    background: transparent;
+    transform: none;
+  }
+
+  .navLink:hover::after {
+    transform: scaleX(0);
+  }
+
+  .dropdownContainer:hover .chevron {
+    transform: none;
+  }
+
+  .categoryCard:hover {
+    transform: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-color: #ffb3f9;
+  }
+
+  .categoryCard:hover .categoryCardOverlay {
+    opacity: 1;
+  }
+
+  .categoryCard:hover .categoryCardName {
+    transform: none;
+  }
+
+  .cartButton:hover {
+    transform: none;
+    background: #fdde52c7;
+    box-shadow: none;
+  }
+
+  .mobileMenuButton:hover {
+    background: transparent;
+    border-color: #7e4603;
+    color: #7e4603;
+  }
+
+  .mobileMenuLink:hover {
+    color: #4a2601;
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(126, 70, 3, 0.2);
+    transform: none;
+  }
+
+  .mobileSubMenuItem:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(240, 143, 240, 0.3);
+    transform: none;
+  }
+
+  .mobileCartButton:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 

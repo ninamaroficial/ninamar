@@ -137,7 +137,7 @@ export default function Header() {
           <Package size={16} className={styles.bannerIcon} />
           <p className={styles.bannerText}>
             ✨ Envío <strong>GRATIS</strong> en compras superiores a{" "}
-            <strong>$100.000</strong> a toda Colombia
+            <strong>$120.000</strong> a toda Colombia
           </p>
         </div>
       </div>

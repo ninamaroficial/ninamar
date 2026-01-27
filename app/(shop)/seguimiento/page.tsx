@@ -158,10 +158,7 @@ export default function SeguimientoPage() {
       <section className={styles.hero}>
   <Container>
     <div className={styles.heroContent}>
-      <h1 className={styles.heroTitle}>Rastrea tu Pedido</h1>
-      <p className={styles.heroSubtitle}>
-        Ingresa tu número de orden y email para conocer el estado de tu pedido
-      </p>
+
     </div>
   </Container>
 </section>
