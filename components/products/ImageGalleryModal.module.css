@@ -44,8 +44,8 @@
 /* Close Button */
 .closeButton {
   position: absolute;
-  top: -3rem;
-  right: -3rem;
+  top: 6.5rem;
+  right: -2.75rem;
   background: rgba(255, 255, 255, 0.95);
   border: none;
   color: #0f172a;
@@ -72,12 +72,13 @@
   width: 100%;
   aspect-ratio: 1;
   border-radius: 1rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .mainImage {
   object-fit: contain;
   padding: 1rem;
+  border-radius: 1rem;
 }
 
 /* Navigation Buttons */
@@ -113,6 +114,17 @@
   right: 1rem;
 }
 
+/* Desktop: sacar flechas ligeramente fuera de la imagen */
+@media (min-width: 769px) {
+  .prevButton {
+    left: -3.25rem;
+  }
+
+  .nextButton {
+    right: -3.25rem;
+  }
+}
+
 /* Counter */
 .counter {
   position: absolute;
@@ -140,7 +152,7 @@
   }
 
   .closeButton {
-    top: -2.5rem;
+    top: 0.75rem;
     width: 2.5rem;
     height: 2.5rem;
   }
@@ -179,7 +191,7 @@
   }
 
   .closeButton {
-    top: -2rem;
+    top: 0.5rem;
     width: 2.25rem;
     height: 2.25rem;
   }

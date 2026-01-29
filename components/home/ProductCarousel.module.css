@@ -18,7 +18,7 @@
   position: absolute;
   inset: 0;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 6% 10%;
+  padding: 0;
 }
 
 .imageWrapper.active {
@@ -26,8 +26,8 @@
 }
 
 .image {
-  object-fit: contain; /* Cambiar a contain para mostrar la imagen completa */
-  object-position: center calc(100% - 140px); /* Subir la imagen 80px desde abajo para mostrar el logo */
+  object-fit: cover; /* Llenar el contenedor en pantallas grandes */
+  object-position: center 55%;
   width: 100%;
   height: 100%;
 }
@@ -217,11 +217,11 @@
   }
 
   .imageWrapper {
-    padding: 2% 0; /* ← Sin padding horizontal para verticales */
+    padding: 0;
   }
 
   .image {
-    object-fit: cover; /* ← Cambiar a cover para verticales */
+    object-fit: cover;
     object-position: center;
   }
 

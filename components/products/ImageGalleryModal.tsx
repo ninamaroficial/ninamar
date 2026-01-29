@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import styles from './ImageGalleryModal.module.css'
@@ -22,6 +22,26 @@ export default function ImageGalleryModal({
   onClose 
 }: ImageGalleryModalProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  // Bloquear scroll del fondo mientras el modal está abierto
+  useEffect(() => {
+    if (!isOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isOpen])
+
+  // Asegurar que el modal quede centrado en viewport al abrir
+  useEffect(() => {
+    if (!isOpen) return
+
+    modalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [isOpen])
 
   if (!isOpen) return null
 
@@ -46,7 +66,11 @@ export default function ImageGalleryModal({
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button onClick={onClose} className={styles.closeButton}>
           <X size={28} />

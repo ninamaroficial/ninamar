@@ -82,7 +82,7 @@ export default function AcercaPage() {
               <div className={styles.imageGrid}>
                 <div className={`${styles.imageCard} ${styles.imageLarge}`}>
                   <Image
-                    src="/images/about-workshop.jpg"
+                    src="/acercade/acercade1.jpeg"
                     alt="Taller Niñamar"
                     fill
                     className={styles.image}
@@ -95,7 +95,7 @@ export default function AcercaPage() {
                 
                 <div className={`${styles.imageCard} ${styles.imageSmall1}`}>
                   <Image
-                    src="/images/about-detail.jpg"
+                    src="/acercade/acercade2.jpeg"
                     alt="Detalles artesanales"
                     fill
                     className={styles.image}
@@ -104,7 +104,7 @@ export default function AcercaPage() {
                 
                 <div className={`${styles.imageCard} ${styles.imageSmall2}`}>
                   <Image
-                    src="/images/about-process.jpg"
+                    src="/acercade/acercade3.jpeg"
                     alt="Proceso de creación"
                     fill
                     className={styles.image}
@@ -241,25 +241,12 @@ export default function AcercaPage() {
                 </p>
               </div>
 
-              <div className={styles.commitmentFeatures}>
-                <div className={styles.commitmentFeature}>
-                  <div className={styles.commitmentFeatureIcon}>✓</div>
-                  <span>Calidad Garantizada</span>
-                </div>
-                <div className={styles.commitmentFeature}>
-                  <div className={styles.commitmentFeatureIcon}>✓</div>
-                  <span>Envío Seguro</span>
-                </div>
-                <div className={styles.commitmentFeature}>
-                  <div className={styles.commitmentFeatureIcon}>✓</div>
-                  <span>Atención Personalizada</span>
-                </div>
-              </div>
+              
             </div>
 
             <div className={styles.commitmentImage}>
               <Image
-                src="/acercade/acercade.png"
+                src="/acercade/acercadeFinal.png"
                 alt="Compromiso Niñamar"
                 fill
                 className={styles.image}
