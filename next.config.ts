@@ -16,12 +16,17 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    // Optimización de imágenes
+    // Optimización de imágenes mejorada para móviles
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
-    qualities: [60, 70, 75, 85],
+    minimumCacheTTL: 86400, // 24 horas de caché
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: false,
+    // Calidades permitidas para diferentes usos
+    qualities: [60, 75, 80, 85],
   },
 
   // Optimizaciones de producción

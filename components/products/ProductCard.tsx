@@ -92,8 +92,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                       alt={image.alt_text || product.name}
                       fill
                       className={styles.image}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      priority={index < 3 && idx === 0}
+                      sizes="(max-width: 768px) 95vw, 400px"
+                      priority={index < 2 && idx === 0}
+                      loading={index < 2 && idx === 0 ? "eager" : "lazy"}
+                      quality={75}
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
                     />
                   </div>
                 ))
@@ -152,8 +156,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 alt={currentImage.alt_text || product.name}
                 fill
                 className={styles.image}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={index < 6}
+                sizes="(max-width: 768px) 95vw, (max-width: 1200px) 50vw, 400px"
+                priority={index < 3}
+                loading={index < 3 ? "eager" : "lazy"}
+                quality={80}
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
               />
             ) : (
               <div className={styles.imagePlaceholder}>

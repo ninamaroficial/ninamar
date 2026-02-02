@@ -44,7 +44,7 @@ export default function NewsletterTemplate({
           <Section style={header}>
             <div style={headerDecoration}>
               <Img
-                src={`${appUrl}/header/logo-ninamar.svg`}
+                src="https://niñamar.com/images/gif-logo2.gif"
                 alt="Niñamar"
                 width="140"
                 height="auto"
@@ -74,7 +74,6 @@ export default function NewsletterTemplate({
 
           {/* Decoración de emojis/iconos */}
           <Section style={decorationSection}>
-            <Text style={decorationText}>✨ 💖 🌈 ✨</Text>
           </Section>
 
           {/* Footer con gradiente */}
@@ -89,9 +88,58 @@ export default function NewsletterTemplate({
               <Text style={footerText}>
                 📧 ninamar.oficial@gmail.com
               </Text>
-              <Text style={footerText}>
-                📱 Instagram: @ninamar_oficial
-              </Text>
+              
+              {/* Redes Sociales con iconos */}
+              <Section style={socialSection}>
+                <table style={socialTable}>
+                  <tr>
+                    <td style={socialCell}>
+                      <Link href="https://www.instagram.com/ninamar_oficial/" style={socialLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+                          alt="Instagram"
+                          width="32"
+                          height="32"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                    <td style={socialCell}>
+                      <Link href="https://www.facebook.com/profile.php?id=61571296265803" style={socialLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+                          alt="Facebook"
+                          width="32"
+                          height="32"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                    <td style={socialCell}>
+                      <Link href="https://www.tiktok.com/@ninamar.oficial" style={socialLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
+                          alt="TikTok"
+                          width="32"
+                          height="32"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                    <td style={socialCell}>
+                      <Link href="https://niñamar.com" style={socialLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png"
+                          alt="Website"
+                          width="32"
+                          height="32"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                  </tr>
+                </table>
+              </Section>
               
               <Hr style={footerDivider} />
               
@@ -270,4 +318,29 @@ const unsubscribeLink = {
   textDecoration: 'underline',
   marginTop: '8px',
   display: 'inline-block',
+}
+
+const socialSection = {
+  margin: '24px 0 16px',
+}
+
+const socialTable = {
+  margin: '0 auto',
+  borderSpacing: '0',
+  borderCollapse: 'separate' as const,
+}
+
+const socialCell = {
+  padding: '0 8px',
+}
+
+const socialLink = {
+  textDecoration: 'none',
+  display: 'inline-block',
+}
+
+const socialIcon = {
+  borderRadius: '50%',
+  display: 'block',
+  transition: 'transform 0.2s',
 }

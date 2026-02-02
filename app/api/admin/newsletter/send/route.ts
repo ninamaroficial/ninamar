@@ -16,7 +16,7 @@ const supabaseAdmin = createClient(
 )
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = 'Niña Mar <no-reply@xn--niamar-xwa.com>'
+const FROM_EMAIL = 'Niñamar <no-reply@xn--niamar-xwa.com>'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
             from: FROM_EMAIL,
             to: subscriber.email,
             subject: subject,
+            replyTo: 'ninamar.oficial@gmail.com',
             headers: {
               'X-Entity-Ref-ID': `newsletter-${Date.now()}`,
               'List-Unsubscribe': `<${unsubscribeUrl}>`,
