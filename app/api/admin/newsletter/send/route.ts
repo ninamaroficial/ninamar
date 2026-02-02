@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { render } from '@react-email/render'
-import CustomNewsletter from '@/emails/templates/CustomNewsletter'
-import ProductAnnouncement from '@/emails/templates/ProductAnnouncement'
-import SpecialOffer from '@/emails/templates/SpecialOffer'
+import NewsletterTemplate from '@/emails/templates/NewsletterTemplate'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -18,8 +16,7 @@ const supabaseAdmin = createClient(
 )
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = process.env.EMAIL_FROM || 'Niña Mar <onboarding@resend.dev>'
-
+const FROM_EMAIL = 'Niña Mar <no-reply@xn--niamar-xwa.com>'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -35,6 +32,8 @@ export async function POST(request: NextRequest) {
       expiryDate,
       ctaText,
       ctaUrl,
+      recipientType = 'active', // 'all' | 'active' | 'selected'
+      selectedRecipients = [], // array de IDs de suscriptores
     } = body
 
     if (!subject || !content) {
@@ -44,11 +43,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Obtener todos los suscriptores activos
-    const { data: subscribers, error: fetchError } = await supabaseAdmin
+    // Obtener suscriptores según el tipo de destinatario
+    let query = supabaseAdmin
       .from('newsletter_subscribers')
-      .select('email, name')
-      .eq('is_active', true)
+      .select('id, email, name, is_active')
+
+    if (recipientType === 'active') {
+      query = query.eq('is_active', true)
+    } else if (recipientType === 'selected' && selectedRecipients.length > 0) {
+      query = query.in('id', selectedRecipients)
+    }
+    // Si es 'all', no agregamos filtros
+
+    const { data: subscribers, error: fetchError } = await query
 
     if (fetchError) {
       console.error('Error fetching subscribers:', fetchError)
@@ -64,7 +71,16 @@ export async function POST(request: NextRequest) {
 
     console.log(`📧 Sending newsletter to ${subscribers.length} subscribers`)
 
-    const appUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'
+    const appUrl = process.env.NEXT_PUBLIC_URL || 'https://niñamar.com'
+
+    // Convertir todas las rutas relativas de imágenes a URLs absolutas
+    const contentWithAbsoluteUrls = content.replace(
+      /src=["'](\/[^"']+)["']/g,
+      `src="${appUrl}$1"`
+    )
+
+    console.log('✅ Content with absolute URLs ready')
+    console.log('📸 Sample URL:', contentWithAbsoluteUrls.substring(0, 500))
 
     // Enviar emails en lotes de 10
     const BATCH_SIZE = 10
@@ -78,48 +94,16 @@ export async function POST(request: NextRequest) {
         try {
           const unsubscribeUrl = `${appUrl}/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}`
           
-          // Generar HTML según la plantilla seleccionada
-          let emailHtml: string
-
-          switch (template) {
-            case 'product':
-              emailHtml = await render(ProductAnnouncement({ // ← AWAIT AGREGADO
-                userName: subscriber.name || 'Amigo/a',
-                title: subject,
-                description: content,
-                products: products || [],
-                unsubscribeUrl,
-              }))
-              break
-
-            case 'offer':
-              emailHtml = await render(SpecialOffer({ // ← AWAIT AGREGADO
-                userName: subscriber.name || 'Amigo/a',
-                offerTitle: subject,
-                offerSubtitle: preheader || '',
-                discount: discount || '',
-                description: content,
-                expiryDate: expiryDate || '',
-                couponCode: couponCode || '',
-                ctaUrl: ctaUrl || `${appUrl}/productos`,
-                unsubscribeUrl,
-              }))
-              break
-
-            case 'custom':
-            default:
-              emailHtml = await render(CustomNewsletter({ // ← AWAIT AGREGADO
-                userName: subscriber.name || 'Amigo/a',
-                subject,
-                preheader,
-                content,
-                images: images || [],
-                ctaText: ctaText || 'Ver Productos',
-                ctaUrl: ctaUrl || `${appUrl}/productos`,
-                unsubscribeUrl,
-              }))
-              break
-          }
+          // Usar la nueva plantilla mejorada con URLs absolutas
+          const emailHtml = await render(NewsletterTemplate({
+            subject,
+            preheader,
+            content: contentWithAbsoluteUrls, // Usar contenido con URLs absolutas
+            ctaText: ctaText || 'Ver Productos',
+            ctaUrl: ctaUrl || `${appUrl}/productos`,
+            unsubscribeUrl,
+            appUrl, // Pasar appUrl para el logo
+          }))
 
           const { data, error } = await resend.emails.send({
             from: FROM_EMAIL,

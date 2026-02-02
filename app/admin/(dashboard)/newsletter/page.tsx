@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mail, Send, Users, Loader2, Eye } from 'lucide-react'
+import { Mail, Send, Users, Loader2, Eye, X } from 'lucide-react'
+import NewsletterEditor from '@/components/admin/NewsletterEditor'
+import RecipientSelector from '@/components/admin/RecipientSelector'
+import { render } from '@react-email/render'
+import NewsletterTemplate from '@/emails/templates/NewsletterTemplate'
 import styles from './page.module.css'
 
 interface Subscriber {
@@ -19,19 +23,16 @@ export default function NewsletterPage() {
   const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(true)
   const [isSending, setIsSending] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [previewHtml, setPreviewHtml] = useState('')
 
   const [formData, setFormData] = useState({
-    template: 'custom',
     subject: '',
     preheader: '',
-    content: '',
-    images: [] as Array<{ url: string; alt: string; caption?: string }>,
-    products: [] as Array<{ name: string; image: string; price: string; url: string }>,
-    discount: '',
-    couponCode: '',
-    expiryDate: '',
+    content: '<p style="color: #666; font-size: 16px; line-height: 1.6; margin: 10px 0;">✨ Comienza a escribir tu newsletter aquí...</p><p style="color: #666; font-size: 16px; line-height: 1.6; margin: 10px 0;">Usa los botones de la barra de herramientas para agregar <strong>formato</strong>, <em>imágenes</em>, enlaces y más! 💫</p>',
     ctaText: 'Ver Productos',
     ctaUrl: 'https://niñamar.com/productos',
+    recipientType: 'active' as 'all' | 'active' | 'selected',
+    selectedRecipients: [] as string[],
   })
 
   const [stats, setStats] = useState({
@@ -63,11 +64,45 @@ export default function NewsletterPage() {
     }
   }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleContentChange = (newContent: string) => {
+    setFormData(prev => ({ ...prev, content: newContent }))
+  }
+
+  const handleRecipientSelect = (type: 'all' | 'active' | 'selected', selectedIds?: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      recipientType: type,
+      selectedRecipients: selectedIds || [],
+    }))
+  }
+
+  const handlePreview = async () => {
+    try {
+      const html = await render(NewsletterTemplate({
+        subject: formData.subject || 'Vista Previa',
+        preheader: formData.preheader,
+        content: formData.content,
+        ctaText: formData.ctaText,
+        ctaUrl: formData.ctaUrl,
+        unsubscribeUrl: 'https://niñamar.com/newsletter/unsubscribe',
+      }))
+      setPreviewHtml(html)
+      setShowPreview(true)
+    } catch (error) {
+      console.error('Error generating preview:', error)
+      alert('Error al generar vista previa')
+    }
+  }
+
+  const getRecipientCount = () => {
+    if (formData.recipientType === 'all') return stats.total
+    if (formData.recipientType === 'active') return stats.active
+    return formData.selectedRecipients.length
   }
 
   const handleSendNewsletter = async () => {
@@ -76,7 +111,13 @@ export default function NewsletterPage() {
       return
     }
 
-    if (!confirm(`¿Enviar newsletter a ${stats.active} suscriptores activos?`)) {
+    const recipientCount = getRecipientCount()
+    if (recipientCount === 0) {
+      alert('Debes seleccionar al menos un destinatario')
+      return
+    }
+
+    if (!confirm(`¿Enviar newsletter a ${recipientCount} suscriptor(es)?`)) {
       return
     }
 
@@ -99,17 +140,13 @@ export default function NewsletterPage() {
 
       // Limpiar formulario
       setFormData({
-        template: 'custom',
         subject: '',
         preheader: '',
-        content: '',
-        images: [],
-        products: [],
-        discount: '',
-        couponCode: '',
-        expiryDate: '',
+        content: '<p style="color: #666; font-size: 16px; line-height: 1.6; margin: 10px 0;">✨ Comienza a escribir tu newsletter aquí...</p><p style="color: #666; font-size: 16px; line-height: 1.6; margin: 10px 0;">Usa los botones de la barra de herramientas para agregar <strong>formato</strong>, <em>imágenes</em>, enlaces y más! 💫</p>',
         ctaText: 'Ver Productos',
         ctaUrl: 'https://niñamar.com/productos',
+        recipientType: 'active',
+        selectedRecipients: [],
       })
     } catch (error: any) {
       console.error('Error sending newsletter:', error)
@@ -125,7 +162,7 @@ export default function NewsletterPage() {
         <div>
           <h1 className={styles.title}>Newsletter</h1>
           <p className={styles.subtitle}>
-            Envía correos a tus suscriptores
+            Crea y envía correos personalizados a tus suscriptores
           </p>
         </div>
       </div>
@@ -154,186 +191,17 @@ export default function NewsletterPage() {
       </div>
 
       <div className={styles.content}>
-        {/* Editor */}
+        {/* Editor Section */}
         <div className={styles.editorSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Crear Newsletter</h2>
-            <button
-              onClick={() => setShowPreview(!showPreview)}
-              className={styles.previewButton}
-            >
-              <Eye size={18} />
-              {showPreview ? 'Ocultar' : 'Vista Previa'}
-            </button>
           </div>
 
           <div className={styles.form}>
-            {/* Selector de Plantilla */}
+            {/* Asunto */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                Plantilla
-              </label>
-              <select
-                name="template"
-                value={formData.template}
-                onChange={handleInputChange}
-                className={styles.input}
-              >
-                <option value="custom">Newsletter Personalizado</option>
-                <option value="product">Anuncio de Productos</option>
-                <option value="offer">Oferta Especial</option>
-              </select>
-            </div>
-            {/* Campos condicionales según plantilla */}
-            {formData.template === 'custom' && (
-              <>
-                {/* URL de CTA */}
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Texto del Botón
-                  </label>
-                  <input
-                    type="text"
-                    name="ctaText"
-                    value={formData.ctaText}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="Ver Productos"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    URL del Botón
-                  </label>
-                  <input
-                    type="url"
-                    name="ctaUrl"
-                    value={formData.ctaUrl}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="https://niñamar.com/productos"
-                  />
-                </div>
-
-                {/* Gestor simple de imágenes */}
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Imágenes (URLs separadas por comas)
-                  </label>
-                  <input
-                    type="text"
-                    name="imageUrls"
-                    onChange={(e) => {
-                      const urls = e.target.value.split(',').map(url => url.trim()).filter(Boolean)
-                      setFormData(prev => ({
-                        ...prev,
-                        images: urls.map(url => ({ url, alt: 'Imagen de newsletter' }))
-                      }))
-                    }}
-                    className={styles.input}
-                    placeholder="https://ejemplo.com/imagen1.jpg, https://ejemplo.com/imagen2.jpg"
-                  />
-                  <span className={styles.hint}>
-                    Agrega URLs de imágenes separadas por comas
-                  </span>
-                </div>
-              </>
-            )}
-
-            {formData.template === 'offer' && (
-              <>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Descuento (Ej: 20% OFF)
-                  </label>
-                  <input
-                    type="text"
-                    name="discount"
-                    value={formData.discount}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="20% OFF"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Código de Cupón (Opcional)
-                  </label>
-                  <input
-                    type="text"
-                    name="couponCode"
-                    value={formData.couponCode}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="VERANO2025"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Fecha de Expiración
-                  </label>
-                  <input
-                    type="date"
-                    name="expiryDate"
-                    value={formData.expiryDate}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    URL del Botón
-                  </label>
-                  <input
-                    type="url"
-                    name="ctaUrl"
-                    value={formData.ctaUrl}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    placeholder="https://niñamar.com/productos"
-                  />
-                </div>
-              </>
-            )}
-
-            {formData.template === 'product' && (
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  Productos (JSON)
-                </label>
-                <textarea
-                  name="productsJson"
-                  onChange={(e) => {
-                    try {
-                      const products = JSON.parse(e.target.value)
-                      setFormData(prev => ({ ...prev, products }))
-                    } catch (error) {
-                      // Invalid JSON, ignore
-                    }
-                  }}
-                  className={styles.textarea}
-                  placeholder={`[
-  {
-    "name": "Collar de Plata",
-    "image": "https://ejemplo.com/collar.jpg",
-    "price": "$45.000",
-    "url": "https://niñamar.com/productos/collar"
-  }
-]`}
-                  rows={8}
-                />
-                <span className={styles.hint}>
-                  Formato JSON con nombre, imagen, precio y URL de cada producto
-                </span>
-              </div>
-            )}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Asunto *
+                Asunto <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
@@ -341,17 +209,15 @@ export default function NewsletterPage() {
                 value={formData.subject}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Ej: Nuevas accesorios de la temporada ✨"
-                maxLength={100}
+                placeholder="El asunto de tu newsletter"
+                required
               />
-              <span className={styles.hint}>
-                {formData.subject.length}/100 caracteres
-              </span>
             </div>
 
+            {/* Preheader */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                Preheader (Texto de vista previa)
+                Texto de Vista Previa (Preheader)
               </label>
               <input
                 type="text"
@@ -359,134 +225,108 @@ export default function NewsletterPage() {
                 value={formData.preheader}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Este texto aparece junto al asunto en la bandeja de entrada"
-                maxLength={150}
+                placeholder="Texto que aparece junto al asunto en el email"
               />
               <span className={styles.hint}>
-                {formData.preheader.length}/150 caracteres
+                Opcional: Este texto aparece en la vista previa del email
               </span>
             </div>
 
+            {/* Editor Visual */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                Contenido *
+                Contenido <span className={styles.required}>*</span>
               </label>
-              <textarea
-                name="content"
+              <NewsletterEditor
                 value={formData.content}
-                onChange={handleInputChange}
-                className={styles.textarea}
-                placeholder="Escribe el contenido de tu newsletter aquí...
-
-Puedes usar saltos de línea para separar párrafos.
-
-Consejos:
-- Mantén el mensaje claro y conciso
-- Incluye un llamado a la acción
-- Personaliza el mensaje"
-                rows={15}
+                onChange={handleContentChange}
+                onPreview={handlePreview}
               />
             </div>
 
-            <div className={styles.actions}>
-              <button
-                onClick={handleSendNewsletter}
-                disabled={isSending || !formData.subject || !formData.content}
-                className={styles.sendButton}
-              >
-                {isSending ? (
-                  <>
-                    <Loader2 size={20} className={styles.spinner} />
-                    Enviando...
-                  </>
-                ) : (
-                  <>
-                    <Send size={20} />
-                    Enviar a {stats.active} suscriptores
-                  </>
-                )}
-              </button>
+            {/* CTA */}
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  Texto del Botón
+                </label>
+                <input
+                  type="text"
+                  name="ctaText"
+                  value={formData.ctaText}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="Ver Productos"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  URL del Botón
+                </label>
+                <input
+                  type="url"
+                  name="ctaUrl"
+                  value={formData.ctaUrl}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="https://niñamar.com/productos"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Preview */}
-        {showPreview && (
-          <div className={styles.previewSection}>
-            <h2 className={styles.sectionTitle}>Vista Previa</h2>
-            <div className={styles.emailPreview}>
-              <div className={styles.emailHeader}>
-                <strong>De:</strong> Niñamar &lt;noreply@ninamar.com&gt;<br />
-                <strong>Asunto:</strong> {formData.subject || '(Sin asunto)'}
-                {formData.preheader && (
-                  <>
-                    <br />
-                    <span className={styles.preheader}>{formData.preheader}</span>
-                  </>
-                )}
-              </div>
-              <div className={styles.emailBody}>
-                {formData.content ? (
-                  formData.content.split('\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph || '\u00A0'}</p>
-                  ))
-                ) : (
-                  <p className={styles.emptyContent}>(Sin contenido)</p>
-                )}
-              </div>
-              <div className={styles.emailFooter}>
-                <p>© {new Date().getFullYear()} Niñamar - Popayán, Cauca, Colombia</p>
-                <p>
-                  <a href="#">Cancelar suscripción</a>
-                </p>
-              </div>
+        {/* Recipients Section */}
+        <div className={styles.recipientsSection}>
+          <RecipientSelector
+            subscribers={subscribers}
+            onSelect={handleRecipientSelect}
+            selectedType={formData.recipientType}
+            selectedIds={formData.selectedRecipients}
+          />
+
+          {/* Send Button */}
+          <button
+            onClick={handleSendNewsletter}
+            disabled={isSending || getRecipientCount() === 0}
+            className={styles.sendButton}
+          >
+            {isSending ? (
+              <>
+                <Loader2 size={20} className={styles.spinner} />
+                Enviando...
+              </>
+            ) : (
+              <>
+                <Send size={20} />
+                Enviar Newsletter
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <div className={styles.modal} onClick={() => setShowPreview(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Vista Previa del Email</h3>
+              <button onClick={() => setShowPreview(false)} className={styles.closeButton}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <iframe
+                srcDoc={previewHtml}
+                className={styles.previewFrame}
+                title="Email Preview"
+              />
             </div>
           </div>
-        )}
-      </div>
-
-      {/* Subscribers List */}
-      <div className={styles.subscribersSection}>
-        <h2 className={styles.sectionTitle}>
-          Suscriptores ({stats.active} activos)
-        </h2>
-
-        {isLoadingSubscribers ? (
-          <div className={styles.loading}>
-            <Loader2 size={32} className={styles.spinner} />
-            <p>Cargando suscriptores...</p>
-          </div>
-        ) : subscribers.length === 0 ? (
-          <div className={styles.empty}>
-            <Mail size={48} />
-            <p>No hay suscriptores todavía</p>
-          </div>
-        ) : (
-          <div className={styles.subscribersList}>
-            {subscribers.map((subscriber) => (
-              <div
-                key={subscriber.id}
-                className={`${styles.subscriberCard} ${!subscriber.is_active ? styles.subscriberInactive : ''
-                  }`}
-              >
-                <div className={styles.subscriberInfo}>
-                  <p className={styles.subscriberEmail}>{subscriber.email}</p>
-                  {subscriber.name && (
-                    <p className={styles.subscriberName}>{subscriber.name}</p>
-                  )}
-                </div>
-                <div className={styles.subscriberStatus}>
-                  {subscriber.is_active ? (
-                    <span className={styles.badgeActive}>Activo</span>
-                  ) : (
-                    <span className={styles.badgeInactive}>Inactivo</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

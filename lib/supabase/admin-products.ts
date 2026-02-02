@@ -41,7 +41,10 @@ export async function getAllProducts() {
   
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(`
+      *,
+      images:product_images(*)
+    `)
     .order('created_at', { ascending: false })
   
   if (error) {
@@ -49,7 +52,7 @@ export async function getAllProducts() {
     throw error
   }
   
-  return data as Product[]
+  return data as any[]
 }
 
 // Obtener un producto por ID

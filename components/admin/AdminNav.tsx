@@ -8,7 +8,8 @@ import {
   Mail, 
   Settings, 
   Sliders, 
-  LogOut 
+  LogOut,
+  Folder
 } from 'lucide-react'
 import styles from './AdminNav.module.css'
 
@@ -37,6 +38,14 @@ export default function AdminNav() {
       >
         <Package size={20} />
         Productos
+      </Link>
+
+      <Link 
+        href="/admin/categorias" 
+        className={`${styles.navLink} ${pathname?.startsWith('/admin/categorias') ? styles.navLinkActive : ''}`}
+      >
+        <Folder size={20} />
+        Categorías
       </Link>
 
       <Link

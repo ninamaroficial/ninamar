@@ -7,6 +7,15 @@ import Image from 'next/image'
 import { Plus, Edit, Trash2, Eye, EyeOff, Package, Folder } from 'lucide-react'
 import styles from './page.module.css'
 
+interface ProductImage {
+  id: string
+  product_id: string
+  image_url: string
+  alt_text: string | null
+  is_primary: boolean
+  display_order: number
+}
+
 interface Product {
   id: string
   name: string
@@ -17,6 +26,7 @@ interface Product {
   category_id: string | null
   is_active: boolean
   stock: number
+  images?: ProductImage[]
 }
 
 export default function ProductosAdminPage() {
@@ -121,10 +131,6 @@ export default function ProductosAdminPage() {
           <p className={styles.subtitle}>{products.length} producto(s) en total</p>
         </div>
         <div className={styles.headerActions}>
-          <Link href="/admin/categorias" className={styles.secondaryButton}>
-            <Folder size={20} />
-            Categorías
-          </Link>
           <Link href="/admin/productos/nuevo" className={styles.addButton}>
             <Plus size={20} />
             Nuevo Producto
@@ -167,13 +173,18 @@ export default function ProductosAdminPage() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {filteredProducts.map((product) => (
+          {filteredProducts.map((product) => {
+            // Obtener la imagen primaria de la galería o usar image_url como fallback
+            const primaryImage = product.images?.find(img => img.is_primary)
+            const displayImage = primaryImage?.image_url || product.images?.[0]?.image_url || product.image_url
+            
+            return (
             <div key={product.id} className={styles.card}>
               {/* Image */}
               <div className={styles.imageContainer}>
-                {product.image_url ? (
+                {displayImage ? (
                   <Image
-                    src={product.image_url}
+                    src={displayImage}
                     alt={product.name}
                     fill
                     className={styles.image}
@@ -235,7 +246,8 @@ export default function ProductosAdminPage() {
                 </button>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>
