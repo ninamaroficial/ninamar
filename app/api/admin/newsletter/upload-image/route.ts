@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminToken } from '@/lib/auth/admin'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+)
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,18 +60,38 @@ export async function POST(request: NextRequest) {
     const extension = file.name.split('.').pop()
     const filename = `newsletter-${timestamp}-${randomString}.${extension}`
 
-    // Crear directorio si no existe
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'newsletter')
-    await mkdir(uploadDir, { recursive: true })
+    // Subir a Supabase Storage
+    const { data, error } = await supabaseAdmin.storage
+      .from('newsletter_images')
+      .upload(filename, buffer, {
+        contentType: file.type,
+        cacheControl: '31536000', // 1 año
+        upsert: false
+      })
 
-    // Guardar el archivo
-    const filepath = path.join(uploadDir, filename)
-    await writeFile(filepath, buffer)
+    if (error) {
+      console.error('Error uploading to Supabase:', error)
+      
+      // Si el bucket no existe, dar un mensaje más claro
+      if (error.message?.includes('not valid JSON') || error.message?.includes('Bucket not found')) {
+        return NextResponse.json(
+          { error: 'El bucket "newsletter_images" no existe en Supabase. Por favor créalo en Storage.' },
+          { status: 500 }
+        )
+      }
+      
+      return NextResponse.json(
+        { error: `Error al subir la imagen: ${error.message}` },
+        { status: 500 }
+      )
+    }
 
-    // Retornar la URL pública
-    const publicUrl = `/uploads/newsletter/${filename}`
+    // Obtener URL pública
+    const { data: { publicUrl } } = supabaseAdmin.storage
+      .from('newsletter_images')
+      .getPublicUrl(filename)
 
-    console.log('✅ Image uploaded:', publicUrl)
+    console.log('✅ Image uploaded to Supabase:', publicUrl)
 
     return NextResponse.json({ 
       url: publicUrl,

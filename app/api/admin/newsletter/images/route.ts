@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminToken } from '@/lib/auth/admin'
-import { readdir, unlink, stat } from 'fs/promises'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+)
 
 // GET - Listar todas las imágenes guardadas
 export async function GET(request: NextRequest) {
@@ -17,36 +27,36 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'newsletter')
-    
-    try {
-      const files = await readdir(uploadDir)
-      
-      // Filtrar solo imágenes y obtener información
-      const imageFiles = await Promise.all(
-        files
-          .filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
-          .map(async (file) => {
-            const filepath = path.join(uploadDir, file)
-            const stats = await stat(filepath)
-            
-            return {
-              filename: file,
-              url: `/uploads/newsletter/${file}`,
-              size: stats.size,
-              createdAt: stats.birthtime,
-            }
-          })
-      )
+    // Listar archivos del bucket
+    const { data: files, error } = await supabaseAdmin.storage
+      .from('newsletter_images')
+      .list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' }
+      })
 
-      // Ordenar por fecha de creación (más recientes primero)
-      imageFiles.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-
-      return NextResponse.json({ images: imageFiles })
-    } catch (error) {
-      // Si la carpeta no existe, retornar array vacío
+    if (error) {
+      console.error('Error listing files:', error)
       return NextResponse.json({ images: [] })
     }
+
+    // Mapear archivos a formato esperado
+    const imageFiles = files
+      .filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
+      .map(file => {
+        const { data: { publicUrl } } = supabaseAdmin.storage
+          .from('newsletter_images')
+          .getPublicUrl(file.name)
+
+        return {
+          filename: file.name,
+          url: publicUrl,
+          size: file.metadata?.size || 0,
+          createdAt: file.created_at,
+        }
+      })
+
+    return NextResponse.json({ images: imageFiles })
   } catch (error) {
     console.error('Error listing images:', error)
     return NextResponse.json(
@@ -88,18 +98,21 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const filepath = path.join(process.cwd(), 'public', 'uploads', 'newsletter', filename)
-    
-    try {
-      await unlink(filepath)
-      console.log('✅ Image deleted:', filename)
-      return NextResponse.json({ message: 'Imagen eliminada correctamente' })
-    } catch (error) {
+    // Eliminar de Supabase Storage
+    const { error } = await supabaseAdmin.storage
+      .from('newsletter_images')
+      .remove([filename])
+
+    if (error) {
+      console.error('Error deleting file:', error)
       return NextResponse.json(
-        { error: 'Imagen no encontrada' },
-        { status: 404 }
+        { error: 'Error al eliminar imagen' },
+        { status: 500 }
       )
     }
+
+    console.log('✅ Image deleted:', filename)
+    return NextResponse.json({ message: 'Imagen eliminada correctamente' })
   } catch (error) {
     console.error('Error deleting image:', error)
     return NextResponse.json(
