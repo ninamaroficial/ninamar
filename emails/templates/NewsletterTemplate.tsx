@@ -51,7 +51,7 @@ export default function NewsletterTemplate({
                 style={logo}
               />
             </div>
-            <Text style={tagline}>Accesorios Creativos y Coloridos Hechos a Mano ✨</Text>
+            <Text style={tagline}>Niñamar</Text>
           </Section>
 
           {/* Contenido Principal con borde decorativo */}
@@ -65,7 +65,7 @@ export default function NewsletterTemplate({
               {ctaText && ctaUrl && (
                 <Section style={buttonContainer}>
                   <Link href={ctaUrl} style={button}>
-                    {ctaText} 💫
+                    {ctaText}
                   </Link>
                 </Section>
               )}

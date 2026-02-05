@@ -103,7 +103,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 ))
               ) : (
                 <div className={styles.imagePlaceholder}>
-                  <span className={styles.placeholderIcon}>💎</span>
+                  <span className={styles.placeholderIcon}>�</span>
+                  <span className={styles.placeholderText}>Cargando...</span>
                 </div>
               )}
             </div>
@@ -165,7 +166,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               />
             ) : (
               <div className={styles.imagePlaceholder}>
-                <span className={styles.placeholderIcon}>💎</span>
+                <span className={styles.placeholderIcon}>�</span>
+                <span className={styles.placeholderText}>Cargando...</span>
               </div>
             )}
             
