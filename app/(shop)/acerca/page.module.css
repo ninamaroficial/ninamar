@@ -12,9 +12,9 @@
   padding: 5.5rem 0 4.5rem;
   overflow: hidden;
   min-height: 320px;
-  background: url('/banners/coleccion.png');
+  background: url('/banners/quienes.png');
   background-size: cover;
-  background-position: center 30%;
+  background-position: center 50%;
   background-repeat: no-repeat;
 }
 
@@ -338,6 +338,8 @@
    VALORES - TIMELINE DESIGN
 ========================================================= */
 .valuesSection {
+  margin-top: -150px;
+  margin-bottom: -200px;
   padding: 8rem 0;
   background: linear-gradient(180deg, #f8fafa 0%, #fef5ff 100%);
   position: relative;
