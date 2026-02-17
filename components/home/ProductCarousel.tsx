@@ -111,10 +111,11 @@ export default function ProductCarousel({
               fill
               className={styles.image}
               sizes="100vw"
-              quality={isMobile ? 70 : 75}
+              quality={100}
               priority={index === 0}
               fetchPriority={index === 0 ? "high" : "auto"}
               loading={index === 0 ? "eager" : "lazy"}
+              unoptimized={true}
             />
             
             {/* Gradient overlay */}
@@ -172,7 +173,7 @@ export default function ProductCarousel({
               fill
               className={styles.thumbnailImage}
               sizes="80px"
-              quality={75}
+              quality={85}
             />
           </button>
         ))}

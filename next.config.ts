@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     unoptimized: false,
     // Calidades permitidas para diferentes usos
-    qualities: [60, 75, 80, 85],
+    qualities: [60, 75, 80, 85, 90, 95, 100],
   },
 
   // Optimizaciones de producción

@@ -44,19 +44,21 @@ export default function AcercaPage() {
               
               <div className={styles.storyText}>
                 <p>
-                  <strong>Niñamar nace del amor por el arte</strong> y la pasión por crear piezas únicas que cuenten historias. 
-                  En el corazón de Popayán, Cauca, comenzamos este viaje con un sueño simple: hacer que cada 
-                  persona pueda llevar consigo algo verdaderamente especial.
+                La historia de este proyecto comenzó años atrás en los que me gustaba diseñar y hacer realidad mis propios aretes, 
+                collares y anillos con arcilla polimérica. Aunque aún no tenía las herramientas correctas, para mi eran especiales 
+                porque sabía que no los podría encontrar en ninguna tienda del mundo. 
                 </p>
                 <p>
-                  Lo que comenzó como un pequeño taller en casa, se ha convertido en un espacio donde <strong>la creatividad 
-                  y la artesanía se encuentran</strong>. Cada pieza que creamos lleva consigo horas de dedicación, amor y 
-                  atención al detalle.
+
+                Poco a poco, mis amigas, familiares e incluso personas en la calle me detenían a preguntarme dónde los había comprado. 
+                Con el tiempo descubrí que aquellas piezas que creaba por diversión no pasaban desapercibidas y que quizás podría 
+                lanzarme a venderlas, así que este año decidí experimentar, perfeccionar mis técnicas empíricas y hacer realidad un 
+                sueño colectivo, colorido, auténtico y artesanal. 
+
                 </p>
                 <p>
-                  Creemos que los accesorios son <strong>recuerdos tangibles</strong>, símbolos de momentos 
-                  importantes y expresiones de individualidad. Por eso, cada creación de Niñamar es única, pensada y 
-                  hecha especialmente para ti.
+                  Ahora quiero crear para tí, que te acompañen en tu día a día y le den  un toque de creatividad a tus outfits…y 
+                  si de pronto alguien te pregunta dónde lo compraste, dile que fue hecho por <strong>Niñamar</strong>.  
                 </p>
               </div>
 
@@ -122,7 +124,7 @@ export default function AcercaPage() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Lo Que Nos Define</h2>
             <p className={styles.sectionSubtitle}>
-              Cuatro pilares que guían cada creación de Niñamar
+              Cinco pilares que guían cada creación de Niñamar
             </p>
           </div>
 
@@ -161,11 +163,7 @@ export default function AcercaPage() {
                   Tu accesorio, tu estilo. Ofrecemos infinitas posibilidades de personalización para que 
                   cada pieza refleje exactamente lo que deseas expresar.
                 </p>
-                <div className={styles.valueFeatures}>
-                  <span className={styles.featureTag}>A tu medida</span>
-                  <span className={styles.featureTag}>Colores</span>
-                  <span className={styles.featureTag}>Diseños</span>
-                </div>
+
               </div>
             </div>
 
@@ -182,11 +180,6 @@ export default function AcercaPage() {
                   Seleccionamos cuidadosamente cada material y aplicamos técnicas artesanales 
                   tradicionales para garantizar piezas duraderas y de alta calidad.
                 </p>
-                <div className={styles.valueFeatures}>
-                  <span className={styles.featureTag}>Materiales Premium</span>
-                  <span className={styles.featureTag}>Duradero</span>
-                  <span className={styles.featureTag}>Garantía</span>
-                </div>
               </div>
             </div>
 
@@ -195,6 +188,7 @@ export default function AcercaPage() {
                 <div className={styles.valueIconCircle}>
                   <Users size={32} />
                 </div>
+                <div className={styles.timelineLine}></div>
               </div>
               <div className={styles.valueContent}>
                 <h3 className={styles.valueTitle}>Atención Personalizada</h3>
@@ -202,11 +196,21 @@ export default function AcercaPage() {
                   Te acompañamos en todo el proceso, desde la idea inicial hasta la entrega final. 
                   Tu satisfacción es nuestra prioridad.
                 </p>
-                <div className={styles.valueFeatures}>
-                  <span className={styles.featureTag}>Asesoría</span>
-                  <span className={styles.featureTag}>Seguimiento</span>
-                  <span className={styles.featureTag}>Soporte 24/7</span>
+              </div>
+            </div>
+
+            <div className={styles.valueItem}>
+              <div className={styles.valueIconWrapper}>
+                <div className={styles.valueIconCircle}>
+                  <Award size={32} />
                 </div>
+                <div className={styles.timelineLine}></div>
+              </div>
+              <div className={styles.valueContent}>
+                <h3 className={styles.valueTitle}>Enfoque social</h3>
+                <p className={styles.valueDescription}>
+                  Un porcentaje de cada compra estará destinado a apoyar una causa benéfica.
+                </p>
               </div>
             </div>
           </div>

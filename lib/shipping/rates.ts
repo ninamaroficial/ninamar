@@ -1,9 +1,9 @@
 // Tarifas de envío por departamento y ciudad (en COP)
 export const SHIPPING_RATES: Record<string, number> = {
   // Principales ciudades - más económico
-  'Bogotá D.C.': 18000,
-  'Cundinamarca': 18000,
-  'Antioquia': 18000,
+  'Bogotá D.C.': 15000,
+  'Cundinamarca': 15000,
+  'Antioquia': 15000,
   'Valle del Cauca': 10000,
   
   // Región Andina
