@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"c:\\\\Users\\\\piper\\\\Desktop\\\\niña mar\\\\ninamar\" ; node scripts/convert-to-webp\\.js$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
