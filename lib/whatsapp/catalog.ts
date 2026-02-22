@@ -188,3 +188,58 @@ export async function formatProductDetail(productId: string) {
     text,
   }
 }
+
+/** Obtener opciones de personalización de un producto para WhatsApp */
+export async function getProductCustomizationsForWhatsApp(productId: string) {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from('product_customizations')
+    .select(`
+      id,
+      is_required,
+      display_order,
+      customization_options!inner (
+        id,
+        name,
+        display_name,
+        type,
+        description,
+        values:customization_values (
+          id,
+          value,
+          display_name,
+          additional_price,
+          hex_color,
+          image_url,
+          is_available,
+          display_order
+        )
+      )
+    `)
+    .eq('product_id', productId)
+    .order('display_order', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching product customizations for WhatsApp:', error)
+    return []
+  }
+
+  // Aplanar estructura y ordenar valores
+  return (data || []).map((pc: any) => {
+    const option = pc.customization_options
+    const values = (option.values || [])
+      .filter((v: any) => v.is_available)
+      .sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0))
+
+    return {
+      id: option.id,
+      name: option.name,
+      display_name: option.display_name,
+      type: option.type,
+      description: option.description,
+      is_required: pc.is_required,
+      values,
+    }
+  })
+}

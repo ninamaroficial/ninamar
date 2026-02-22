@@ -5,6 +5,14 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export interface SelectedCustomization {
+  optionId: string
+  optionName: string
+  valueId: string
+  valueName: string
+  additionalPrice: number
+}
+
 export interface CartItem {
   product_id: string
   product_name: string
@@ -12,6 +20,7 @@ export interface CartItem {
   product_image?: string
   price: number
   quantity: number
+  selectedOptions?: SelectedCustomization[]  // Opciones de personalización seleccionadas
 }
 
 export interface ConversationSession {

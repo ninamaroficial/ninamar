@@ -87,6 +87,7 @@ export async function createWhatsAppOrder(session: ConversationSession) {
     product_slug: item.product_slug,
     product_image: item.product_image,
     base_price: item.price,
+    customization_details: item.selectedOptions || null,  // Incluir personalizaciones
     quantity: item.quantity,
     unit_price: item.price,
     total_price: item.price * item.quantity,
@@ -116,6 +117,7 @@ export async function createWhatsAppOrder(session: ConversationSession) {
         quantity: item.quantity,
         unit_price: item.price,
         total_price: item.price * item.quantity,
+        customization_details: item.selectedOptions || null,  // Incluir personalizaciones en email
       })),
       subtotal,
       shipping_cost: shippingCost,

@@ -12,8 +12,8 @@ import {
   markAsRead,
   getProfilePictureUrl,
 } from './client'
-import { getSession, saveSession, type ConversationSession, type CartItem } from './session'
-import { getProductsForWhatsApp, getCategoriesForWhatsApp, getProductsByCategory, formatProductDetail } from './catalog'
+import { getSession, saveSession, type ConversationSession, type CartItem, type SelectedCustomization } from './session'
+import { getProductsForWhatsApp, getCategoriesForWhatsApp, getProductsByCategory, formatProductDetail, getProductCustomizationsForWhatsApp } from './catalog'
 import { createWhatsAppOrder, getOrderStatus } from './orders'
 import { BOT_CONFIG } from './config'
 
@@ -148,6 +148,9 @@ async function routeMessage(session: ConversationSession, input: string) {
     
     case 'VIEWING_PRODUCT':
       return handleProductAction(session, input)
+    
+    case 'CUSTOMIZING_PRODUCT':
+      return handleCustomizationSelection(session, input)
     
     case 'ENTERING_QUANTITY':
       return handleQuantity(session, input)
@@ -451,12 +454,31 @@ async function handleProductAction(session: ConversationSession, input: string) 
   switch (input) {
     case 'ADD_TO_CART':
       if (!product) return sendMainMenu(session)
-      session.state = 'ENTERING_QUANTITY'
-      await saveSession(session)
-      await sendTextMessage(
-        session.phone,
-        `¿Cuántas unidades de *${product.name}* deseas agregar?\n\nEscribe un número (1-10):`
-      )
+      
+      // Verificar si el producto tiene opciones de personalización
+      const customizations = await getProductCustomizationsForWhatsApp(product.id)
+      
+      if (customizations.length > 0) {
+        // Iniciar flujo de personalización
+        session.state = 'CUSTOMIZING_PRODUCT'
+        session.temp_data = {
+          ...session.temp_data,
+          customizations,
+          currentCustomizationIndex: 0,
+          selectedCustomizations: [],
+          basePrice: product.price,
+        }
+        await saveSession(session)
+        return showCustomizationOption(session)
+      } else {
+        // Producto sin personalización - ir directo a cantidad
+        session.state = 'ENTERING_QUANTITY'
+        await saveSession(session)
+        await sendTextMessage(
+          session.phone,
+          `¿Cuántas unidades de *${product.name}* deseas agregar?\n\nEscribe un número (1-10):`
+        )
+      }
       return
     
     case 'VIEW_WEB':
@@ -480,9 +502,196 @@ async function handleProductAction(session: ConversationSession, input: string) 
   }
 }
 
+// ─── PERSONALIZACIÓN ─────────────────────────────────────────
+
+async function showCustomizationOption(session: ConversationSession) {
+  const customizations = session.temp_data?.customizations || []
+  const currentIndex = session.temp_data?.currentCustomizationIndex || 0
+  const selectedCustomizations = session.temp_data?.selectedCustomizations || []
+  const product = session.temp_data?.currentProduct
+  
+  if (currentIndex >= customizations.length) {
+    // Ya terminó todas las personalizaciones - ir a cantidad
+    session.state = 'ENTERING_QUANTITY'
+    await saveSession(session)
+    
+    // Mostrar resumen de personalizaciones y precio
+    let summaryText = `✅ *Personalización completa*\n\n`
+    summaryText += `📦 *${product?.name}*\n`
+    summaryText += `💰 Precio base: $${session.temp_data.basePrice.toLocaleString('es-CO')}\n\n`
+    
+    if (selectedCustomizations.length > 0) {
+      summaryText += `🎨 *Tu personalización:*\n\n`
+      selectedCustomizations.forEach((custom: SelectedCustomization) => {
+        summaryText += `• ${custom.optionName}: *${custom.valueName}*`
+        if (custom.additionalPrice > 0) {
+          summaryText += ` (+$${custom.additionalPrice.toLocaleString('es-CO')})`
+        }
+        summaryText += '\n'
+      })
+      
+      const totalAdditional = selectedCustomizations.reduce((sum: number, c: SelectedCustomization) => sum + c.additionalPrice, 0)
+      const totalPrice = session.temp_data.basePrice + totalAdditional
+      
+      if (totalAdditional > 0) {
+        summaryText += `\n💵 *Precio total: $${totalPrice.toLocaleString('es-CO')}*\n`
+      }
+    }
+    
+    summaryText += `\n¿Cuántas unidades deseas agregar? (1-10):`
+    
+    await sendTextMessage(session.phone, summaryText)
+    return
+  }
+  
+  const currentOption = customizations[currentIndex]
+  const progress = `[${currentIndex + 1}/${customizations.length}]`
+  const requiredLabel = currentOption.is_required ? '(Requerido)' : '(Opcional)'
+  
+  let optionText = `${progress} 🎨 *${currentOption.display_name}* ${requiredLabel}\n\n`
+  
+  if (currentOption.description) {
+    optionText += `${currentOption.description}\n\n`
+  }
+  
+  optionText += `Selecciona una opción:`
+  
+  // Preparar opciones según el tipo y cantidad de valores
+  const values = currentOption.values || []
+  
+  if (values.length === 0) {
+    // No hay valores disponibles - saltar esta opción
+    session.temp_data.currentCustomizationIndex++
+    await saveSession(session)
+    return showCustomizationOption(session)
+  }
+  
+  // Si tiene 3 o menos valores, usar botones; si tiene más, usar lista
+  if (values.length <= 3) {
+    const buttons = values.map((v: any) => {
+      let title = v.display_name || v.value
+      if (v.additional_price > 0) {
+        title += ` +$${v.additional_price.toLocaleString('es-CO')}`
+      }
+      // Truncar a 20 caracteres (límite de botones de WhatsApp)
+      if (title.length > 20) title = title.substring(0, 17) + '...'
+      
+      return {
+        id: `CUSTOM_${currentOption.id}_${v.id}`,
+        title,
+      }
+    })
+    
+    // Si es opcional, agregar botón de "Saltar"
+    if (!currentOption.is_required && buttons.length < 3) {
+      buttons.push({ id: 'SKIP_CUSTOMIZATION', title: '⏭️ Omitir' })
+    }
+    
+    await sendTextMessage(session.phone, optionText)
+    await sendButtonMessage(session.phone, 'Elige:', buttons)
+  } else {
+    // Usar lista para más opciones
+    const rows = values.map((v: any) => {
+      let description = ''
+      if (v.additional_price > 0) {
+        description = `+$${v.additional_price.toLocaleString('es-CO')}`
+      } else {
+        description = 'Sin cargo extra'
+      }
+      
+      return {
+        id: `CUSTOM_${currentOption.id}_${v.id}`,
+        title: (v.display_name || v.value).substring(0, 24),
+        description,
+      }
+    })
+    
+    // Si es opcional, agregar opción de saltar
+    if (!currentOption.is_required) {
+      rows.push({
+        id: 'SKIP_CUSTOMIZATION',
+        title: '⏭️ Omitir esta opción',
+        description: 'Continuar sin seleccionar',
+      })
+    }
+    
+    await sendListMessage(
+      session.phone,
+      optionText,
+      'Ver opciones',
+      [{ title: currentOption.display_name, rows }]
+    )
+  }
+}
+
+async function handleCustomizationSelection(session: ConversationSession, input: string) {
+  if (input === 'SKIP_CUSTOMIZATION') {
+    // Saltar opción actual (solo si es opcional)
+    const currentOption = session.temp_data?.customizations?.[session.temp_data?.currentCustomizationIndex]
+    if (currentOption && !currentOption.is_required) {
+      session.temp_data.currentCustomizationIndex++
+      await saveSession(session)
+      return showCustomizationOption(session)
+    } else {
+      await sendTextMessage(session.phone, '⚠️ Esta opción es requerida, por favor selecciona un valor.')
+      return
+    }
+  }
+  
+  // Parsear selección: CUSTOM_{optionId}_{valueId}
+  if (!input.startsWith('CUSTOM_')) {
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona una opción de las mostradas arriba.')
+    return
+  }
+  
+  const parts = input.split('_')
+  if (parts.length !== 3) {
+    await sendTextMessage(session.phone, '🤔 Selección inválida. Por favor intenta de nuevo.')
+    return
+  }
+  
+  const optionId = parts[1]
+  const valueId = parts[2]
+  
+  // Buscar la opción y el valor
+  const currentOption = session.temp_data?.customizations?.find((opt: any) => opt.id === optionId)
+  const selectedValue = currentOption?.values?.find((v: any) => v.id === valueId)
+  
+  if (!currentOption || !selectedValue) {
+    await sendTextMessage(session.phone, '❌ Error al procesar la selección. Por favor intenta de nuevo.')
+    return
+  }
+  
+  // Guardar selección
+  const customization: SelectedCustomization = {
+    optionId: currentOption.id,
+    optionName: currentOption.display_name,
+    valueId: selectedValue.id,
+    valueName: selectedValue.display_name || selectedValue.value,
+    additionalPrice: selectedValue.additional_price || 0,
+  }
+  
+  session.temp_data.selectedCustomizations.push(customization)
+  
+  // Avanzar a la siguiente opción
+  session.temp_data.currentCustomizationIndex++
+  await saveSession(session)
+  
+  // Confirmar selección y continuar
+  let confirmText = `✅ Seleccionaste: *${customization.valueName}*`
+  if (customization.additionalPrice > 0) {
+    confirmText += ` (+$${customization.additionalPrice.toLocaleString('es-CO')})`
+  }
+  await sendTextMessage(session.phone, confirmText)
+  
+  return showCustomizationOption(session)
+}
+
 async function handleQuantity(session: ConversationSession, input: string) {
   const quantity = parseInt(input)
   const product = session.temp_data?.currentProduct
+  const selectedCustomizations = session.temp_data?.selectedCustomizations || []
+  const basePrice = session.temp_data?.basePrice || product?.price || 0
   
   if (!product) {
     return sendMainMenu(session)
@@ -493,21 +702,27 @@ async function handleQuantity(session: ConversationSession, input: string) {
     return
   }
   
-  // Agregar al carrito
-  const existingIndex = session.cart.findIndex(item => item.product_id === product.id)
+  // Calcular precio total con personalizaciones
+  const additionalPrice = selectedCustomizations.reduce((sum: number, c: SelectedCustomization) => sum + c.additionalPrice, 0)
+  const totalPrice = basePrice + additionalPrice
   
-  if (existingIndex >= 0) {
-    session.cart[existingIndex].quantity += quantity
-  } else {
-    session.cart.push({
-      product_id: product.id,
-      product_name: product.name,
-      product_slug: product.slug,
-      product_image: product.image,
-      price: product.price,
-      quantity,
-    })
+  // Crear item del carrito
+  const cartItem: CartItem = {
+    product_id: product.id,
+    product_name: product.name,
+    product_slug: product.slug,
+    product_image: product.image,
+    price: totalPrice,  // Precio con personalizaciones incluidas
+    quantity,
   }
+  
+  // Agregar personalizaciones si existen
+  if (selectedCustomizations.length > 0) {
+    cartItem.selectedOptions = selectedCustomizations
+  }
+  
+  // Agregar al carrito (sin fusionar con items existentes si tienen personalizaciones diferentes)
+  session.cart.push(cartItem)
   
   session.state = 'MAIN_MENU'
   session.temp_data = undefined
@@ -515,9 +730,15 @@ async function handleQuantity(session: ConversationSession, input: string) {
   
   const totalItems = session.cart.reduce((sum, item) => sum + item.quantity, 0)
   
+  let confirmText = `✅ *${quantity}x ${product.name}*`
+  if (selectedCustomizations.length > 0) {
+    confirmText += ' personalizado'
+  }
+  confirmText += ` agregado al carrito.\n\n🛒 Total de productos: *${totalItems}*`
+  
   await sendButtonMessage(
     session.phone,
-    `✅ *${quantity}x ${product.name}* agregado al carrito.\n\n🛒 Total de productos: *${totalItems}*`,
+    confirmText,
     [
       { id: 'MENU_CART', title: '🛒 Ver Carrito' },
       { id: 'MENU_CATALOG', title: '📖 Seguir viendo' },
@@ -550,6 +771,18 @@ async function showCart(session: ConversationSession) {
     const itemTotal = item.price * item.quantity
     subtotal += itemTotal
     cartText += `${i + 1}. *${item.product_name}*\n`
+    
+    // Mostrar personalizaciones si existen
+    if (item.selectedOptions && item.selectedOptions.length > 0) {
+      item.selectedOptions.forEach(opt => {
+        cartText += `   • ${opt.optionName}: ${opt.valueName}`
+        if (opt.additionalPrice > 0) {
+          cartText += ` (+$${opt.additionalPrice.toLocaleString('es-CO')})`
+        }
+        cartText += '\n'
+      })
+    }
+    
     cartText += `   ${item.quantity}x $${item.price.toLocaleString('es-CO')} = $${itemTotal.toLocaleString('es-CO')}\n\n`
   })
   
