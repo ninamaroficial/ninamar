@@ -986,8 +986,11 @@ async function showDepartmentList(session: ConversationSession) {
   const sections = [] as any[]
   for (let i = 0; i < departments.length; i += 10) {
     const chunk = departments.slice(i, i + 10)
+    const sectionTitle = i === 0
+      ? 'Departamentos'
+      : `Más deptos (${i + 1}-${i + chunk.length})`
     sections.push({
-      title: i === 0 ? 'Departamentos' : `Más departamentos (${i + 1}-${i + chunk.length})`,
+      title: sectionTitle.slice(0, 24),
       rows: chunk.map((dept) => ({
         id: `DEPT_${dept.id}`,
         title: dept.name.substring(0, 24),
