@@ -104,44 +104,62 @@ export async function createWhatsAppOrder(session: ConversationSession) {
     throw new Error('Error agregando productos a la orden')
   }
   
-  // ✅ Enviar emails de confirmación
-  try {
-    // Formato de datos para el email
-    const emailData = {
-      orderNumber: order.order_number,
-      customerName: session.customer_name || 'Cliente WhatsApp',
-      customerEmail: session.customer_email || '',
-      customerPhone: session.phone,
-      items: session.cart.map(item => ({
-        product_name: item.product_name,
-        quantity: item.quantity,
-        unit_price: item.price,
-        total_price: item.price * item.quantity,
-        customization_details: item.selectedOptions || null,  // Incluir personalizaciones en email
-      })),
-      subtotal,
-      shipping_cost: shippingCost,
-      total,
-      shipping_address: session.customer_address || '',
-      shipping_city: session.customer_city || '',
-      shipping_state: session.customer_state || '',
-    }
-
-    // Enviar email al cliente
-    if (session.customer_email) {
-      await sendOrderConfirmationEmail(emailData)
-      console.log('✅ Confirmation email sent to customer')
-    }
-
-    // Enviar email al admin
-    await sendNewOrderAdminEmail(emailData)
-    console.log('✅ Notification email sent to admin')
-  } catch (emailError) {
-    console.error('❌ Error sending confirmation emails:', emailError)
-    // No lanzamos error para no bloquear la creación de la orden
-  }
+  // ⏸️ NO enviar emails automáticamente - se enviarán cuando se valide el pago
+  // Los emails se enviarán desde validatePayment() después de verificar el comprobante
   
   return order
+}
+
+/**
+ * Enviar emails de confirmación después de validar el pago
+ */
+export async function sendOrderConfirmationEmails(orderId: string) {
+  const supabase = createAdminClient()
+  
+  // Obtener orden completa con items
+  const { data: order, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items(*)
+    `)
+    .eq('id', orderId)
+    .single()
+  
+  if (error || !order) {
+    console.error('Error fetching order for email:', error)
+    throw new Error('No se encontró la orden')
+  }
+  
+  const emailData = {
+    orderNumber: order.order_number,
+    customerName: order.customer_name,
+    customerEmail: order.customer_email,
+    customerPhone: order.customer_phone,
+    items: (order as any).order_items.map((item: any) => ({
+      product_name: item.product_name,
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+      total_price: item.total_price,
+      customization_details: item.customization_details || null,
+    })),
+    subtotal: order.subtotal,
+    shipping_cost: order.shipping_cost,
+    total: order.total,
+    shipping_address: order.shipping_address,
+    shipping_city: order.shipping_city,
+    shipping_state: order.shipping_state,
+  }
+
+  // Enviar email al cliente
+  if (order.customer_email) {
+    await sendOrderConfirmationEmail(emailData)
+    console.log('✅ Confirmation email sent to customer')
+  }
+
+  // Enviar email al admin
+  await sendNewOrderAdminEmail(emailData)
+  console.log('✅ Notification email sent to admin')
 }
 
 /**

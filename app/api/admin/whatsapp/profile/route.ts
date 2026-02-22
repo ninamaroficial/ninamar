@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminToken } from '@/lib/auth/admin'
-import { getBusinessProfile, updateBusinessProfile, uploadBusinessProfilePicture } from '@/lib/whatsapp/client'
+import { getBusinessProfile, updateBusinessProfile } from '@/lib/whatsapp/client'
 
 // GET - Obtener perfil actual del bot de WhatsApp
 export async function GET(request: NextRequest) {
   try {
-    const adminToken = request.cookies.get('admin-token')?.value
+    const token = request.cookies.get('admin_token')?.value
     
-    if (!adminToken) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      )
-    }
-    
-    const isValid = await verifyAdminToken(adminToken)
-    
-    if (!isValid) {
+    if (!token || !verifyAdminToken(token)) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -38,18 +29,9 @@ export async function GET(request: NextRequest) {
 // POST - Actualizar perfil del bot de WhatsApp
 export async function POST(request: NextRequest) {
   try {
-    const adminToken = request.cookies.get('admin-token')?.value
+    const token = request.cookies.get('admin_token')?.value
     
-    if (!adminToken) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      )
-    }
-    
-    const isValid = await verifyAdminToken(adminToken)
-    
-    if (!isValid) {
+    if (!token || !verifyAdminToken(token)) {
       return NextResponse.json(
         { error: 'No autorizado' },
         { status: 401 }
@@ -60,24 +42,22 @@ export async function POST(request: NextRequest) {
     const { about, description, email, websites, profilePictureUrl } = body
 
     // Actualizar texto del perfil
-    if (about || description || email || websites) {
-      await updateBusinessProfile({
-        about,
-        description,
-        email,
-        websites: websites ? [websites] : undefined,
-        vertical: 'RETAIL',
-      })
-    }
+    await updateBusinessProfile({
+      about,
+      description,
+      email,
+      websites: websites ? [websites] : undefined,
+      vertical: 'RETAIL',
+    })
 
-    // Actualizar foto de perfil si se proporcionó
-    if (profilePictureUrl) {
-      await uploadBusinessProfilePicture(profilePictureUrl)
-    }
+    // Nota: La foto de perfil debe cambiarse manualmente desde:
+    // https://business.facebook.com/wa/manage/phone-numbers/
+    // WhatsApp no permite subir fotos vía URL directamente
 
     return NextResponse.json({ 
       success: true,
-      message: 'Perfil actualizado correctamente'
+      message: 'Perfil actualizado correctamente. Para cambiar la foto de perfil, ve a Facebook Business Manager.',
+      profilePictureNote: 'La foto debe actualizarse manualmente en https://business.facebook.com/wa/manage/phone-numbers/'
     })
   } catch (error) {
     console.error('Error actualizando perfil de WhatsApp:', error)

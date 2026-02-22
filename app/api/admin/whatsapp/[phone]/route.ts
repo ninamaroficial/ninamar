@@ -30,6 +30,7 @@ export async function GET(
         customer_city: session.customer_city,
         customer_state: session.customer_state,
         last_activity: session.last_activity,
+        temp_data: session.temp_data,
       }
     })
   } catch (error) {

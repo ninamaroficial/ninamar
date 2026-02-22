@@ -85,13 +85,30 @@ export async function POST(request: NextRequest) {
           
           // Guardar mensaje entrante en base de datos
           const phone = message.from
-          const messageText = message.text?.body || message.interactive?.button_reply?.title || message.interactive?.list_reply?.title || '[Mensaje no texto]'
+          let messageText = message.text?.body || message.interactive?.button_reply?.title || message.interactive?.list_reply?.title || '[Mensaje no texto]'
           const messageType = message.type || 'text'
+          const messageMetadata: any = { contact }
+
+          if (message.type === 'image') {
+            messageText = message.image?.caption || '[Imagen]'
+            messageMetadata.media_id = message.image?.id
+            messageMetadata.mime_type = message.image?.mime_type
+            messageMetadata.sha256 = message.image?.sha256
+          }
+
+          if (message.type === 'document') {
+            const filename = message.document?.filename || 'archivo'
+            messageText = message.document?.caption || `[Documento: ${filename}]`
+            messageMetadata.media_id = message.document?.id
+            messageMetadata.mime_type = message.document?.mime_type
+            messageMetadata.sha256 = message.document?.sha256
+            messageMetadata.filename = filename
+          }
           
           console.log(`💾 Guardando mensaje: "${messageText.substring(0, 50)}"`)
           
           const { saveIncomingMessage } = await import('@/lib/whatsapp/messages')
-          await saveIncomingMessage(phone, message.id, messageText, messageType as any, { contact })
+          await saveIncomingMessage(phone, message.id, messageText, messageType as any, messageMetadata)
           
           // Importar dinámicamente para evitar problemas de carga circular
           const { handleIncomingMessage } = await import('@/lib/whatsapp/handler')

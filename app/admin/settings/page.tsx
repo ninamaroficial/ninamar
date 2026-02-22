@@ -18,7 +18,6 @@ interface WhatsAppProfile {
   description: string
   email: string
   websites: string
-  profilePictureUrl: string
 }
 
 export default function AdminSettingsPage() {
@@ -43,8 +42,7 @@ export default function AdminSettingsPage() {
     about: 'Niñamar',
     description: 'Accesorios personalizados hechos a mano con amor 💜',
     email: 'contacto@ninamar.com',
-    websites: 'https://ninamar.com',
-    profilePictureUrl: 'https://ninamar.com/logo.png'
+    websites: 'https://ninamar.com'
   })
   const [isSavingProfile, setIsSavingProfile] = useState(false)
   const [profileMessage, setProfileMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -141,8 +139,7 @@ export default function AdminSettingsPage() {
             about: data.profile.about || '',
             description: data.profile.description || '',
             email: data.profile.email || '',
-            websites: data.profile.websites?.[0] || '',
-            profilePictureUrl: data.profile.profile_picture_url || ''
+            websites: data.profile.websites?.[0] || ''
           })
         }
       }
@@ -164,7 +161,11 @@ export default function AdminSettingsPage() {
       })
 
       if (response.ok) {
-        setProfileMessage({ type: 'success', text: '✅ Perfil de WhatsApp actualizado (puede tardar unos minutos en reflejarse)' })
+        const data = await response.json()
+        setProfileMessage({ 
+          type: 'success', 
+          text: '✅ ' + (data.message || 'Perfil actualizado correctamente')
+        })
       } else {
         const data = await response.json()
         setProfileMessage({ type: 'error', text: `❌ Error: ${data.error || 'Error al actualizar perfil'}` })
@@ -413,18 +414,6 @@ export default function AdminSettingsPage() {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.label}>URL de Foto de Perfil</label>
-                <input
-                  type="url"
-                  value={whatsappProfile.profilePictureUrl}
-                  onChange={(e) => handleProfileChange('profilePictureUrl', e.target.value)}
-                  className={styles.input}
-                  placeholder="https://ninamar.com/logo.png"
-                />
-                <p className={styles.hint}>URL pública de la imagen (debe ser cuadrada, mín. 192x192px, formato JPG/PNG)</p>
-              </div>
-
               <button
                 onClick={saveWhatsAppProfile}
                 disabled={isSavingProfile}
@@ -434,9 +423,15 @@ export default function AdminSettingsPage() {
                 {isSavingProfile ? 'Guardando...' : 'Actualizar Perfil de WhatsApp'}
               </button>
 
+              <div className={styles.alert} style={{ marginTop: '1rem', background: '#fff3cd', border: '1px solid #ffc107' }}>
+                <strong>📸 Foto de Perfil:</strong> Para cambiar la foto de perfil de WhatsApp, ve a:<br/>
+                <a href="https://business.facebook.com/wa/manage/phone-numbers/" target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', textDecoration: 'underline' }}>
+                  Facebook Business Manager → WhatsApp → Configuración del número
+                </a>
+              </div>
+
               <div className={styles.alert} style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #3b82f6' }}>
-                <strong>ℹ️ Nota importante:</strong> Los cambios en el perfil de WhatsApp pueden tardar hasta 24 horas en reflejarse completamente. 
-                La foto de perfil debe ser una URL pública accesible desde internet.
+                <strong>ℹ️ Nota importante:</strong> Los cambios en el perfil de WhatsApp pueden tardar hasta 24 horas en reflejarse completamente.
               </div>
             </div>
           </div>

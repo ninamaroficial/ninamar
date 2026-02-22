@@ -16,6 +16,7 @@ import { getSession, saveSession, type ConversationSession, type CartItem, type 
 import { getProductsForWhatsApp, getCategoriesForWhatsApp, getProductsByCategory, formatProductDetail, getProductCustomizationsForWhatsApp } from './catalog'
 import { createWhatsAppOrder, getOrderStatus } from './orders'
 import { BOT_CONFIG } from './config'
+import { getDepartments, getCitiesByDepartment } from '@/lib/data/colombia-locations'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://niñamar.com'
 
@@ -58,6 +59,15 @@ export async function handleIncomingMessage(
   // Guardar nombre si es la primera vez
   if (!session.customer_name && contactName) {
     session.customer_name = contactName
+  }
+
+  // Si estamos esperando comprobante y llega imagen/documento
+  if (
+    session.state === 'AWAITING_PAYMENT_PROOF' &&
+    (message.type === 'image' || message.type === 'document')
+  ) {
+    await handlePaymentProofMessage(session, message)
+    return
   }
   
   // Extraer texto del mensaje según tipo
@@ -148,6 +158,9 @@ async function routeMessage(session: ConversationSession, input: string) {
     
     case 'VIEWING_PRODUCT':
       return handleProductAction(session, input)
+
+    case 'AWAITING_PAYMENT_PROOF':
+      return handleAwaitingPaymentProof(session, input)
     
     case 'CUSTOMIZING_PRODUCT':
       return handleCustomizationSelection(session, input)
@@ -241,7 +254,7 @@ async function handleMainMenu(session: ConversationSession, input: string) {
     case 'MENU_WEB':
       await sendTextMessage(
         session.phone,
-        `🌐 Visita nuestra tienda online:\n\n${SITE_URL}\n\n¡Ahí puedes ver todos nuestros productos con fotos detalladas! ✨`
+        `🌐 Visita nuestra tienda online:\n\n${SITE_URL}\n\n¡Ahí podrás realizar pagos por PSE, ver todos nuestros productos con fotos detalladas y mucho más! ✨`
       )
       return
     
@@ -888,33 +901,143 @@ async function handleCheckoutEmail(session: ConversationSession, input: string) 
 async function handleCheckoutDocument(session: ConversationSession, input: string) {
   session.customer_document = input.trim()
   session.state = 'CHECKOUT_STATE'
+  session.temp_data = { ...session.temp_data, city_page: 0 }
   await saveSession(session)
   
   await sendTextMessage(
     session.phone,
-    `✅ Documento: *${session.customer_document}*\n\n*4/6* ¿En qué departamento te encuentras?\n\n(Ejemplo: Cauca, Valle del Cauca, Nariño...)`
+    `✅ Documento: *${session.customer_document}*\n\n*4/6* Selecciona tu *departamento*:`
   )
+  return showDepartmentList(session)
 }
 
 async function handleCheckoutState(session: ConversationSession, input: string) {
-  session.customer_state = input.trim()
+  const departments = getDepartments()
+  let selectedDepartment = ''
+
+  if (input.startsWith('DEPT_')) {
+    const deptId = parseInt(input.replace('DEPT_', ''), 10)
+    selectedDepartment = departments.find(d => d.id === deptId)?.name || ''
+  } else {
+    const match = departments.find(d => d.name.toLowerCase() === input.toLowerCase().trim())
+    selectedDepartment = match?.name || ''
+  }
+
+  if (!selectedDepartment) {
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona un departamento de la lista.')
+    return showDepartmentList(session)
+  }
+
+  session.customer_state = selectedDepartment
   session.state = 'CHECKOUT_CITY'
+  session.temp_data = { ...session.temp_data, city_page: 0 }
   await saveSession(session)
   
   await sendTextMessage(
     session.phone,
-    `✅ Departamento: *${session.customer_state}*\n\n*5/6* ¿En qué ciudad/municipio?`
+    `✅ Departamento: *${session.customer_state}*\n\n*5/6* Selecciona tu *ciudad/municipio*:`
   )
+  return showCityList(session)
 }
 
 async function handleCheckoutCity(session: ConversationSession, input: string) {
-  session.customer_city = input.trim()
+  if (!session.customer_state) {
+    await sendTextMessage(session.phone, '⚠️ Primero debes seleccionar un departamento.')
+    return showDepartmentList(session)
+  }
+
+  const cities = getCitiesByDepartment(session.customer_state)
+  const inputLower = input.toLowerCase().trim()
+
+  if (input.startsWith('CITY_NEXT_') || input.startsWith('CITY_PREV_')) {
+    const page = parseInt(input.split('_').pop() || '0', 10)
+    session.temp_data = { ...session.temp_data, city_page: Math.max(0, page) }
+    await saveSession(session)
+    return showCityList(session)
+  }
+
+  let selectedCity = ''
+  if (input.startsWith('CITY_')) {
+    const cityId = parseInt(input.replace('CITY_', ''), 10)
+    selectedCity = cities.find(c => c.id === cityId)?.name || ''
+  } else {
+    const match = cities.find(c => c.name.toLowerCase() === inputLower)
+    selectedCity = match?.name || ''
+  }
+
+  if (!selectedCity) {
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona una ciudad de la lista.')
+    return showCityList(session)
+  }
+
+  session.customer_city = selectedCity
   session.state = 'CHECKOUT_ADDRESS'
   await saveSession(session)
   
   await sendTextMessage(
     session.phone,
     `✅ Ciudad: *${session.customer_city}*\n\n*6/6* ¿Cuál es tu dirección de envío completa?\n\n(Incluye barrio, calle, número, referencias)`
+  )
+}
+
+async function showDepartmentList(session: ConversationSession) {
+  const departments = getDepartments()
+  
+  const sections = [] as any[]
+  for (let i = 0; i < departments.length; i += 10) {
+    const chunk = departments.slice(i, i + 10)
+    sections.push({
+      title: i === 0 ? 'Departamentos' : `Más departamentos (${i + 1}-${i + chunk.length})`,
+      rows: chunk.map((dept) => ({
+        id: `DEPT_${dept.id}`,
+        title: dept.name.substring(0, 24),
+      })),
+    })
+  }
+  
+  await sendListMessage(
+    session.phone,
+    'Selecciona tu departamento:',
+    'Ver departamentos',
+    sections
+  )
+}
+
+async function showCityList(session: ConversationSession) {
+  if (!session.customer_state) return
+
+  const cities = getCitiesByDepartment(session.customer_state)
+  const pageSize = 8
+  const page = session.temp_data?.city_page || 0
+  const start = page * pageSize
+  const pageCities = cities.slice(start, start + pageSize)
+
+  const rows: { id: string; title: string; description?: string }[] = pageCities.map((city) => ({
+    id: `CITY_${city.id}`,
+    title: city.name.substring(0, 24),
+  }))
+
+  if (page > 0) {
+    rows.push({
+      id: `CITY_PREV_${page - 1}`,
+      title: '⬅️ Anterior',
+      description: 'Ver ciudades anteriores',
+    })
+  }
+
+  if (start + pageSize < cities.length) {
+    rows.push({
+      id: `CITY_NEXT_${page + 1}`,
+      title: '➡️ Siguiente',
+      description: 'Ver más ciudades',
+    })
+  }
+
+  await sendListMessage(
+    session.phone,
+    `Departamento: *${session.customer_state}*\nSelecciona tu ciudad:`,
+    'Ver ciudades',
+    [{ title: 'Ciudades', rows }]
   )
 }
 
@@ -981,10 +1104,17 @@ async function handleCheckoutConfirm(session: ConversationSession, input: string
     try {
       const order = await createWhatsAppOrder(session)
       
-      // Limpiar carrito
+      // Limpiar carrito y guardar estado de pago pendiente
       session.cart = []
-      session.state = 'MAIN_MENU'
-      session.temp_data = undefined
+      session.state = 'AWAITING_PAYMENT_PROOF'
+      session.temp_data = {
+        pending_payment: {
+          order_id: order.id,
+          order_number: order.order_number,
+          total: order.total,
+        },
+        payment_proof_received: false,
+      }
       await saveSession(session)
       
       await sendTextMessage(
@@ -992,9 +1122,11 @@ async function handleCheckoutConfirm(session: ConversationSession, input: string
         `🎉 *¡Pedido creado exitosamente!*\n\n` +
         `📋 Número de orden: *${order.order_number}*\n` +
         `💰 Total: *$${order.total.toLocaleString('es-CO')}*\n\n` +
-        `📧 Recibirás un email de confirmación en *${session.customer_email}*\n\n` +
-        `Nos pondremos en contacto contigo para coordinar el pago y envío. 💜\n\n` +
-        `¡Gracias por tu compra en *Niñamar*! ✨`
+        `Para continuar, realiza el pago en una de estas cuentas:\n\n` +
+        `✅ *Nequi:* 300 5469257\n` +
+        `✅ *Bancolombia:* 1234567890\n\n` +
+        `Luego envíanos el *comprobante de pago* aquí mismo (foto o PDF).\n\n` +
+        `Cuando validemos tu pago, te confirmaremos y enviaremos el correo. 💜`
       )
     } catch (error) {
       console.error('❌ Error creating order via WhatsApp:', error)
@@ -1009,6 +1141,40 @@ async function handleCheckoutConfirm(session: ConversationSession, input: string
     await sendTextMessage(session.phone, '❌ Pedido cancelado. Tu carrito permanece intacto.')
     return sendMainMenu(session)
   }
+}
+
+async function handleAwaitingPaymentProof(session: ConversationSession, input: string) {
+  const inputLower = input.toLowerCase().trim()
+
+  if (inputLower.includes('ya pague') || inputLower.includes('pague')) {
+    await sendTextMessage(
+      session.phone,
+      '✅ Gracias. Por favor envíanos el *comprobante de pago* (foto o PDF) para validar tu pedido.'
+    )
+    return
+  }
+
+  await sendTextMessage(
+    session.phone,
+    '📎 Para continuar, necesitamos el *comprobante de pago*. Envíalo como foto o PDF.'
+  )
+}
+
+async function handlePaymentProofMessage(session: ConversationSession, message: any) {
+  const mediaId = message.image?.id || message.document?.id || null
+
+  session.temp_data = {
+    ...session.temp_data,
+    payment_proof_received: true,
+    last_payment_media_id: mediaId,
+    last_payment_message_id: message.id,
+  }
+  await saveSession(session)
+
+  await sendTextMessage(
+    session.phone,
+    '✅ Recibimos tu comprobante. Lo revisaremos y te confirmaremos cuando el pago sea validado.'
+  )
 }
 
 // ─── SEGUIMIENTO ─────────────────────────────────────────────

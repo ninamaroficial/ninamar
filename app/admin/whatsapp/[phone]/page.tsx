@@ -21,6 +21,7 @@ interface Message {
   timestamp: string
   is_bot: boolean
   message_type: string
+  metadata?: any
 }
 
 interface SessionData {
@@ -33,6 +34,7 @@ interface SessionData {
   customer_state?: string
   last_activity: string
   profile_picture_url?: string
+  temp_data?: any
 }
 
 export default function WhatsAppConversationPage({ 
@@ -45,6 +47,7 @@ export default function WhatsAppConversationPage({
   const [session, setSession] = useState<SessionData | null>(null)
   const [newMessage, setNewMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const [isValidatingPayment, setIsValidatingPayment] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const prevMessagesLengthRef = useRef(0)
@@ -138,6 +141,31 @@ export default function WhatsAppConversationPage({
       alert('Error al enviar mensaje')
     } finally {
       setIsSending(false)
+    }
+  }
+
+  const handleValidatePayment = async () => {
+    if (!session || isValidatingPayment) return
+    setIsValidatingPayment(true)
+
+    try {
+      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}/validate-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || 'Error al validar pago')
+      }
+
+      alert('Pago validado y confirmación enviada')
+      await loadConversation()
+    } catch (error: any) {
+      console.error('Error validating payment:', error)
+      alert(`Error al validar pago: ${error.message}`)
+    } finally {
+      setIsValidatingPayment(false)
     }
   }
 
@@ -274,6 +302,36 @@ export default function WhatsAppConversationPage({
               Última actividad: {new Date(session.last_activity).toLocaleString('es-CO')}
             </p>
           </div>
+
+          {session.temp_data?.pending_payment && (
+            <div className={styles.sidebarSection}>
+              <h3>Pago Pendiente</h3>
+              <div className={styles.infoItem}>
+                <span>Orden:</span>
+                <strong>{session.temp_data.pending_payment.order_number}</strong>
+              </div>
+              <div className={styles.infoItem}>
+                <span>Total:</span>
+                <strong>
+                  ${Number(session.temp_data.pending_payment.total || 0).toLocaleString('es-CO')}
+                </strong>
+              </div>
+              <div className={styles.infoItem}>
+                <span>Comprobante:</span>
+                <strong>
+                  {session.temp_data.payment_proof_received ? 'Recibido' : 'Pendiente'}
+                </strong>
+              </div>
+              <button
+                onClick={handleValidatePayment}
+                disabled={isValidatingPayment || !session.temp_data?.payment_proof_received}
+                className={styles.submitButton}
+                style={{ marginTop: '0.5rem' }}
+              >
+                {isValidatingPayment ? 'Validando...' : 'Validar Pago'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Área de mensajes */}
@@ -296,7 +354,29 @@ export default function WhatsAppConversationPage({
                   }`}
                 >
                   <div className={styles.messageBubble}>
-                    <p className={styles.messageText}>{msg.content}</p>
+                    {msg.message_type === 'image' && msg.metadata?.media_id ? (
+                      <div>
+                        <img
+                          src={`/api/admin/whatsapp/media/${msg.metadata.media_id}`}
+                          alt="Comprobante"
+                          style={{ maxWidth: '240px', borderRadius: '8px', display: 'block' }}
+                        />
+                        {msg.content && <p className={styles.messageText}>{msg.content}</p>}
+                      </div>
+                    ) : msg.message_type === 'document' && msg.metadata?.media_id ? (
+                      <div>
+                        <a
+                          href={`/api/admin/whatsapp/media/${msg.metadata.media_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.messageText}
+                        >
+                          {msg.content || 'Documento recibido'}
+                        </a>
+                      </div>
+                    ) : (
+                      <p className={styles.messageText}>{msg.content}</p>
+                    )}
                     <div className={styles.messageFooter}>
                       <span className={styles.messageTime}>{formatTime(msg.timestamp)}</span>
                       {msg.direction === 'outgoing' && (

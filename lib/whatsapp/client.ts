@@ -195,6 +195,57 @@ export async function markAsRead(messageId: string) {
   })
 }
 
+/** Obtener URL temporal de un media por ID */
+export async function getMediaUrl(mediaId: string) {
+  const { token } = getConfig()
+  const url = `${WHATSAPP_API_URL}/${mediaId}`
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    console.error('❌ Error obteniendo media URL:', error)
+    throw new Error(`Error obteniendo media URL: ${response.status}`)
+  }
+
+  return response.json()
+}
+
+/** Descargar media y devolver buffer y mime type */
+export async function downloadMedia(mediaId: string) {
+  const { token } = getConfig()
+  const mediaInfo = await getMediaUrl(mediaId)
+  const mediaUrl = mediaInfo?.url
+
+  if (!mediaUrl) {
+    throw new Error('Media URL no disponible')
+  }
+
+  const response = await fetch(mediaUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    console.error('❌ Error descargando media:', error)
+    throw new Error(`Error descargando media: ${response.status}`)
+  }
+
+  const buffer = await response.arrayBuffer()
+  return {
+    buffer,
+    mimeType: response.headers.get('content-type') || mediaInfo?.mime_type || 'application/octet-stream',
+  }
+}
+
 /** Obtener la foto de perfil del usuario */
 export async function getProfilePictureUrl(phone: string): Promise<string | null> {
   try {
