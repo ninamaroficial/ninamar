@@ -578,6 +578,17 @@
   }
 }
 
+.paymentHint {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  color: #1e40af;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

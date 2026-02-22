@@ -5,6 +5,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { calculateShipping } from '@/lib/shipping/rates'
+import { sendOrderConfirmationEmail, sendNewOrderAdminEmail } from '@/lib/email/resend'
 import type { ConversationSession } from './session'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -100,6 +101,42 @@ export async function createWhatsAppOrder(session: ConversationSession) {
     // Eliminar orden si los items fallan
     await supabase.from('orders').delete().eq('id', order.id)
     throw new Error('Error agregando productos a la orden')
+  }
+  
+  // ✅ Enviar emails de confirmación
+  try {
+    // Formato de datos para el email
+    const emailData = {
+      orderNumber: order.order_number,
+      customerName: session.customer_name || 'Cliente WhatsApp',
+      customerEmail: session.customer_email || '',
+      customerPhone: session.phone,
+      items: session.cart.map(item => ({
+        product_name: item.product_name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total_price: item.price * item.quantity,
+      })),
+      subtotal,
+      shipping_cost: shippingCost,
+      total,
+      shipping_address: session.customer_address || '',
+      shipping_city: session.customer_city || '',
+      shipping_state: session.customer_state || '',
+    }
+
+    // Enviar email al cliente
+    if (session.customer_email) {
+      await sendOrderConfirmationEmail(emailData)
+      console.log('✅ Confirmation email sent to customer')
+    }
+
+    // Enviar email al admin
+    await sendNewOrderAdminEmail(emailData)
+    console.log('✅ Notification email sent to admin')
+  } catch (emailError) {
+    console.error('❌ Error sending confirmation emails:', emailError)
+    // No lanzamos error para no bloquear la creación de la orden
   }
   
   return order

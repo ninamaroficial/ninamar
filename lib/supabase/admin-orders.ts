@@ -205,3 +205,38 @@ export async function updateOrderStatus(orderId: string, status: string) {
   
   return data
 }
+
+export async function updateOrderPaymentStatus(orderId: string, paymentStatus: 'pending' | 'approved' | 'rejected') {
+  const supabase = createAdminClient()
+
+  const updateData: any = {
+    payment_status: paymentStatus,
+    updated_at: new Date().toISOString()
+  }
+
+  // Si el pago es aprobado, agregar el timestamp paid_at
+  if (paymentStatus === 'approved') {
+    const { data: currentOrder } = await supabase
+      .from('orders')
+      .select('paid_at')
+      .eq('id', orderId)
+      .single()
+    
+    if (!currentOrder?.paid_at) {
+      updateData.paid_at = new Date().toISOString()
+    }
+  }
+
+  const { data, error } = await supabase
+    .from('orders')
+    .update(updateData)
+    .eq('id', orderId)
+    .select()
+    .single()
+  
+  if (error) {
+    throw new Error('No se pudo actualizar el estado de pago')
+  }
+  
+  return data
+}

@@ -66,6 +66,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
   const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState('')
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('')
+  const [isUpdatingPayment, setIsUpdatingPayment] = useState(false)
   const canUpdateStatus = order?.payment_status === 'approved'
   const [isShipmentModalOpen, setIsShipmentModalOpen] = useState(false) // ← AGREGAR
   const [pendingStatus, setPendingStatus] = useState<string | null>(null) 
@@ -82,6 +84,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
       const data = await res.json()
       setOrder(data)
       setSelectedStatus(data.status)
+      setSelectedPaymentStatus(data.payment_status)
     } catch (error) {
       console.error('Error loading order:', error)
       alert('Error al cargar la orden')
@@ -124,6 +127,33 @@ const handleUpdateStatus = async () => {
     alert(error.message || 'Error al actualizar el estado')
   } finally {
     setIsUpdating(false)
+  }
+}
+
+const handleUpdatePaymentStatus = async () => {
+  if (!order || selectedPaymentStatus === order.payment_status) return
+
+  setIsUpdatingPayment(true)
+  try {
+    const res = await fetch(`/api/admin/orders/${resolvedParams.orderId}/payment-status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payment_status: selectedPaymentStatus })
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Error al actualizar estado de pago')
+    }
+
+    alert('Estado de pago actualizado correctamente')
+    await loadOrder()
+  } catch (error: any) {
+    console.error('Error updating payment status:', error)
+    alert(error.message || 'Error al actualizar el estado de pago')
+  } finally {
+    setIsUpdatingPayment(false)
   }
 }
 
@@ -283,6 +313,37 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
         <div className={styles.layout}>
           {/* Main Content */}
           <div className={styles.mainContent}>
+            {/* Payment Status Update */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <CreditCard size={20} />
+                <h2 className={styles.cardTitle}>Estado de Pago</h2>
+              </div>
+              <div className={styles.statusUpdate}>
+                <select
+                  value={selectedPaymentStatus}
+                  onChange={(e) => setSelectedPaymentStatus(e.target.value)}
+                  className={styles.statusSelect}
+                >
+                  <option value="pending">Pendiente</option>
+                  <option value="approved">Aprobado</option>
+                  <option value="rejected">Rechazado</option>
+                </select>
+                <button
+                  onClick={handleUpdatePaymentStatus}
+                  disabled={isUpdatingPayment || selectedPaymentStatus === order.payment_status}
+                  className={styles.updateButton}
+                >
+                  {isUpdatingPayment ? 'Actualizando...' : 'Actualizar Pago'}
+                </button>
+              </div>
+              {order.payment_status === 'pending' && (
+                <p className={styles.paymentHint}>
+                  💡 Marca el pago como "Aprobado" una vez que confirmes que el cliente ha realizado el pago.
+                </p>
+              )}
+            </div>
+
             {/* Status Update */}
             <div className={styles.card}>
               <div className={styles.cardHeader}>
