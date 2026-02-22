@@ -4,6 +4,7 @@
  */
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { calculateShipping } from '@/lib/shipping/rates'
 import type { ConversationSession } from './session'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -32,8 +33,12 @@ export async function createWhatsAppOrder(session: ConversationSession) {
     0
   )
   
-  // Envío por definir (se puede ajustar)
-  const shippingCost = 0
+  // Calcular costo de envío basado en ubicación
+  const shippingCost = calculateShipping(
+    session.customer_state || '',
+    session.customer_city || '',
+    subtotal
+  )
   const total = subtotal + shippingCost
   
   // Generar número de orden

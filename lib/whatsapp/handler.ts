@@ -626,6 +626,20 @@ async function handleCheckoutAddress(session: ConversationSession, input: string
   session.state = 'CHECKOUT_CONFIRM'
   await saveSession(session)
   
+  // Calcular costos
+  let subtotal = 0
+  session.cart.forEach(item => {
+    subtotal += item.price * item.quantity
+  })
+  
+  const { calculateShipping, FREE_SHIPPING_THRESHOLD } = await import('@/lib/shipping/rates')
+  const shippingCost = calculateShipping(
+    session.customer_state || '',
+    session.customer_city || '',
+    subtotal
+  )
+  const total = subtotal + shippingCost
+  
   // Mostrar resumen
   let summary = '📋 *Resumen de tu Pedido*\n\n'
   summary += '👤 *Datos:*\n'
@@ -638,14 +652,20 @@ async function handleCheckoutAddress(session: ConversationSession, input: string
   summary += `• ${session.customer_city}, ${session.customer_state}\n\n`
   summary += '🛒 *Productos:*\n'
   
-  let subtotal = 0
   session.cart.forEach(item => {
     const itemTotal = item.price * item.quantity
-    subtotal += itemTotal
     summary += `• ${item.quantity}x ${item.product_name} - $${itemTotal.toLocaleString('es-CO')}\n`
   })
   
-  summary += `\n💰 *Subtotal: $${subtotal.toLocaleString('es-CO')}*`
+  summary += `\n💰 *Subtotal: $${subtotal.toLocaleString('es-CO')}*\n`
+  
+  if (shippingCost === 0) {
+    summary += `🎉 *Envío: GRATIS* (¡Superaste $${FREE_SHIPPING_THRESHOLD.toLocaleString('es-CO')}!)\n`
+  } else {
+    summary += `🚚 *Envío: $${shippingCost.toLocaleString('es-CO')}*\n`
+  }
+  
+  summary += `\n💵 *TOTAL: $${total.toLocaleString('es-CO')}*`
   
   await sendTextMessage(session.phone, summary)
   
