@@ -90,7 +90,7 @@ export default function AdminSettingsPage() {
 
   const saveBotSettings = async () => {
     setIsSavingBot(true)
-    setBotMessage('')
+    setBotMessage(null)
     try {
       const response = await fetch('/api/admin/settings/bot', {
         method: 'POST',
