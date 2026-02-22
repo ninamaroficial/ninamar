@@ -198,8 +198,9 @@ export async function markAsRead(messageId: string) {
 /** Obtener la foto de perfil del usuario */
 export async function getProfilePictureUrl(phone: string): Promise<string | null> {
   try {
-    const { token } = getConfig()
-    const url = `${WHATSAPP_API_URL}/${phone}/`
+    const { token, phoneNumberId } = getConfig()
+    // Endpoint correcto para obtener foto de perfil
+    const url = `${WHATSAPP_API_URL}/${phone}`
     
     const response = await fetch(url, {
       method: 'GET',
@@ -209,14 +210,15 @@ export async function getProfilePictureUrl(phone: string): Promise<string | null
     })
     
     if (!response.ok) {
-      console.warn(`⚠️ No se pudo obtener foto de perfil para ${phone}`)
+      console.warn(`⚠️ No se pudo obtener foto de perfil para ${phone} (${response.status})`)
       return null
     }
     
     const data = await response.json()
-    return data?.data?.[0]?.url || null
+    // La API retorna la foto en data.profile_picture_url o data.profile?.picture_url
+    return data?.profile_picture_url || data?.profile?.picture_url || null
   } catch (error) {
-    console.error('Error obteniendo foto de perfil:', error)
+    console.warn('⚠️ Error obteniendo foto de perfil:', error instanceof Error ? error.message : 'Error desconocido')
     return null
   }
 }

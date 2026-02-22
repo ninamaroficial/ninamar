@@ -46,8 +46,11 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    console.log('📨 Webhook recibido:', JSON.stringify(body).substring(0, 500))
+    
     // Validar estructura del webhook
     if (!body.object || body.object !== 'whatsapp_business_account') {
+      console.warn('⚠️ Webhook inválido - object mismatch')
       return NextResponse.json({ error: 'Invalid webhook' }, { status: 400 })
     }
     
@@ -63,12 +66,16 @@ export async function POST(request: NextRequest) {
         const messages = value.messages || []
         const contacts = value.contacts || []
         
+        console.log(`📬 Procesando ${messages.length} mensaje(s)`)
+        
         // Ignorar si solo hay statuses (no son mensajes reales)
         if (messages.length === 0) continue
         
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i]
           const contact = contacts[i] || contacts[0]
+          
+          console.log(`📤 Mensaje de ${message.from} tipo: ${message.type}`)
           
           // Deduplicar: no procesar el mismo mensaje dos veces
           if (isProcessed(message.id)) {
@@ -81,6 +88,8 @@ export async function POST(request: NextRequest) {
           const messageText = message.text?.body || message.interactive?.button_reply?.title || message.interactive?.list_reply?.title || '[Mensaje no texto]'
           const messageType = message.type || 'text'
           
+          console.log(`💾 Guardando mensaje: "${messageText.substring(0, 50)}"`)
+          
           const { saveIncomingMessage } = await import('@/lib/whatsapp/messages')
           await saveIncomingMessage(phone, message.id, messageText, messageType as any, { contact })
           
@@ -89,9 +98,11 @@ export async function POST(request: NextRequest) {
           
           // Procesar mensaje y ESPERAR a que termine (evita race conditions)
           try {
+            console.log(`🤖 Procesando mensaje con handler...`)
             await handleIncomingMessage(message, contact, value.metadata)
+            console.log(`✅ Mensaje procesado exitosamente`)
           } catch (err) {
-            console.error('❌ Error processing WhatsApp message:', err)
+            console.error('❌ Error processing WhatsApp message:', err instanceof Error ? err.message : err)
           }
         }
       }
@@ -100,7 +111,7 @@ export async function POST(request: NextRequest) {
     // Siempre responder 200 a Meta
     return NextResponse.json({ status: 'ok' })
   } catch (error) {
-    console.error('❌ WhatsApp webhook error:', error)
+    console.error('❌ WhatsApp webhook error:', error instanceof Error ? error.message : error)
     // Aún así responder 200 para evitar reintentos
     return NextResponse.json({ status: 'ok' })
   }

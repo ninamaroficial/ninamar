@@ -37,13 +37,16 @@ export async function handleIncomingMessage(
   // Obtener sesión del usuario
   const session = await getSession(phone)
   
-  // Obtener y guardar foto de perfil si no la tenemos
+  // Obtener y guardar foto de perfil si no la tenemos (NO BLOQUEANTE)
   if (!session.profile_picture_url) {
-    const profilePicUrl = await getProfilePictureUrl(phone)
-    if (profilePicUrl) {
-      session.profile_picture_url = profilePicUrl
-      await saveSession(session)
-    }
+    getProfilePictureUrl(phone)
+      .then(profilePicUrl => {
+        if (profilePicUrl && session) {
+          session.profile_picture_url = profilePicUrl
+          saveSession(session).catch(() => {})
+        }
+      })
+      .catch(() => {}) // Ignorar errores silenciosamente
   }
   
   // ✅ Si está en modo manual, no procesar con el bot
