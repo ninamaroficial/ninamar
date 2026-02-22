@@ -29,7 +29,7 @@ export default function AdminSettingsPage() {
     closingMessage: 'Gracias por tu compra'
   })
   const [isSavingBot, setIsSavingBot] = useState(false)
-  const [botMessage, setBotMessage] = useState('')
+  const [botMessage, setBotMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -107,7 +107,7 @@ export default function AdminSettingsPage() {
       setBotMessage({ type: 'error', text: '❌ Error al guardar configuración' })
     } finally {
       setIsSavingBot(false)
-      setTimeout(() => setBotMessage(''), 3000)
+      setTimeout(() => setBotMessage(null), 3000)
     }
   }
 
