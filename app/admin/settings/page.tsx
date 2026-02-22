@@ -13,6 +13,14 @@ interface BotSettings {
   closingMessage: string
 }
 
+interface WhatsAppProfile {
+  about: string
+  description: string
+  email: string
+  websites: string
+  profilePictureUrl: string
+}
+
 export default function AdminSettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -30,6 +38,17 @@ export default function AdminSettingsPage() {
   })
   const [isSavingBot, setIsSavingBot] = useState(false)
   const [botMessage, setBotMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+
+  const [whatsappProfile, setWhatsappProfile] = useState<WhatsAppProfile>({
+    about: 'Niñamar',
+    description: 'Accesorios personalizados hechos a mano con amor 💜',
+    email: 'contacto@ninamar.com',
+    websites: 'https://ninamar.com',
+    profilePictureUrl: 'https://ninamar.com/logo.png'
+  })
+  const [isSavingProfile, setIsSavingProfile] = useState(false)
+  const [profileMessage, setProfileMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -110,6 +129,64 @@ export default function AdminSettingsPage() {
       setTimeout(() => setBotMessage(null), 3000)
     }
   }
+
+  const loadWhatsAppProfile = async () => {
+    setIsLoadingProfile(true)
+    try {
+      const response = await fetch('/api/admin/whatsapp/profile')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.profile) {
+          setWhatsappProfile({
+            about: data.profile.about || '',
+            description: data.profile.description || '',
+            email: data.profile.email || '',
+            websites: data.profile.websites?.[0] || '',
+            profilePictureUrl: data.profile.profile_picture_url || ''
+          })
+        }
+      }
+    } catch (err) {
+      console.error('Error cargando perfil de WhatsApp:', err)
+    } finally {
+      setIsLoadingProfile(false)
+    }
+  }
+
+  const saveWhatsAppProfile = async () => {
+    setIsSavingProfile(true)
+    setProfileMessage(null)
+    try {
+      const response = await fetch('/api/admin/whatsapp/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(whatsappProfile)
+      })
+
+      if (response.ok) {
+        setProfileMessage({ type: 'success', text: '✅ Perfil de WhatsApp actualizado (puede tardar unos minutos en reflejarse)' })
+      } else {
+        const data = await response.json()
+        setProfileMessage({ type: 'error', text: `❌ Error: ${data.error || 'Error al actualizar perfil'}` })
+      }
+    } catch (err) {
+      setProfileMessage({ type: 'error', text: '❌ Error al actualizar perfil de WhatsApp' })
+    } finally {
+      setIsSavingProfile(false)
+      setTimeout(() => setProfileMessage(null), 5000)
+    }
+  }
+
+  const handleProfileChange = (field: keyof WhatsAppProfile, value: string) => {
+    setWhatsappProfile(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  useEffect(() => {
+    loadWhatsAppProfile()
+  }, [])
 
   return (
     <div className={styles.page}>
@@ -268,6 +345,99 @@ export default function AdminSettingsPage() {
                 <Save size={20} />
                 {isSavingBot ? 'Guardando...' : 'Guardar Configuración del Bot'}
               </button>
+            </div>
+          </div>
+
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <MessageCircle size={24} />
+              <h2>Perfil de WhatsApp Business</h2>
+            </div>
+
+            <div className={styles.form}>
+              {profileMessage && (
+                <div className={`${styles.alert} ${profileMessage.type === 'success' ? styles.success : styles.error}`}>
+                  {profileMessage.text}
+                </div>
+              )}
+
+              {isLoadingProfile && (
+                <div className={styles.loading}>Cargando perfil actual...</div>
+              )}
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Nombre del Negocio (About)</label>
+                <input
+                  type="text"
+                  value={whatsappProfile.about}
+                  onChange={(e) => handleProfileChange('about', e.target.value)}
+                  className={styles.input}
+                  placeholder="Niñamar"
+                  maxLength={139}
+                />
+                <p className={styles.hint}>Este es el nombre que aparecerá en WhatsApp (máx. 139 caracteres)</p>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Descripción del Negocio</label>
+                <textarea
+                  value={whatsappProfile.description}
+                  onChange={(e) => handleProfileChange('description', e.target.value)}
+                  className={styles.textarea}
+                  placeholder="Accesorios personalizados hechos a mano con amor 💜"
+                  rows={3}
+                  maxLength={512}
+                />
+                <p className={styles.hint}>Descripción visible en el perfil (máx. 512 caracteres)</p>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Email de Contacto</label>
+                <input
+                  type="email"
+                  value={whatsappProfile.email}
+                  onChange={(e) => handleProfileChange('email', e.target.value)}
+                  className={styles.input}
+                  placeholder="contacto@ninamar.com"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Sitio Web</label>
+                <input
+                  type="url"
+                  value={whatsappProfile.websites}
+                  onChange={(e) => handleProfileChange('websites', e.target.value)}
+                  className={styles.input}
+                  placeholder="https://ninamar.com"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>URL de Foto de Perfil</label>
+                <input
+                  type="url"
+                  value={whatsappProfile.profilePictureUrl}
+                  onChange={(e) => handleProfileChange('profilePictureUrl', e.target.value)}
+                  className={styles.input}
+                  placeholder="https://ninamar.com/logo.png"
+                />
+                <p className={styles.hint}>URL pública de la imagen (debe ser cuadrada, mín. 192x192px, formato JPG/PNG)</p>
+              </div>
+
+              <button
+                onClick={saveWhatsAppProfile}
+                disabled={isSavingProfile}
+                className={styles.submitButton}
+              >
+                <Save size={20} />
+                {isSavingProfile ? 'Guardando...' : 'Actualizar Perfil de WhatsApp'}
+              </button>
+
+              <div className={styles.alert} style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #3b82f6' }}>
+                <strong>ℹ️ Nota importante:</strong> Los cambios en el perfil de WhatsApp pueden tardar hasta 24 horas en reflejarse completamente. 
+                La foto de perfil debe ser una URL pública accesible desde internet.
+              </div>
             </div>
           </div>
         </div>

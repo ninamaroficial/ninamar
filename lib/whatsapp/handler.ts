@@ -426,14 +426,14 @@ async function handleProductSelection(session: ConversationSession, input: strin
   }
   await saveSession(session)
   
-  // Enviar todas las imágenes disponibles
+  // Enviar todas las imágenes disponibles en paralelo (primero todas las imágenes)
   if (detail.images && detail.images.length > 0) {
-    for (const imageUrl of detail.images) {
-      await sendImageMessage(session.phone, imageUrl)
-    }
+    await Promise.all(
+      detail.images.map(imageUrl => sendImageMessage(session.phone, imageUrl))
+    )
   }
   
-  // Enviar info del producto
+  // Enviar info del producto después de que todas las imágenes se enviaron
   await sendTextMessage(session.phone, detail.text)
   
   // Botones de acción

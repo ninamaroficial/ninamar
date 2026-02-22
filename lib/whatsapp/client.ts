@@ -222,3 +222,126 @@ export async function getProfilePictureUrl(phone: string): Promise<string | null
     return null
   }
 }
+
+/** Obtener perfil del negocio (nombre, descripción, foto) */
+export async function getBusinessProfile() {
+  try {
+    const { token, phoneNumberId } = getConfig()
+    const url = `${WHATSAPP_API_URL}/${phoneNumberId}/whatsapp_business_profile?fields=about,address,description,email,profile_picture_url,websites,vertical`
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('❌ Error obteniendo perfil del negocio:', error)
+      return null
+    }
+    
+    const data = await response.json()
+    return data?.data?.[0] || null
+  } catch (error) {
+    console.error('❌ Error obteniendo perfil del negocio:', error)
+    return null
+  }
+}
+
+/** Actualizar perfil del negocio (nombre, descripción, etc.) */
+export async function updateBusinessProfile(profileData: {
+  about?: string
+  address?: string
+  description?: string
+  email?: string
+  vertical?: string
+  websites?: string[]
+}) {
+  try {
+    const { token, phoneNumberId } = getConfig()
+    const url = `${WHATSAPP_API_URL}/${phoneNumberId}/whatsapp_business_profile`
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        ...profileData,
+      }),
+    })
+    
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('❌ Error actualizando perfil del negocio:', error)
+      throw new Error(`Error actualizando perfil: ${response.status}`)
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('❌ Error actualizando perfil del negocio:', error)
+    throw error
+  }
+}
+
+/** Subir foto de perfil del negocio */
+export async function uploadBusinessProfilePicture(imageUrl: string) {
+  try {
+    const { token, phoneNumberId } = getConfig()
+    
+    // Primero subir la imagen a WhatsApp Media API
+    const uploadUrl = `${WHATSAPP_API_URL}/${phoneNumberId}/media`
+    
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        file_url: imageUrl,
+        type: 'image/jpeg',
+      }),
+    })
+    
+    if (!uploadResponse.ok) {
+      const error = await uploadResponse.text()
+      console.error('❌ Error subiendo imagen:', error)
+      throw new Error(`Error subiendo imagen: ${uploadResponse.status}`)
+    }
+    
+    const uploadData = await uploadResponse.json()
+    const mediaId = uploadData.id
+    
+    // Ahora actualizar el perfil con la imagen
+    const profileUrl = `${WHATSAPP_API_URL}/${phoneNumberId}/whatsapp_business_profile`
+    
+    const profileResponse = await fetch(profileUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        profile_picture_handle: mediaId,
+      }),
+    })
+    
+    if (!profileResponse.ok) {
+      const error = await profileResponse.text()
+      console.error('❌ Error actualizando foto de perfil:', error)
+      throw new Error(`Error actualizando foto: ${profileResponse.status}`)
+    }
+    
+    return await profileResponse.json()
+  } catch (error) {
+    console.error('❌ Error subiendo foto de perfil del negocio:', error)
+    throw error
+  }
+}
