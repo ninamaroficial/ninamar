@@ -8,6 +8,7 @@ import {
   sendButtonMessage,
   sendListMessage,
   sendDocumentMessage,
+  sendImageMessage,
   markAsRead,
 } from './client'
 import { getSession, saveSession, type ConversationSession, type CartItem } from './session'
@@ -48,7 +49,7 @@ export async function handleIncomingMessage(
     await routeMessage(session, userInput)
   } catch (error) {
     console.error('❌ Error in WhatsApp handler:', error)
-    await sendTextMessage(phone, '😔 Lo siento, ocurrió un error. Escribe *hola* para volver al menú principal.')
+    await sendTextMessage(phone, '😔 Lo siento, ocurrió un error. Escribe *Menú* para volver al menú principal.')
   }
 }
 
@@ -111,7 +112,7 @@ async function routeMessage(session: ConversationSession, input: string) {
     session.state = 'MAIN_MENU'
     session.temp_data = undefined
     await saveSession(session)
-    return sendTextMessage(session.phone, '✅ Operación cancelada. Escribe *hola* para ver el menú.')
+    return sendTextMessage(session.phone, '✅ Operación cancelada. Escribe *Menú* para ver el menú.')
   }
   
   // Routing basado en estado
@@ -163,7 +164,7 @@ async function routeMessage(session: ConversationSession, input: string) {
     
     default:
       // Estado desconocido: enviar menú
-      await sendTextMessage(session.phone, '🤔 No entendí tu mensaje. Escribe *hola* para ver el menú.')
+      await sendTextMessage(session.phone, '🤔 No entendí tu mensaje. Escribe *Menú* para ver el menú.')
       return
   }
 }
@@ -193,7 +194,7 @@ async function sendMainMenu(session: ConversationSession) {
       },
     ],
     'Niñamar ✨',
-    'Escribe "hola" en cualquier momento para volver aquí'
+    'Escribe "Menú" en cualquier momento para volver aquí'
   )
 }
 
@@ -225,12 +226,12 @@ async function handleMainMenu(session: ConversationSession, input: string) {
       return startCheckout(session)
     
     default:
-      // No entendió: decirle al usuario
+      // No entendió: mostrar el menú de nuevo
       await sendTextMessage(
         session.phone,
-        '🤔 No entendí tu mensaje. Por favor selecciona una opción del menú o escribe *hola* para volver al menú principal.'
+        '🤔 No entendí tu mensaje. Aquí está el menú principal:'
       )
-      return
+      return sendMainMenu(session)
   }
 }
 
@@ -266,7 +267,7 @@ async function showCategories(session: ConversationSession) {
 
 async function handleCategorySelection(session: ConversationSession, input: string) {
   if (!input.startsWith('CAT_')) {
-    await sendTextMessage(session.phone, '🤔 Por favor selecciona una categoría de la lista, o escribe *hola* para volver al menú.')
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona una categoría de la lista, o escribe *Menú* para volver.')
     return
   }
   
@@ -289,9 +290,9 @@ async function handleCategorySelection(session: ConversationSession, input: stri
     [
       {
         title: 'Productos',
-        rows: products.map((p: { id: string; name: string; price: number }) => ({
+        rows: products.map((p: { id: string; name: string; price: number; category_name?: string }) => ({
           id: `PROD_${p.id}`,
-          title: p.name,
+          title: p.category_name ? `${p.category_name} - ${p.name}` : p.name,
           description: `$${p.price.toLocaleString('es-CO')}`,
         })),
       },
@@ -317,9 +318,9 @@ async function showAllProducts(session: ConversationSession) {
     const chunk = products.slice(i, i + 10)
     sections.push({
       title: i === 0 ? 'Nuestros Productos' : `Más productos (${i + 1}-${i + chunk.length})`,
-      rows: chunk.map((p: { id: string; name: string; price: number }) => ({
+      rows: products.map((p: { id: string; name: string; price: number; category_name?: string }) => ({
         id: `PROD_${p.id}`,
-        title: p.name,
+        title: p.category_name ? `${p.category_name} - ${p.name}` : p.name,
         description: `$${p.price.toLocaleString('es-CO')}`,
       })),
     })
@@ -335,7 +336,7 @@ async function showAllProducts(session: ConversationSession) {
 
 async function handleProductSelection(session: ConversationSession, input: string) {
   if (!input.startsWith('PROD_')) {
-    await sendTextMessage(session.phone, '🤔 Por favor selecciona un producto de la lista, o escribe *hola* para volver al menú.')
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona un producto de la lista, o escribe *Menú* para volver.')
     return
   }
   
@@ -359,6 +360,11 @@ async function handleProductSelection(session: ConversationSession, input: strin
     }
   }
   await saveSession(session)
+  
+  // Enviar imagen si está disponible
+  if (detail.image) {
+    await sendImageMessage(session.phone, detail.image, detail.name)
+  }
   
   // Enviar info del producto
   await sendTextMessage(session.phone, detail.text)
@@ -521,7 +527,7 @@ async function handleCartAction(session: ConversationSession, input: string) {
       return sendMainMenu(session)
     
     default:
-      await sendTextMessage(session.phone, '🤔 Por favor usa los botones de arriba, o escribe *hola* para volver al menú.')
+      await sendTextMessage(session.phone, '🤔 Por favor usa los botones de arriba, o escribe *Menú* para volver.')
       return
   }
 }

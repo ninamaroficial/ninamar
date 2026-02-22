@@ -27,11 +27,23 @@ interface WhatsAppCategory {
 export async function getCategoriesForWhatsApp(): Promise<WhatsAppCategory[]> {
   const supabase = createAdminClient()
   
-  const { data, error } = await supabase
+  // Primero intentar con is_active = true
+  let { data, error } = await supabase
     .from('categories')
     .select('id, name, slug, description')
     .eq('is_active', true)
     .order('name')
+  
+  // Si no hay resultados, traer todas las categorías sin filtro
+  if (!data || data.length === 0) {
+    const result = await supabase
+      .from('categories')
+      .select('id, name, slug, description')
+      .order('name')
+    
+    data = result.data
+    error = result.error
+  }
   
   if (error) {
     console.error('Error fetching categories for WhatsApp:', error)
