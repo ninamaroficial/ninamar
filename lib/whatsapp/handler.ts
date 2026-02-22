@@ -223,7 +223,7 @@ async function showCategories(session: ConversationSession) {
     [
       {
         title: 'Categorías',
-        rows: categories.map(cat => ({
+        rows: categories.map((cat: { id: string; name: string; description: string | null }) => ({
           id: `CAT_${cat.id}`,
           title: cat.name,
           description: cat.description || undefined,
@@ -257,7 +257,7 @@ async function handleCategorySelection(session: ConversationSession, input: stri
     [
       {
         title: 'Productos',
-        rows: products.map(p => ({
+        rows: products.map((p: { id: string; name: string; price: number }) => ({
           id: `PROD_${p.id}`,
           title: p.name,
           description: `$${p.price.toLocaleString('es-CO')}`,
@@ -285,7 +285,7 @@ async function showAllProducts(session: ConversationSession) {
     const chunk = products.slice(i, i + 10)
     sections.push({
       title: i === 0 ? 'Nuestros Productos' : `Más productos (${i + 1}-${i + chunk.length})`,
-      rows: chunk.map(p => ({
+      rows: chunk.map((p: { id: string; name: string; price: number }) => ({
         id: `PROD_${p.id}`,
         title: p.name,
         description: `$${p.price.toLocaleString('es-CO')}`,
