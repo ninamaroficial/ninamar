@@ -111,22 +111,6 @@ export default function AdminSettingsPage() {
     }
   }
 
-      if (!response.ok) {
-        setError(data.error || 'Error al cambiar la contraseña')
-        return
-      }
-
-      setSuccess('Contraseña actualizada correctamente')
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
-    } catch (error) {
-      setError('Error de conexión')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>
