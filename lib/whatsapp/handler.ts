@@ -901,7 +901,7 @@ async function handleCheckoutEmail(session: ConversationSession, input: string) 
 async function handleCheckoutDocument(session: ConversationSession, input: string) {
   session.customer_document = input.trim()
   session.state = 'CHECKOUT_STATE'
-  session.temp_data = { ...session.temp_data, city_page: 0 }
+  session.temp_data = { ...session.temp_data, city_page: 0, dept_page: 0 }
   await saveSession(session)
   
   await sendTextMessage(
@@ -914,6 +914,13 @@ async function handleCheckoutDocument(session: ConversationSession, input: strin
 async function handleCheckoutState(session: ConversationSession, input: string) {
   const departments = getDepartments()
   let selectedDepartment = ''
+
+  if (input.startsWith('DEPT_NEXT_') || input.startsWith('DEPT_PREV_')) {
+    const page = parseInt(input.split('_').pop() || '0', 10)
+    session.temp_data = { ...session.temp_data, dept_page: Math.max(0, page) }
+    await saveSession(session)
+    return showDepartmentList(session)
+  }
 
   if (input.startsWith('DEPT_')) {
     const deptId = parseInt(input.replace('DEPT_', ''), 10)
@@ -982,27 +989,37 @@ async function handleCheckoutCity(session: ConversationSession, input: string) {
 
 async function showDepartmentList(session: ConversationSession) {
   const departments = getDepartments()
-  
-  const sections = [] as any[]
-  for (let i = 0; i < departments.length; i += 10) {
-    const chunk = departments.slice(i, i + 10)
-    const sectionTitle = i === 0
-      ? 'Departamentos'
-      : `Más deptos (${i + 1}-${i + chunk.length})`
-    sections.push({
-      title: sectionTitle.slice(0, 24),
-      rows: chunk.map((dept) => ({
-        id: `DEPT_${dept.id}`,
-        title: dept.name.substring(0, 24),
-      })),
+  const pageSize = 8
+  const page = session.temp_data?.dept_page || 0
+  const start = page * pageSize
+  const pageDepartments = departments.slice(start, start + pageSize)
+
+  const rows: { id: string; title: string; description?: string }[] = pageDepartments.map((dept) => ({
+    id: `DEPT_${dept.id}`,
+    title: dept.name.substring(0, 24),
+  }))
+
+  if (page > 0) {
+    rows.push({
+      id: `DEPT_PREV_${page - 1}`,
+      title: '⬅️ Anterior',
+      description: 'Ver departamentos anteriores',
     })
   }
-  
+
+  if (start + pageSize < departments.length) {
+    rows.push({
+      id: `DEPT_NEXT_${page + 1}`,
+      title: '➡️ Siguiente',
+      description: 'Ver más departamentos',
+    })
+  }
+
   await sendListMessage(
     session.phone,
     'Selecciona tu departamento:',
     'Ver departamentos',
-    sections
+    [{ title: 'Departamentos', rows }]
   )
 }
 
