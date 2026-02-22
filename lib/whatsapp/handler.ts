@@ -78,12 +78,33 @@ async function routeMessage(session: ConversationSession, input: string) {
   // Comandos globales (funcionan en cualquier estado)
   if (['hola', 'menu', 'menú', 'inicio', 'hi', 'hello', 'hey'].includes(inputLower)) {
     session.state = 'MAIN_MENU'
+    session.temp_data = undefined
     await saveSession(session)
     return sendMainMenu(session)
   }
   
-  if (['carrito', '🛒'].includes(inputLower)) {
+  if (['carrito', '🛒'].includes(inputLower) || input === 'MENU_CART') {
     return showCart(session)
+  }
+  
+  // Botones globales que funcionan desde cualquier estado
+  if (input === 'START_CHECKOUT') {
+    return startCheckout(session)
+  }
+  
+  if (input === 'MENU_CATALOG') {
+    return showAllProducts(session)
+  }
+  
+  if (input === 'MENU_CATEGORIES') {
+    return showCategories(session)
+  }
+  
+  if (input === 'BACK_MENU') {
+    session.state = 'MAIN_MENU'
+    session.temp_data = undefined
+    await saveSession(session)
+    return sendMainMenu(session)
   }
   
   if (inputLower === 'cancelar' || inputLower === 'salir') {
@@ -141,7 +162,9 @@ async function routeMessage(session: ConversationSession, input: string) {
       return handleTrackingEmail(session, input)
     
     default:
-      return sendMainMenu(session)
+      // Estado desconocido: enviar menú
+      await sendTextMessage(session.phone, '🤔 No entendí tu mensaje. Escribe *hola* para ver el menú.')
+      return
   }
 }
 
@@ -198,8 +221,16 @@ async function handleMainMenu(session: ConversationSession, input: string) {
       )
       return
     
+    case 'START_CHECKOUT':
+      return startCheckout(session)
+    
     default:
-      return sendMainMenu(session)
+      // No entendió: decirle al usuario
+      await sendTextMessage(
+        session.phone,
+        '🤔 No entendí tu mensaje. Por favor selecciona una opción del menú o escribe *hola* para volver al menú principal.'
+      )
+      return
   }
 }
 
@@ -235,7 +266,8 @@ async function showCategories(session: ConversationSession) {
 
 async function handleCategorySelection(session: ConversationSession, input: string) {
   if (!input.startsWith('CAT_')) {
-    return showCategories(session)
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona una categoría de la lista, o escribe *hola* para volver al menú.')
+    return
   }
   
   const categoryId = input.replace('CAT_', '')
@@ -303,7 +335,8 @@ async function showAllProducts(session: ConversationSession) {
 
 async function handleProductSelection(session: ConversationSession, input: string) {
   if (!input.startsWith('PROD_')) {
-    return showAllProducts(session)
+    await sendTextMessage(session.phone, '🤔 Por favor selecciona un producto de la lista, o escribe *hola* para volver al menú.')
+    return
   }
   
   const productId = input.replace('PROD_', '')
@@ -372,7 +405,8 @@ async function handleProductAction(session: ConversationSession, input: string) 
       return sendMainMenu(session)
     
     default:
-      return sendMainMenu(session)
+      await sendTextMessage(session.phone, '🤔 Por favor usa los botones de arriba, o escribe *hola* para volver al menú.')
+      return
   }
 }
 
@@ -487,7 +521,8 @@ async function handleCartAction(session: ConversationSession, input: string) {
       return sendMainMenu(session)
     
     default:
-      return showCart(session)
+      await sendTextMessage(session.phone, '🤔 Por favor usa los botones de arriba, o escribe *hola* para volver al menú.')
+      return
   }
 }
 

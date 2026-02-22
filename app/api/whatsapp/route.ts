@@ -26,6 +26,22 @@ export async function GET(request: NextRequest) {
  * WhatsApp Webhook Messages (POST)
  * Meta envía un POST con cada mensaje recibido
  */
+
+// Cache simple para deduplicar mensajes (evita procesar el mismo mensaje 2 veces)
+const processedMessages = new Set<string>()
+const MAX_CACHE_SIZE = 500
+
+function isProcessed(messageId: string): boolean {
+  if (processedMessages.has(messageId)) return true
+  if (processedMessages.size >= MAX_CACHE_SIZE) {
+    // Limpiar los más viejos (convertir a array, quitar la mitad)
+    const arr = Array.from(processedMessages)
+    arr.slice(0, MAX_CACHE_SIZE / 2).forEach(id => processedMessages.delete(id))
+  }
+  processedMessages.add(messageId)
+  return false
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -35,7 +51,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid webhook' }, { status: 400 })
     }
     
-    // Procesar en background para responder rápido a Meta (requiere <5s)
     const entries = body.entry || []
     
     for (const entry of entries) {
@@ -48,17 +63,28 @@ export async function POST(request: NextRequest) {
         const messages = value.messages || []
         const contacts = value.contacts || []
         
+        // Ignorar si solo hay statuses (no son mensajes reales)
+        if (messages.length === 0) continue
+        
         for (let i = 0; i < messages.length; i++) {
           const message = messages[i]
           const contact = contacts[i] || contacts[0]
           
+          // Deduplicar: no procesar el mismo mensaje dos veces
+          if (isProcessed(message.id)) {
+            console.log(`⏭️ Mensaje duplicado ignorado: ${message.id}`)
+            continue
+          }
+          
           // Importar dinámicamente para evitar problemas de carga circular
           const { handleIncomingMessage } = await import('@/lib/whatsapp/handler')
           
-          // Procesar mensaje sin bloquear la respuesta
-          handleIncomingMessage(message, contact, value.metadata).catch((err: Error) => {
+          // Procesar mensaje y ESPERAR a que termine (evita race conditions)
+          try {
+            await handleIncomingMessage(message, contact, value.metadata)
+          } catch (err) {
             console.error('❌ Error processing WhatsApp message:', err)
-          })
+          }
         }
       }
     }
