@@ -97,7 +97,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                       loading={index < 2 && idx === 0 ? "eager" : "lazy"}
                       quality={75}
                       placeholder="blur"
-                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
                     />
                   </div>
                 ))
@@ -162,7 +162,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 loading={index < 3 ? "eager" : "lazy"}
                 quality={80}
                 placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             ) : (
               <div className={styles.imagePlaceholder}>
