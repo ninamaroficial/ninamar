@@ -15,6 +15,7 @@ import {
 import { getSession, saveSession, type ConversationSession, type CartItem } from './session'
 import { getProductsForWhatsApp, getCategoriesForWhatsApp, getProductsByCategory, formatProductDetail } from './catalog'
 import { createWhatsAppOrder, getOrderStatus } from './orders'
+import { BOT_CONFIG } from './config'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://niñamar.com'
 
@@ -65,7 +66,7 @@ export async function handleIncomingMessage(
     await routeMessage(session, userInput)
   } catch (error) {
     console.error('❌ Error in WhatsApp handler:', error)
-    await sendTextMessage(phone, '😔 Lo siento, ocurrió un error. Escribe *Menú* para volver al menú principal.')
+    await sendTextMessage(phone, BOT_CONFIG.errorMessage)
   }
 }
 

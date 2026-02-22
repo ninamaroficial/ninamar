@@ -32,6 +32,7 @@ interface SessionData {
   customer_city?: string
   customer_state?: string
   last_activity: string
+  profile_picture_url?: string
 }
 
 export default function WhatsAppConversationPage({ 
