@@ -9,7 +9,8 @@ import {
   Settings, 
   Sliders, 
   LogOut,
-  Folder
+  Folder,
+  MessageCircle
 } from 'lucide-react'
 import styles from './AdminNav.module.css'
 
@@ -62,6 +63,14 @@ export default function AdminNav() {
       >
         <Mail size={20} />
         Newsletter
+      </Link>
+
+      <Link
+        href="/admin/whatsapp"
+        className={`${styles.navLink} ${pathname?.startsWith('/admin/whatsapp') ? styles.navLinkActive : ''}`}
+      >
+        <MessageCircle size={20} />
+        Chats WhatsApp
       </Link>
 
       <Link 

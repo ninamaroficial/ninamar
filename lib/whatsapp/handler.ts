@@ -10,6 +10,7 @@ import {
   sendDocumentMessage,
   sendImageMessage,
   markAsRead,
+  getProfilePictureUrl,
 } from './client'
 import { getSession, saveSession, type ConversationSession, type CartItem } from './session'
 import { getProductsForWhatsApp, getCategoriesForWhatsApp, getProductsByCategory, formatProductDetail } from './catalog'
@@ -34,6 +35,21 @@ export async function handleIncomingMessage(
   
   // Obtener sesión del usuario
   const session = await getSession(phone)
+  
+  // Obtener y guardar foto de perfil si no la tenemos
+  if (!session.profile_picture_url) {
+    const profilePicUrl = await getProfilePictureUrl(phone)
+    if (profilePicUrl) {
+      session.profile_picture_url = profilePicUrl
+      await saveSession(session)
+    }
+  }
+  
+  // ✅ Si está en modo manual, no procesar con el bot
+  if (session.mode === 'manual') {
+    console.log(`💬 Sesión en modo manual, bot no responderá: ${phone}`)
+    return
+  }
   
   // Guardar nombre si es la primera vez
   if (!session.customer_name && contactName) {

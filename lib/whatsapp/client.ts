@@ -3,6 +3,8 @@
  * Funciones para enviar mensajes a través de la API de WhatsApp Cloud
  */
 
+import { saveOutgoingMessage } from './messages'
+
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v21.0'
 
 function getConfig() {
@@ -41,12 +43,17 @@ async function sendRequest(endpoint: string, body: any) {
 
 /** Enviar texto simple */
 export async function sendTextMessage(to: string, text: string) {
-  return sendRequest('messages', {
+  const result = await sendRequest('messages', {
     messaging_product: 'whatsapp',
     to,
     type: 'text',
     text: { body: text },
   })
+  
+  // Guardar mensaje saliente
+  await saveOutgoingMessage(to, text, true, 'text')
+  
+  return result
 }
 
 /** Enviar mensaje con botones (máx. 3 botones) */
@@ -80,7 +87,13 @@ export async function sendButtonMessage(
     message.interactive.footer = { text: footerText }
   }
   
-  return sendRequest('messages', message)
+  const result = await sendRequest('messages', message)
+  
+  // Guardar mensaje saliente
+  const buttonTitles = buttons.map(b => b.title).join(', ')
+  await saveOutgoingMessage(to, `${bodyText} [Botones: ${buttonTitles}]`, true, 'button')
+  
+  return result
 }
 
 /** Enviar lista de opciones (máx. 10 items por sección) */
@@ -123,12 +136,17 @@ export async function sendListMessage(
     message.interactive.footer = { text: footerText }
   }
   
-  return sendRequest('messages', message)
+  const result = await sendRequest('messages', message)
+  
+  // Guardar mensaje saliente
+  await saveOutgoingMessage(to, `${bodyText} [Lista interactiva]`, true, 'list')
+  
+  return result
 }
 
 /** Enviar imagen */
 export async function sendImageMessage(to: string, imageUrl: string, caption?: string) {
-  return sendRequest('messages', {
+  const result = await sendRequest('messages', {
     messaging_product: 'whatsapp',
     to,
     type: 'image',
@@ -137,6 +155,11 @@ export async function sendImageMessage(to: string, imageUrl: string, caption?: s
       ...(caption && { caption }),
     },
   })
+  
+  // Guardar mensaje saliente
+  await saveOutgoingMessage(to, caption || '[Imagen]', true, 'image', { imageUrl })
+  
+  return result
 }
 
 /** Enviar documento (PDF) */
@@ -146,7 +169,7 @@ export async function sendDocumentMessage(
   filename: string,
   caption?: string
 ) {
-  return sendRequest('messages', {
+  const result = await sendRequest('messages', {
     messaging_product: 'whatsapp',
     to,
     type: 'document',
@@ -156,6 +179,11 @@ export async function sendDocumentMessage(
       ...(caption && { caption }),
     },
   })
+  
+  // Guardar mensaje saliente
+  await saveOutgoingMessage(to, caption || `[Documento: ${filename}]`, true, 'document', { documentUrl, filename })
+  
+  return result
 }
 
 /** Marcar mensaje como leído */
@@ -165,4 +193,30 @@ export async function markAsRead(messageId: string) {
     status: 'read',
     message_id: messageId,
   })
+}
+
+/** Obtener la foto de perfil del usuario */
+export async function getProfilePictureUrl(phone: string): Promise<string | null> {
+  try {
+    const { token } = getConfig()
+    const url = `${WHATSAPP_API_URL}/${phone}/`
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    
+    if (!response.ok) {
+      console.warn(`⚠️ No se pudo obtener foto de perfil para ${phone}`)
+      return null
+    }
+    
+    const data = await response.json()
+    return data?.data?.[0]?.url || null
+  } catch (error) {
+    console.error('Error obteniendo foto de perfil:', error)
+    return null
+  }
 }
