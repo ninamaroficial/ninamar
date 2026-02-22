@@ -160,16 +160,31 @@ export async function formatProductDetail(productId: string) {
   
   text += `📦 Stock: ${data.stock > 0 ? 'Disponible' : 'Agotado'}\n`
   
-  // Primary image
+  // Recopilar todas las imágenes del producto
+  const allImages: string[] = []
+  
+  // Primero la imagen principal (si existe)
   const primaryImage = (data as any).images?.find((img: any) => img.is_primary)
-  const imageUrl = primaryImage?.image_url || data.image_url
+  if (primaryImage?.image_url) {
+    allImages.push(primaryImage.image_url)
+  } else if (data.image_url) {
+    allImages.push(data.image_url)
+  }
+  
+  // Luego las demás imágenes (máx 10 imágenes por producto)
+  const otherImages = (data as any).images?.filter((img: any) => !img.is_primary) || []
+  otherImages.slice(0, 9).forEach((img: any) => {
+    if (img.image_url && !allImages.includes(img.image_url)) {
+      allImages.push(img.image_url)
+    }
+  })
   
   return {
     id: data.id,
     name: data.name,
     slug: data.slug,
     price,
-    image: imageUrl,
+    images: allImages,
     text,
   }
 }

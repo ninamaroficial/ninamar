@@ -290,11 +290,32 @@ async function handleCategorySelection(session: ConversationSession, input: stri
     [
       {
         title: 'Productos',
-        rows: products.map((p: { id: string; name: string; price: number; category_name?: string }) => ({
-          id: `PROD_${p.id}`,
-          title: p.category_name ? `${p.category_name} - ${p.name}` : p.name,
-          description: `$${p.price.toLocaleString('es-CO')}`,
-        })),
+        rows: products.map((p: { id: string; name: string; price: number; category_name?: string }) => {
+          // Construir título con categoría si cabe en 24 chars
+          let title = p.name
+          if (p.category_name) {
+            const withCategory = `${p.category_name} - ${p.name}`
+            if (withCategory.length <= 24) {
+              title = withCategory
+            } else {
+              // Si no cabe, intentar solo con las primeras 2 letras de categoría
+              const shortWithCategory = `${p.category_name.substring(0, 2)}. ${p.name}`
+              if (shortWithCategory.length <= 24) {
+                title = shortWithCategory
+              }
+              // Si aún no cabe, solo mostrar el nombre truncado
+              title = p.name.substring(0, 24)
+            }
+          } else if (title.length > 24) {
+            title = title.substring(0, 24)
+          }
+          
+          return {
+            id: `PROD_${p.id}`,
+            title,
+            description: `$${p.price.toLocaleString('es-CO')}`,
+          }
+        }),
       },
     ]
   )
@@ -312,17 +333,38 @@ async function showAllProducts(session: ConversationSession) {
   session.temp_data = { source: 'all' }
   await saveSession(session)
   
-  // WhatsApp Lists soportan máx. 10 items por sección
+  // WhatsApp Lists soportan máx. 10 items por sección, títulos máx 24 chars
   const sections = []
   for (let i = 0; i < products.length; i += 10) {
     const chunk = products.slice(i, i + 10)
     sections.push({
       title: i === 0 ? 'Nuestros Productos' : `Más productos (${i + 1}-${i + chunk.length})`,
-      rows: products.map((p: { id: string; name: string; price: number; category_name?: string }) => ({
-        id: `PROD_${p.id}`,
-        title: p.category_name ? `${p.category_name} - ${p.name}` : p.name,
-        description: `$${p.price.toLocaleString('es-CO')}`,
-      })),
+      rows: chunk.map((p: { id: string; name: string; price: number; category_name?: string }) => {
+        // Construir título con categoría si cabe en 24 chars
+        let title = p.name
+        if (p.category_name) {
+          const withCategory = `${p.category_name} - ${p.name}`
+          if (withCategory.length <= 24) {
+            title = withCategory
+          } else {
+            // Si no cabe, intentar solo con las primeras 2 letras de categoría
+            const shortWithCategory = `${p.category_name.substring(0, 2)}. ${p.name}`
+            if (shortWithCategory.length <= 24) {
+              title = shortWithCategory
+            }
+            // Si aún no cabe, solo mostrar el nombre truncado
+            title = p.name.substring(0, 24)
+          }
+        } else if (title.length > 24) {
+          title = title.substring(0, 24)
+        }
+        
+        return {
+          id: `PROD_${p.id}`,
+          title,
+          description: `$${p.price.toLocaleString('es-CO')}`,
+        }
+      }),
     })
   }
   
@@ -356,14 +398,16 @@ async function handleProductSelection(session: ConversationSession, input: strin
       name: detail.name,
       slug: detail.slug,
       price: detail.price,
-      image: detail.image,
+      images: detail.images,
     }
   }
   await saveSession(session)
   
-  // Enviar imagen si está disponible
-  if (detail.image) {
-    await sendImageMessage(session.phone, detail.image, detail.name)
+  // Enviar todas las imágenes disponibles
+  if (detail.images && detail.images.length > 0) {
+    for (const imageUrl of detail.images) {
+      await sendImageMessage(session.phone, imageUrl)
+    }
   }
   
   // Enviar info del producto
