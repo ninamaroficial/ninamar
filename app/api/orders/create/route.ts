@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createOrder } from '@/lib/supabase/orders'
+import { sendOrderConfirmationMessage } from '@/lib/whatsapp/notifications'
 import type { CreateOrderData } from '@/types/order.types'
 
 export async function POST(request: NextRequest) {
@@ -101,6 +102,18 @@ export async function POST(request: NextRequest) {
       order_number: order.order_number,
       total: order.total
     })
+
+    // 📱 Enviar mensaje de confirmación por WhatsApp
+    if (body.customer_phone) {
+      sendOrderConfirmationMessage(
+        body.customer_phone,
+        body.customer_name,
+        order.order_number,
+        order.total
+      ).catch(err => {
+        console.error('Failed to send WhatsApp confirmation message:', err)
+      })
+    }
 
     return NextResponse.json(order)
   } catch (error) {

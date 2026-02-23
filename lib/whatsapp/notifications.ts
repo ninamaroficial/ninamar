@@ -12,6 +12,34 @@ const STATUS_EMOJIS = {
 }
 
 /**
+ * Enviar mensaje de confirmación de orden (cuando se crea)
+ */
+export async function sendOrderConfirmationMessage(
+  phone: string,
+  customerName: string,
+  orderNumber: string,
+  total: number
+) {
+  try {
+    const message = `🎉 *¡Pedido Confirmado!*\n\n` +
+      `Hola ${customerName},\n\n` +
+      `Tu pedido ha sido registrado exitosamente ✅\n\n` +
+      `📋 *Número de pedido:* #${orderNumber}\n` +
+      `💰 *Total:* $${total.toLocaleString('es-CO')}\n\n` +
+      `Tu pedido está siendo preparado y pronto te lo enviaremos. ` +
+      `Te avisaremos cuando esté en camino.\n\n` +
+      `¡Gracias por confiar en Niñamar! 💜`
+
+    await sendTextMessage(phone, message)
+    
+    console.log(`✅ Order confirmation message sent - Order: ${orderNumber}`)
+  } catch (error) {
+    console.error(`❌ Error sending order confirmation message for order ${orderNumber}:`, error)
+    // No lanzar error para no bloquear el flujo principal
+  }
+}
+
+/**
  * Enviar notificación de cambio de estado de orden
  */
 export async function sendOrderStatusNotification(
@@ -78,16 +106,24 @@ export async function sendSatisfactionSurvey(
   orderId: string
 ) {
   try {
+    console.log(`📊 Starting satisfaction survey for order ${orderNumber}, phone: ${phone}`)
+    
     // Actualizar sesión para estar lista para recibir encuesta
     const { getSession, saveSession } = await import('./session')
+    
+    console.log(`📊 Getting session for phone: ${phone}`)
     const session = await getSession(phone)
+    console.log(`📊 Got session, state: ${session.state}`)
     
     session.state = 'SURVEY_RATING'
     session.temp_data = {
       survey_order_id: orderId,
       survey_order_number: orderNumber,
     }
+    
+    console.log(`📊 Saving session with state: SURVEY_RATING`)
     await saveSession(session)
+    console.log(`📊 Session saved successfully`)
     
     const message = 
       `📊 *Encuesta de Satisfacción*\n\n` +
@@ -100,10 +136,12 @@ export async function sendSatisfactionSurvey(
       `⭐ Malo - Escribe *1*\n\n` +
       `Solo escribe el número de tu calificación 😊`
 
+    console.log(`📊 Sending satisfaction survey message to ${phone}`)
     await sendTextMessage(phone, message)
     
-    console.log(`✅ Satisfaction survey sent - Order: ${orderNumber}`)
+    console.log(`✅ Satisfaction survey sent successfully - Order: ${orderNumber}`)
   } catch (error) {
-    console.error(`❌ Error sending satisfaction survey for order ${orderNumber}:`, error)
+    console.error(`❌ Error sending satisfaction survey for order ${orderNumber}:`, error instanceof Error ? error.message : String(error))
+    // No lanzar error para no bloquear el flujo principal
   }
 }

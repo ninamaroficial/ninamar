@@ -134,18 +134,16 @@ export async function PATCH(
           console.error('Failed to send WhatsApp notification:', err)
         })
 
-        // 📊 Si es entregado, programar encuesta de satisfacción después de 30 minutos
+        // 📊 Si es entregado, enviar encuesta de satisfacción inmediatamente
         if (status === 'delivered') {
-          setTimeout(() => {
-            sendSatisfactionSurvey(
-              currentOrder.customer_phone,
-              currentOrder.customer_name,
-              currentOrder.order_number,
-              orderId
-            ).catch(err => {
-              console.error('Failed to send satisfaction survey:', err)
-            })
-          }, 5 * 60 * 1000) // 30 minutos
+          sendSatisfactionSurvey(
+            currentOrder.customer_phone,
+            currentOrder.customer_name,
+            currentOrder.order_number,
+            orderId
+          ).catch(err => {
+            console.error('Failed to send satisfaction survey:', err)
+          })
         }
       }
     }
