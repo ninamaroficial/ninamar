@@ -22,11 +22,16 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://niñamar.com'
 
 /**
  * Punto de entrada principal - procesa cada mensaje entrante
+ * @param message El objeto del mensaje de WhatsApp
+ * @param contact Información del contacto
+ * @param metadata Metadata del webhook
+ * @param isNewChat Indicador de si es un nuevo chat (pasado desde el webhook)
  */
 export async function handleIncomingMessage(
   message: any,
   contact: any,
-  metadata: any
+  metadata: any,
+  isNewChat: boolean = false
 ) {
   const phone = message.from
   const messageId = message.id
@@ -59,6 +64,13 @@ export async function handleIncomingMessage(
   // Guardar nombre si es la primera vez
   if (!session.customer_name && contactName) {
     session.customer_name = contactName
+  }
+
+  // 🎉 Si es el primer mensaje (chat nuevo), mostrar menú de bienvenida
+  if (isNewChat) {
+    console.log(`🎉 Primer mensaje del chat nuevo de ${phone}, mostrando menú de bienvenida`)
+    await sendMainMenu(session)
+    return
   }
 
   // Si estamos esperando comprobante y llega imagen/documento

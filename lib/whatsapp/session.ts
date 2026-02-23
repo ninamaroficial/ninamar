@@ -46,6 +46,84 @@ const DEFAULT_SESSION: Omit<ConversationSession, 'phone' | 'last_activity'> = {
 
 /**
  * Obtener o crear sesión para un número de teléfono.
+ * Retorna tanto la sesión como un indicador de si es nueva.
+ * Usa la tabla `whatsapp_sessions` en Supabase.
+ */
+export async function getSessionWithNewFlag(phone: string): Promise<{
+  session: ConversationSession
+  isNew: boolean
+}> {
+  const supabase = createAdminClient()
+  
+  const { data, error } = await supabase
+    .from('whatsapp_sessions')
+    .select('*')
+    .eq('phone', phone)
+    .single()
+  
+  if (error || !data) {
+    // Crear nueva sesión
+    const newSession: ConversationSession = {
+      ...DEFAULT_SESSION,
+      phone,
+      last_activity: new Date().toISOString(),
+    }
+    
+    await supabase
+      .from('whatsapp_sessions')
+      .upsert({
+        phone,
+        state: newSession.state,
+        cart: newSession.cart,
+        session_data: {},
+        last_activity: newSession.last_activity,
+        mode: 'bot',
+      })
+    
+    return { session: newSession, isNew: true }
+  }
+  
+  // Verificar si la sesión expiró (30 min de inactividad → reset)
+  const lastActivity = new Date(data.last_activity)
+  const now = new Date()
+  const minutesSinceLastActivity = (now.getTime() - lastActivity.getTime()) / 1000 / 60
+  
+  if (minutesSinceLastActivity > 30) {
+    const resetSession: ConversationSession = {
+      ...DEFAULT_SESSION,
+      phone,
+      customer_name: data.session_data?.customer_name,
+      customer_email: data.session_data?.customer_email,
+      customer_phone: data.session_data?.customer_phone,
+      last_activity: now.toISOString(),
+      mode: data.mode || 'bot',
+    } as any
+    
+    await saveSession(resetSession)
+    return { session: resetSession, isNew: false } // No es nueva, solo fue reseteada
+  }
+  
+  const session: ConversationSession = {
+    phone: data.phone,
+    state: data.state,
+    cart: data.cart || [],
+    customer_name: data.session_data?.customer_name,
+    customer_email: data.session_data?.customer_email,
+    customer_document: data.session_data?.customer_document,
+    customer_address: data.session_data?.customer_address,
+    customer_city: data.session_data?.customer_city,
+    customer_state: data.session_data?.customer_state,
+    temp_data: data.session_data?.temp_data,
+    last_activity: data.last_activity,
+    mode: data.mode || 'bot',
+    profile_picture_url: data.session_data?.profile_picture_url,
+  }
+  
+  return { session, isNew: false } // Sesión existente y activa
+}
+
+/**
+ * Obtener o crear sesión para un número de teléfono.
  * Usa la tabla `whatsapp_sessions` en Supabase.
  */
 export async function getSession(phone: string): Promise<ConversationSession> {

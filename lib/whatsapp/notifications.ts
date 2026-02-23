@@ -12,6 +12,36 @@ const STATUS_EMOJIS = {
 }
 
 /**
+ * Notificar al admin sobre un nuevo chat
+ */
+export async function notifyAdminNewChat(
+  phone: string,
+  contactName?: string | null
+) {
+  try {
+    const adminPhone = process.env.ADMIN_WHATSAPP_PHONE || '+573213326705'
+    
+    // Formattear número para visualización
+    const displayPhone = phone.startsWith('57') 
+      ? `+${phone.slice(0, 2)} ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8)}`
+      : phone
+
+    const message = `🆕 *Nuevo Chat Iniciado*\n\n` +
+      `Un cliente ha iniciado un nuevo chat en WhatsApp.\n\n` +
+      `👤 *Nombre:* ${contactName || 'No especificado'}\n` +
+      `📱 *Teléfono:* ${displayPhone}\n\n` +
+      `Accede al admin para responder: ninamar.com/admin/whatsapp`
+
+    await sendTextMessage(adminPhone, message)
+    
+    console.log(`✅ Admin notification sent for new chat - Phone: ${phone}`)
+  } catch (error) {
+    console.error(`❌ Error sending admin notification for new chat:`, error)
+    // No lanzar error para no bloquear el flujo principal
+  }
+}
+
+/**
  * Enviar mensaje de confirmación de orden (cuando se crea)
  */
 export async function sendOrderConfirmationMessage(

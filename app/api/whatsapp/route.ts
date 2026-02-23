@@ -110,13 +110,27 @@ export async function POST(request: NextRequest) {
           const { saveIncomingMessage } = await import('@/lib/whatsapp/messages')
           await saveIncomingMessage(phone, message.id, messageText, messageType as any, messageMetadata)
           
+          // Verificar si es un chat nuevo
+          const { getSessionWithNewFlag } = await import('@/lib/whatsapp/session')
+          const { session, isNew } = await getSessionWithNewFlag(phone)
+          
+          // Notificar al admin si es un nuevo chat
+          if (isNew) {
+            console.log(`🔔 Nuevo chat detectado de ${phone}`)
+            const { notifyAdminNewChat } = await import('@/lib/whatsapp/notifications')
+            // Enviar notificación de forma asincrónica (no bloquear el flujo)
+            notifyAdminNewChat(phone, contact?.profile?.name).catch(err => {
+              console.error('⚠️ Error enviando notificación de nuevo chat:', err)
+            })
+          }
+          
           // Importar dinámicamente para evitar problemas de carga circular
           const { handleIncomingMessage } = await import('@/lib/whatsapp/handler')
           
           // Procesar mensaje y ESPERAR a que termine (evita race conditions)
           try {
             console.log(`🤖 Procesando mensaje con handler...`)
-            await handleIncomingMessage(message, contact, value.metadata)
+            await handleIncomingMessage(message, contact, value.metadata, isNew)
             console.log(`✅ Mensaje procesado exitosamente`)
           } catch (err) {
             console.error('❌ Error processing WhatsApp message:', err instanceof Error ? err.message : err)
