@@ -2,7 +2,7 @@
  * Módulo para gestionar encuestas de satisfacción de órdenes
  */
 
-import { createAdminClient } from './client'
+import { createAdminClient } from './admin'
 
 export interface OrderReview {
   id: string

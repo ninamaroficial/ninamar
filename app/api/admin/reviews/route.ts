@@ -1,13 +1,18 @@
-import { NextResponse } from 'next/server'
-import { verifyAdminAccess } from '@/lib/auth/admin'
+import { NextRequest, NextResponse } from 'next/server'
+import { verifyAdminToken } from '@/lib/auth/admin'
 import { getAllReviews, getReviewsStats } from '@/lib/supabase/reviews'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     // Verificar que el usuario es admin
-    const admin = await verifyAdminAccess()
-    if (!admin) {
+    const token = request.cookies.get('admin_token')?.value
+    if (!token) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    }
+
+    const user = verifyAdminToken(token)
+    if (!user) {
+      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
     const url = new URL(request.url)
