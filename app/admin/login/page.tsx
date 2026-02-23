@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { Lock, Mail } from 'lucide-react'
 import styles from './page.module.css'
 
 export default function AdminLoginPage() {
@@ -44,6 +46,15 @@ export default function AdminLoginPage() {
       <div className={styles.container}>
         <div className={styles.loginBox}>
           <div className={styles.header}>
+            <div className={styles.iconContainer}>
+              <Image 
+                src="/logo.png" 
+                alt="Niñamar Logo" 
+                width={48}
+                height={48}
+                className={styles.logo}
+              />
+            </div>
             <h1 className={styles.title}>Panel de Administración</h1>
             <p className={styles.subtitle}>Niñamar</p>
           </div>
@@ -56,7 +67,10 @@ export default function AdminLoginPage() {
             )}
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Email</label>
+              <label className={styles.label}>
+                <Mail size={16} />
+                Email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -69,7 +83,10 @@ export default function AdminLoginPage() {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Contraseña</label>
+              <label className={styles.label}>
+                <Lock size={16} />
+                Contraseña
+              </label>
               <input
                 type="password"
                 value={password}

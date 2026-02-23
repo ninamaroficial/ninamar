@@ -276,12 +276,63 @@
     cursor: not-allowed;
   }
   
+  @media (max-width: 1024px) {
+    .modal {
+      max-width: 95%;
+    }
+  }
+  
   @media (max-width: 768px) {
+    .overlay {
+      padding: 10px;
+      align-items: flex-end;
+    }
+    
+    .modal {
+      max-height: 95vh;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .header {
+      padding: 16px;
+    }
+    
+    .header h2 {
+      font-size: 20px;
+    }
+    
+    .form {
+      padding: 16px;
+    }
+  
     .grid {
       grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .section {
+      margin-bottom: 24px;
     }
   
     .itemRow {
       grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+    
+    .removeButton {
+      width: 100%;
+      padding: 10px;
+    }
+    
+    .actions {
+      flex-direction: column-reverse;
+      gap: 10px;
+    }
+    
+    .cancelButton,
+    .submitButton {
+      width: 100%;
+      padding: 14px 20px;
     }
   }

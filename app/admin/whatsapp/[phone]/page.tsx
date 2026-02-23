@@ -10,7 +10,9 @@ import {
   ShoppingCart,
   MapPin,
   Mail,
-  Phone
+  Phone,
+  Info,
+  X
 } from 'lucide-react'
 import styles from './page.module.css'
 
@@ -49,6 +51,7 @@ export default function WhatsAppConversationPage({
   const [isSending, setIsSending] = useState(false)
   const [isValidatingPayment, setIsValidatingPayment] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const prevMessagesLengthRef = useRef(0)
 
@@ -58,6 +61,18 @@ export default function WhatsAppConversationPage({
     const interval = setInterval(loadConversation, 5000)
     return () => clearInterval(interval)
   }, [resolvedParams.phone])
+
+  // Prevenir scroll cuando el sidebar está abierto en móvil
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isSidebarOpen])
 
   useEffect(() => {
     // Solo hacer scroll si se agregó un nuevo mensaje
@@ -243,12 +258,39 @@ export default function WhatsAppConversationPage({
               </>
             )}
           </button>
+          
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className={styles.infoButton}
+            title="Información del cliente"
+          >
+            {isSidebarOpen ? <X size={22} /> : <Info size={22} />}
+          </button>
         </div>
       </div>
 
+      {/* Overlay cuando el sidebar está abierto en móvil */}
+      {isSidebarOpen && (
+        <div 
+          className={styles.overlay} 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar con info del cliente */}
       <div className={styles.container}>
-        <div className={styles.sidebar}>
+        <div className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+          <div className={styles.sidebarHeader}>
+            <h2>Información</h2>
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className={styles.sidebarClose}
+              title="Cerrar"
+            >
+              <X size={20} />
+            </button>
+          </div>
+          
           <div className={styles.sidebarSection}>
             <h3>Información del Cliente</h3>
             {session.customer_email && (

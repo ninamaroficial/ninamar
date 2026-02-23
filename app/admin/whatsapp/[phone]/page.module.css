@@ -87,6 +87,52 @@
 .headerActions {
   display: flex;
   gap: 0.625rem;
+  align-items: center;
+}
+
+.infoButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+
+.infoButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.infoButton:active {
+  transform: scale(0.95);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modeToggle {
@@ -148,6 +194,27 @@
   flex-direction: column;
   gap: 1.5rem;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.sidebarHeader {
+  display: none;
+}
+
+.sidebarClose {
+  background: none;
+  border: none;
+  color: #3b4a54;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebarClose:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .sidebarSection {
@@ -511,7 +578,52 @@
   }
 
   .sidebar {
-    display: none;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    bottom: 0;
+    width: 85%;
+    max-width: 320px;
+    z-index: 999;
+    transition: right 0.3s ease;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.2);
+    padding-top: 0;
+  }
+
+  .sidebar.sidebarOpen {
+    right: 0;
+  }
+
+  .sidebarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, #00a884 0%, #008069 100%);
+    color: white;
+    margin: 0 -1.5rem 1rem -1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .sidebarHeader h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .sidebarClose {
+    color: white;
+  }
+
+  .sidebarClose:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .infoButton {
+    display: flex;
   }
 
   .message {
@@ -519,8 +631,8 @@
   }
 
   .headerActions {
-    flex-direction: column;
-    gap: 0.25rem;
+    flex-direction: row;
+    gap: 0.5rem;
   }
 
   .modeToggle {
@@ -528,8 +640,12 @@
     padding: 0.375rem 0.75rem;
   }
 
+  .modeToggle span {
+    display: none;
+  }
+
   .modeToggle svg {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
   }
 }

@@ -107,7 +107,7 @@ async function routeMessage(session: ConversationSession, input: string) {
   const inputLower = input.toLowerCase().trim()
   
   // Comandos globales (funcionan en cualquier estado)
-  if (['hola', 'menu', 'menú', 'inicio', 'hi', 'hello', 'hey'].includes(inputLower)) {
+  if (['hola', 'menu', 'menú', 'inicio', 'hi', 'hello', 'hey', 'Hola, quiero conocer los productos de Niñamar ❤️'].includes(inputLower)) {
     session.state = 'MAIN_MENU'
     session.temp_data = undefined
     await saveSession(session)

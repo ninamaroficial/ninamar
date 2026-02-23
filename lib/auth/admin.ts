@@ -33,9 +33,9 @@ export async function verifyAdminCredentials(
   email: string, 
   password: string
 ): Promise<AdminData | null> {
-  const supabase = createAdminClient()
-  
   try {
+    const supabase = createAdminClient()
+    
     // Buscar admin por email
     const { data: admin, error } = await supabase
       .from('admins')
@@ -67,7 +67,7 @@ export async function verifyAdminCredentials(
     const { password_hash, ...adminData } = admin
     
     return adminData as AdminData
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error verifying credentials:', error)
     return null
   }

@@ -1,5 +1,6 @@
 const phone = "573005469257"
-const presetMessage = encodeURIComponent("Hola, quisiera más información sobre Niñamar ✨")
+const presetMessage = encodeURIComponent("Hola, quiero conocer los productos de Niñamar ❤️")
+
 const whatsappUrl = `https://wa.me/${phone}?text=${presetMessage}`
 
 export default function WhatsAppButton() {

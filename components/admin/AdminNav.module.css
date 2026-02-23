@@ -35,6 +35,26 @@
   background: #ffffff;
 }
 
+/* Botón hamburguesa (solo móvil) */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 2px solid #8e4603;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: #8e4603;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hamburger:hover {
+  background: #ffeafdff;
+}
+
+.hamburger:active {
+  transform: scale(0.95);
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -129,16 +149,137 @@
   transform: translateY(-1px);
 }
 
-@media (max-width: 768px) {
+/* Overlay para móvil */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .navWrap {
+    gap: 1rem;
+  }
+  
   .nav {
+    gap: 0.375rem;
+  }
+  
+  .navLink {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8125rem;
+  }
+  
+  .logoutButton {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 968px) {
+  /* Mostrar botón hamburguesa */
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Overlay visible cuando el menú está abierto */
+  .overlay {
+    display: block;
+  }
+  
+  .navWrap {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .brandRow {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .brandLogo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Menú como drawer lateral */
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #ffdd31ef;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 5rem 1.5rem 1.5rem;
+    gap: 0.75rem;
+    overflow-y: auto;
+    z-index: 999;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .navOpen {
+    right: 0;
+  }
+  
+  .navLink {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    justify-content: flex-start;
+    font-size: 0.9375rem;
+  }
+  
+  .navLink::after {
+    display: none;
+  }
+  
+  .logoutButton {
     width: 100%;
     justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding: 0.875rem 1rem;
+    margin-top: auto;
+    border: 2px solid #f2c4b6;
   }
+}
 
-  .navLink,
+@media (max-width: 640px) {
+  .nav {
+    width: 85%;
+    max-width: 280px;
+    padding: 4.5rem 1.25rem 1.25rem;
+  }
+  
+  .navLink {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+  
+  .navLink svg {
+    width: 18px;
+    height: 18px;
+  }
+  
   .logoutButton {
-    white-space: nowrap;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
   }
 }

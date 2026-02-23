@@ -374,3 +374,97 @@
 .deleteImageButton:hover {
   background: #cc0000;
 }
+/* Responsive */
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .toolbarGroup {
+    padding-right: 6px;
+  }
+  
+  .toolbarButton {
+    min-width: 32px;
+    height: 32px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .previewButton {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .editorArea {
+    min-height: 300px;
+    max-height: 500px;
+  }
+  
+  .editableContent {
+    padding: 16px;
+    min-height: 300px;
+  }
+  
+  .dialogContent {
+    min-width: 90%;
+    max-width: 90%;
+    padding: 20px;
+    margin: 1rem;
+  }
+  
+  .dialogContent h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .uploadLabel {
+    padding: 24px 16px;
+  }
+  
+  .imageGrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    max-height: 250px;
+  }
+  
+  .thumbnailImage {
+    height: 80px;
+  }
+  
+  .dialogActions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  
+  .cancelButton,
+  .confirmButton {
+    width: 100%;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    gap: 4px;
+    padding: 6px;
+  }
+  
+  .toolbarButton {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .editorArea {
+    min-height: 250px;
+  }
+  
+  .editableContent {
+    padding: 12px;
+    min-height: 250px;
+    font-size: 14px;
+  }
+}

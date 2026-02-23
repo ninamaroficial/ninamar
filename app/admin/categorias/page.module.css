@@ -254,6 +254,13 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
@@ -262,13 +269,31 @@
   .header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .addButton {
+    width: 100%;
+    justify-content: center;
   }
 
   .title {
     font-size: 1.5rem;
   }
+  
+  .subtitle {
+    font-size: 0.875rem;
+  }
 
   .grid {
     grid-template-columns: 1fr;
+  }
+  
+  .cardContent {
+    padding: 1rem;
+  }
+  
+  .cardActions {
+    padding: 0.875rem 1rem;
   }
 }

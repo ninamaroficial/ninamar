@@ -211,3 +211,105 @@
 .summary strong {
   color: #667eea;
 }
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .header {
+    margin-bottom: 16px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .subtitle {
+    font-size: 13px;
+  }
+  
+  .typeOption {
+    padding: 12px;
+  }
+  
+  .optionContent {
+    gap: 10px;
+  }
+  
+  .optionContent svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .optionTitle {
+    font-size: 15px;
+  }
+  
+  .optionDesc {
+    font-size: 12px;
+  }
+  
+  .searchBar {
+    gap: 10px;
+  }
+  
+  .bulkActions {
+    flex-wrap: wrap;
+  }
+  
+  .bulkButton {
+    flex: 1;
+    min-width: calc(50% - 4px);
+  }
+  
+  .list {
+    max-height: 350px;
+  }
+  
+  .subscriberItem {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  
+  .subscriberEmail {
+    font-size: 13px;
+  }
+  
+  .subscriberName {
+    font-size: 11px;
+  }
+  
+  .summary {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .title {
+    font-size: 15px;
+  }
+  
+  .optionTitle {
+    font-size: 14px;
+  }
+  
+  .bulkButton {
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  .subscriberItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .checkbox {
+    align-self: flex-start;
+  }
+}
