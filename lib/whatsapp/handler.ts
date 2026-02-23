@@ -991,8 +991,35 @@ async function showDepartmentList(session: ConversationSession) {
   const departments = getDepartments()
   const pageSize = 8
   const page = session.temp_data?.dept_page || 0
-  const start = page * pageSize
-  const pageDepartments = departments.slice(start, start + pageSize)
+
+  const popularDepartments = [
+    'Cauca',
+    'Valle del Cauca',
+    'Nariño',
+    'Antioquia',
+    'Cundinamarca',
+    'Bogotá D.C.',
+    'Atlántico',
+    'Santander',
+  ]
+
+  const sortedDepartments = [...departments].sort((a, b) =>
+    a.name.localeCompare(b.name, 'es-CO')
+  )
+
+  const popularList = popularDepartments
+    .map(name => departments.find(d => d.name === name))
+    .filter(Boolean) as { id: number; name: string }[]
+
+  const popularNames = new Set(popularList.map(d => d.name))
+  const alphabeticList = sortedDepartments.filter(d => !popularNames.has(d.name))
+
+  const combinedList = page === 0
+    ? [...popularList, ...alphabeticList]
+    : alphabeticList
+
+  const offset = page === 0 ? 0 : (page - 1) * pageSize
+  const pageDepartments = combinedList.slice(offset, offset + pageSize)
 
   const rows: { id: string; title: string; description?: string }[] = pageDepartments.map((dept) => ({
     id: `DEPT_${dept.id}`,
@@ -1007,7 +1034,8 @@ async function showDepartmentList(session: ConversationSession) {
     })
   }
 
-  if (start + pageSize < departments.length) {
+  const remainingCount = combinedList.length - (offset + pageSize)
+  if (remainingCount > 0) {
     rows.push({
       id: `DEPT_NEXT_${page + 1}`,
       title: '➡️ Siguiente',
@@ -1029,8 +1057,35 @@ async function showCityList(session: ConversationSession) {
   const cities = getCitiesByDepartment(session.customer_state)
   const pageSize = 8
   const page = session.temp_data?.city_page || 0
-  const start = page * pageSize
-  const pageCities = cities.slice(start, start + pageSize)
+  const popularCitiesByDepartment: Record<string, string[]> = {
+    'Cauca': ['Popayán', 'Santander de Quilichao', 'Puerto Tejada', 'Piendamó', 'El Tambo', 'Patía', 'Guachené', 'Timbío'],
+    'Valle del Cauca': ['Cali', 'Palmira', 'Buenaventura', 'Tuluá', 'Buga', 'Cartago', 'Jamundí', 'Yumbo'],
+    'Nariño': ['Pasto', 'Tumaco', 'Ipiales', 'Túquerres', 'Samaniego', 'La Unión', 'Sandoná', 'Barbacoas'],
+    'Antioquia': ['Medellín', 'Bello', 'Itagüí', 'Envigado', 'Rionegro', 'Apartadó', 'Turbo', 'Sabaneta'],
+    'Cundinamarca': ['Soacha', 'Zipaquirá', 'Chía', 'Facatativá', 'Girardot', 'Fusagasugá', 'Madrid', 'Mosquera'],
+    'Bogotá D.C.': ['Bogotá D.C.'],
+    'Atlántico': ['Barranquilla', 'Soledad', 'Malambo', 'Puerto Colombia', 'Galapa', 'Sabanalarga', 'Sabanagrande', 'Baranoa'],
+    'Santander': ['Bucaramanga', 'Floridablanca', 'Girón', 'Piedecuesta', 'Barrancabermeja', 'San Gil', 'Socorro', 'Rionegro'],
+  }
+
+  const sortedCities = [...cities].sort((a, b) =>
+    a.name.localeCompare(b.name, 'es-CO')
+  )
+
+  const popularCityNames = popularCitiesByDepartment[session.customer_state] || []
+  const popularCityList = popularCityNames
+    .map(name => cities.find(c => c.name === name))
+    .filter(Boolean) as { id: number; name: string }[]
+
+  const popularCitySet = new Set(popularCityList.map(c => c.name))
+  const alphabeticCities = sortedCities.filter(c => !popularCitySet.has(c.name))
+
+  const combinedCities = page === 0
+    ? [...popularCityList, ...alphabeticCities]
+    : alphabeticCities
+
+  const offset = page === 0 ? 0 : (page - 1) * pageSize
+  const pageCities = combinedCities.slice(offset, offset + pageSize)
 
   const rows: { id: string; title: string; description?: string }[] = pageCities.map((city) => ({
     id: `CITY_${city.id}`,
@@ -1045,7 +1100,8 @@ async function showCityList(session: ConversationSession) {
     })
   }
 
-  if (start + pageSize < cities.length) {
+  const remainingCount = combinedCities.length - (offset + pageSize)
+  if (remainingCount > 0) {
     rows.push({
       id: `CITY_NEXT_${page + 1}`,
       title: '➡️ Siguiente',
@@ -1143,9 +1199,9 @@ async function handleCheckoutConfirm(session: ConversationSession, input: string
         `📋 Número de orden: *${order.order_number}*\n` +
         `💰 Total: *$${order.total.toLocaleString('es-CO')}*\n\n` +
         `Para continuar, realiza el pago en una de estas cuentas:\n\n` +
-        `✅ *Nequi:* 300 5469257\n` +
-        `✅ *Bancolombia:* 1234567890\n\n` +
-        `Luego envíanos el *comprobante de pago* aquí mismo (foto o PDF).\n\n` +
+        `✅ *Nequi:* 3187730058\n` +
+        `✅ *Bancolombia:* 868-737560-14\n\n` +
+        `Luego envíanos el *comprobante de pago* aquí mismo (foto).\n\n` +
         `Cuando validemos tu pago, te confirmaremos y enviaremos el correo. 💜`
       )
     } catch (error) {

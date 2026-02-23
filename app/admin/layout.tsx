@@ -26,7 +26,6 @@ export default function AdminLayout({
     <div className={styles.adminLayout}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.logo}>Niñamar Admin</h1>
           <AdminNav />
         </div>
       </header>

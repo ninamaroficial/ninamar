@@ -66,7 +66,7 @@ export default function NuevaPersonalizacionPage() {
 
       const option = await response.json()
       alert('Opción creada exitosamente. Ahora puedes agregar valores.')
-      router.push(`/admin/personalizaciones/${option.id}`)
+      router.push(`/admin/customizations/${option.id}`)
     } catch (error: any) {
       console.error('Error:', error)
       alert(error.message || 'Error al crear opción')

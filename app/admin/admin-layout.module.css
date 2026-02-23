@@ -4,16 +4,16 @@
 }
 
 .header {
-  background: #ffffff;
-  border-bottom: 2px solid #f1f5f9;
+  background: #ffdd31ef;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .headerContent {
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 1rem 2rem;
   display: flex;
@@ -28,7 +28,7 @@
   color: #0f172a;
   margin: 0;
   font-family: var(--font-title);
-   background-color: #ffb3f9;
+  background-color: #ffb3f9;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
