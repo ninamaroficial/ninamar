@@ -145,7 +145,7 @@ export async function PATCH(
             ).catch(err => {
               console.error('Failed to send satisfaction survey:', err)
             })
-          }, 30 * 60 * 1000) // 30 minutos
+          }, 5 * 60 * 1000) // 30 minutos
         }
       }
     }

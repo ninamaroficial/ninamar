@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, use } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { 
   ArrowLeft, 
@@ -12,7 +13,8 @@ import {
   Mail,
   Phone,
   Info,
-  X
+  X,
+  RefreshCw
 } from 'lucide-react'
 import styles from './page.module.css'
 
@@ -52,13 +54,21 @@ export default function WhatsAppConversationPage({
   const [isValidatingPayment, setIsValidatingPayment] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [hasMore, setHasMore] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [totalMessages, setTotalMessages] = useState(0)
+  const [expandedImage, setExpandedImage] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const prevMessagesLengthRef = useRef(0)
 
   useEffect(() => {
     loadConversation()
-    // Actualizar cada 5 segundos
-    const interval = setInterval(loadConversation, 5000)
+    // Actualizar cada 2 segundos para mejor tiempo real (solo mensajes nuevos)
+    const interval = setInterval(() => {
+      loadNewMessages()
+    }, 2000)
     return () => clearInterval(interval)
   }, [resolvedParams.phone])
 
@@ -82,17 +92,127 @@ export default function WhatsAppConversationPage({
     prevMessagesLengthRef.current = messages.length
   }, [messages])
 
-  const loadConversation = async () => {
+  // Cerrar modal de imagen con tecla ESC
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && expandedImage) {
+        setExpandedImage(null)
+      }
+    }
+    
+    // Bloquear scroll cuando el modal está abierto
+    if (expandedImage) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    window.addEventListener('keydown', handleEscape)
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = 'unset'
+    }
+  }, [expandedImage])
+
+  const loadConversation = async (silentRefresh = false) => {
     try {
-      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}`)
+      if (!silentRefresh) {
+        setIsRefreshing(true)
+      }
+      
+      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}?limit=20&offset=0`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      })
+      
       if (!res.ok) throw new Error('Failed to fetch conversation')
       const data = await res.json()
+      
       setMessages(data.messages)
       setSession(data.session)
+      setHasMore(data.hasMore)
+      setTotalMessages(data.totalMessages)
     } catch (error) {
       console.error('Error loading conversation:', error)
     } finally {
       setIsLoading(false)
+      setIsRefreshing(false)
+    }
+  }
+
+  // Solo cargar mensajes nuevos (sin recargar todo)
+  const loadNewMessages = async () => {
+    try {
+      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}?limit=20&offset=0`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      })
+      
+      if (!res.ok) return
+      const data = await res.json()
+      
+      // Solo actualizar si hay mensajes nuevos
+      if (data.messages.length > 0) {
+        const lastCurrentMessageId = messages[messages.length - 1]?.id
+        const lastNewMessageId = data.messages[data.messages.length - 1]?.id
+        
+        if (lastCurrentMessageId !== lastNewMessageId) {
+          setMessages(prevMessages => {
+            // Mantener mensajes antiguos cargados y agregar nuevos
+            const oldMessages = prevMessages.slice(0, -20)
+            return [...oldMessages, ...data.messages]
+          })
+        }
+      }
+      
+      // Actualizar sesión siempre
+      setSession(data.session)
+      setTotalMessages(data.totalMessages)
+    } catch (error) {
+      console.error('Error loading new messages:', error)
+    }
+  }
+
+  // Cargar mensajes más antiguos
+  const loadMoreMessages = async () => {
+    if (isLoadingMore || !hasMore) return
+    
+    setIsLoadingMore(true)
+    try {
+      const currentOffset = messages.length
+      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}?limit=20&offset=${currentOffset}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      })
+      
+      if (!res.ok) throw new Error('Failed to fetch more messages')
+      const data = await res.json()
+      
+      // Guardar posición del scroll antes de agregar mensajes
+      const container = messagesContainerRef.current
+      const scrollHeightBefore = container?.scrollHeight || 0
+      
+      // Agregar mensajes antiguos al inicio
+      setMessages(prevMessages => [...data.messages, ...prevMessages])
+      setHasMore(data.hasMore)
+      
+      // Restaurar posición del scroll (evitar salto)
+      setTimeout(() => {
+        if (container) {
+          const scrollHeightAfter = container.scrollHeight
+          container.scrollTop = scrollHeightAfter - scrollHeightBefore
+        }
+      }, 0)
+    } catch (error) {
+      console.error('Error loading more messages:', error)
+    } finally {
+      setIsLoadingMore(false)
     }
   }
 
@@ -243,6 +363,15 @@ export default function WhatsAppConversationPage({
 
         <div className={styles.headerActions}>
           <button
+            onClick={() => loadConversation()}
+            className={styles.refreshButton}
+            disabled={isRefreshing}
+            title="Refrescar mensajes"
+          >
+            <RefreshCw size={20} className={isRefreshing ? styles.spinning : ''} />
+          </button>
+          
+          <button
             onClick={toggleMode}
             className={`${styles.modeToggle} ${session.mode === 'manual' ? styles.modeManual : styles.modeBot}`}
           >
@@ -379,7 +508,28 @@ export default function WhatsAppConversationPage({
         {/* Área de mensajes */}
         <div className={styles.chatArea}>
           {/* Mensajes */}
-          <div className={styles.messages}>
+          <div className={styles.messages} ref={messagesContainerRef}>
+            {hasMore && (
+              <div className={styles.loadMoreContainer}>
+                <button 
+                  onClick={loadMoreMessages}
+                  disabled={isLoadingMore}
+                  className={styles.loadMoreButton}
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <RefreshCw size={16} className={styles.spinning} />
+                      Cargando...
+                    </>
+                  ) : (
+                    <>
+                      ⬆️ Ver mensajes anteriores ({totalMessages - messages.length} más)
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+            
             {messages.length === 0 ? (
               <div className={styles.emptyMessages}>
                 <p>📭 No hay mensajes guardados todavía</p>
@@ -401,7 +551,9 @@ export default function WhatsAppConversationPage({
                         <img
                           src={`/api/admin/whatsapp/media/${msg.metadata.media_id}`}
                           alt="Comprobante"
-                          style={{ maxWidth: '240px', borderRadius: '8px', display: 'block' }}
+                          className={styles.messageImage}
+                          onClick={() => setExpandedImage(`/api/admin/whatsapp/media/${msg.metadata.media_id}`)}
+                          title="Click para expandir"
                         />
                         {msg.content && <p className={styles.messageText}>{msg.content}</p>}
                       </div>
@@ -467,6 +619,28 @@ export default function WhatsAppConversationPage({
           )}
         </div>
       </div>
+
+      {/* Modal para expandir imagen - Renderizado con Portal */}
+      {expandedImage && typeof document !== 'undefined' && createPortal(
+        <div className={styles.imageModal} onClick={() => setExpandedImage(null)}>
+          <div className={styles.imageModalContent}>
+            <button
+              className={styles.imageModalClose}
+              onClick={() => setExpandedImage(null)}
+              title="Cerrar (ESC)"
+            >
+              <X size={32} />
+            </button>
+            <img
+              src={expandedImage}
+              alt="Imagen expandida"
+              className={styles.imageModalImage}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

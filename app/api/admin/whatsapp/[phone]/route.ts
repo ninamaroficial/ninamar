@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getConversationMessages } from '@/lib/whatsapp/messages'
+import { getConversationMessages, getConversationMessageCount } from '@/lib/whatsapp/messages'
 import { getSession } from '@/lib/whatsapp/session'
 
 /**
@@ -12,15 +12,21 @@ export async function GET(
 ) {
   try {
     const { phone } = await params
+    const { searchParams } = new URL(request.url)
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const offset = parseInt(searchParams.get('offset') || '0')
     
-    const [messages, session] = await Promise.all([
-      getConversationMessages(phone, 200),
-      getSession(phone)
+    const [messages, session, totalMessages] = await Promise.all([
+      getConversationMessages(phone, limit, offset),
+      getSession(phone),
+      getConversationMessageCount(phone)
     ])
     
     return NextResponse.json({
       phone,
       messages,
+      totalMessages,
+      hasMore: offset + messages.length < totalMessages,
       session: {
         state: session.state,
         mode: session.mode || 'bot',
@@ -31,6 +37,12 @@ export async function GET(
         customer_state: session.customer_state,
         last_activity: session.last_activity,
         temp_data: session.temp_data,
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       }
     })
   } catch (error) {

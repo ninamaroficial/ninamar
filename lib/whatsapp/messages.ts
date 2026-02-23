@@ -52,22 +52,45 @@ export async function saveOutgoingMessage(
   }
 }
 
-export async function getConversationMessages(phone: string, limit: number = 100) {
+export async function getConversationMessages(
+  phone: string, 
+  limit: number = 20,
+  offset: number = 0
+) {
   const supabase = createAdminClient()
 
+  // Obtener mensajes más recientes primero (DESC), luego revertir
   const { data, error } = await supabase
     .from('whatsapp_messages')
     .select('*')
     .eq('phone', phone)
-    .order('timestamp', { ascending: true })
-    .limit(limit)
+    .order('timestamp', { ascending: false })
+    .range(offset, offset + limit - 1)
 
   if (error) {
     console.error('Error fetching messages:', error)
     return []
   }
 
-  return data || []
+  // Revertir para mostrar en orden cronológico (más antiguos arriba)
+  return (data || []).reverse()
+}
+
+// Obtener el total de mensajes de una conversación
+export async function getConversationMessageCount(phone: string): Promise<number> {
+  const supabase = createAdminClient()
+
+  const { count, error } = await supabase
+    .from('whatsapp_messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('phone', phone)
+
+  if (error) {
+    console.error('Error counting messages:', error)
+    return 0
+  }
+
+  return count || 0
 }
 
 export async function getRecentChats(limit: number = 50) {
