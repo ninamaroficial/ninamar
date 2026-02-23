@@ -1,9 +1,20 @@
+"use client"
+
+import { usePathname } from 'next/navigation'
+
 const phone = "573005469257"
 const presetMessage = encodeURIComponent("Hola, quiero conocer los productos de Niñamar ❤️")
 
 const whatsappUrl = `https://wa.me/${phone}?text=${presetMessage}`
 
 export default function WhatsAppButton() {
+  const pathname = usePathname()
+  
+  // Ocultar en rutas de administración
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
+
   return (
     <a
       href={whatsappUrl}

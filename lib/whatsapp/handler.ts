@@ -198,6 +198,15 @@ async function routeMessage(session: ConversationSession, input: string) {
     case 'TRACKING_EMAIL':
       return handleTrackingEmail(session, input)
     
+    case 'SURVEY_RATING':
+      return handleSurveyRating(session, input)
+    
+    case 'SURVEY_COMMENT':
+      return handleSurveyComment(session, input)
+    
+    case 'SURVEY_RECOMMEND':
+      return handleSurveyRecommend(session, input)
+    
     default:
       // Estado desconocido: enviar menú
       await sendTextMessage(session.phone, '🤔 No entendí tu mensaje. Escribe *Menú* para ver el menú.')
@@ -1312,6 +1321,137 @@ async function handleTrackingEmail(session: ConversationSession, input: string) 
   session.state = 'MAIN_MENU'
   session.temp_data = undefined
   await saveSession(session)
+}
+
+// ─── ENCUESTA DE SATISFACCIÓN ────────────────────────────────
+
+async function handleSurveyRating(session: ConversationSession, input: string) {
+  const rating = parseInt(input.trim())
+  
+  if (isNaN(rating) || rating < 1 || rating > 5) {
+    await sendTextMessage(
+      session.phone,
+      '❌ Por favor ingresa un número del 1 al 5 para calificar tu experiencia.\n\n' +
+      '⭐ 5 = Excelente\n' +
+      '⭐ 4 = Muy bueno\n' +
+      '⭐ 3 = Bueno\n' +
+      '⭐ 2 = Regular\n' +
+      '⭐ 1 = Malo'
+    )
+    return
+  }
+  
+  // Guardar calificación en temp_data
+  session.temp_data = {
+    ...session.temp_data,
+    survey_rating: rating,
+  }
+  
+  // Preguntar si quiere dejar un comentario
+  session.state = 'SURVEY_COMMENT'
+  await saveSession(session)
+  
+  const stars = '⭐'.repeat(rating)
+  await sendTextMessage(
+    session.phone,
+    `¡Gracias por tu calificación! ${stars}\n\n` +
+    `¿Te gustaría contarnos más sobre tu experiencia?\n\n` +
+    `Puedes escribir un comentario o simplemente escribe *"saltar"* para continuar.`
+  )
+}
+
+async function handleSurveyComment(session: ConversationSession, input: string) {
+  const comment = input.trim().toLowerCase()
+  
+  // Guardar comentario (o null si es "saltar")
+  if (comment !== 'saltar' && comment !== 'skip' && comment !== 'no') {
+    session.temp_data = {
+      ...session.temp_data,
+      survey_comment: input.trim(),
+    }
+  }
+  
+  // Preguntar si nos recomendaría
+  session.state = 'SURVEY_RECOMMEND'
+  await saveSession(session)
+  
+  await sendButtonMessage(
+    session.phone,
+    '💜 *Última pregunta:*\n\n¿Recomendarías Niñamar a tus amigos y familiares?',
+    [
+      { id: 'SURVEY_YES', title: '✅ Sí, claro' },
+      { id: 'SURVEY_NO', title: '❌ No' },
+    ]
+  )
+}
+
+async function handleSurveyRecommend(session: ConversationSession, input: string) {
+  const would_recommend = input === 'SURVEY_YES'
+  
+  session.temp_data = {
+    ...session.temp_data,
+    survey_would_recommend: would_recommend,
+  }
+  
+  // Guardar encuesta en la base de datos
+  try {
+    const { createOrderReview } = await import('@/lib/supabase/reviews')
+    
+    await createOrderReview({
+      order_id: session.temp_data.survey_order_id,
+      order_number: session.temp_data.survey_order_number,
+      customer_phone: session.phone,
+      customer_name: session.customer_name,
+      rating: session.temp_data.survey_rating,
+      comment: session.temp_data.survey_comment || null,
+      would_recommend: session.temp_data.survey_would_recommend,
+    })
+    
+    console.log(`✅ Survey saved for order ${session.temp_data.survey_order_number}`)
+    
+    // Mensaje de agradecimiento personalizado
+    let thankYouMessage = '🎉 *¡Muchas gracias por tu opinión!*\n\n'
+    
+    if (session.temp_data.survey_rating >= 4) {
+      thankYouMessage += 
+        '¡Nos alegra mucho que hayas disfrutado tu producto! 💜\n\n' +
+        'Tu satisfacción es nuestra mayor recompensa.\n\n'
+      
+      if (would_recommend) {
+        thankYouMessage += 
+          '¿Te gustaría compartir una foto de tu producto en redes sociales? ' +
+          '¡Nos encantaría verlo y compartirlo! 📸✨'
+      }
+    } else {
+      thankYouMessage += 
+        'Lamentamos que tu experiencia no haya sido la mejor. ' +
+        'Tu feedback nos ayuda a mejorar cada día.\n\n' +
+        'Si hay algo específico en lo que podamos ayudarte, ' +
+        'no dudes en escribirnos. Estamos aquí para ti 💜'
+    }
+    
+    await sendTextMessage(session.phone, thankYouMessage)
+    
+  } catch (error) {
+    console.error('Error saving survey:', error)
+    await sendTextMessage(
+      session.phone,
+      '✅ ¡Gracias por tu opinión! Tu feedback es muy valioso para nosotros 💜'
+    )
+  }
+  
+  // Resetear sesión
+  session.state = 'MAIN_MENU'
+  session.temp_data = undefined
+  await saveSession(session)
+  
+  // Enviar menú principal después de un momento
+  setTimeout(() => {
+    sendTextMessage(
+      session.phone,
+      '\n\n¿Hay algo más en lo que pueda ayudarte? Escribe *menú* para ver las opciones 😊'
+    )
+  }, 2000)
 }
 
 // ─── CATÁLOGO PDF ────────────────────────────────────────────

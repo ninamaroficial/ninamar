@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getOrderDetails, updateOrderStatus } from '@/lib/supabase/admin-orders'
 import { createShipment } from '@/lib/supabase/shipments'
 import { sendOrderStatusUpdateEmail } from '@/lib/email/resend'
+import { sendOrderStatusNotification, sendSatisfactionSurvey } from '@/lib/whatsapp/notifications'
 
 // ... resto del código sin cambios ...
 export async function GET(
@@ -120,6 +121,33 @@ export async function PATCH(
       ).catch(err => {
         console.error('Failed to send status update email:', err)
       })
+
+      // 📱 Enviar notificación de WhatsApp
+      if (currentOrder.customer_phone) {
+        sendOrderStatusNotification(
+          currentOrder.customer_phone,
+          currentOrder.customer_name,
+          currentOrder.order_number,
+          status as 'processing' | 'shipped' | 'delivered',
+          status === 'shipped' ? shipmentData : undefined
+        ).catch(err => {
+          console.error('Failed to send WhatsApp notification:', err)
+        })
+
+        // 📊 Si es entregado, programar encuesta de satisfacción después de 30 minutos
+        if (status === 'delivered') {
+          setTimeout(() => {
+            sendSatisfactionSurvey(
+              currentOrder.customer_phone,
+              currentOrder.customer_name,
+              currentOrder.order_number,
+              orderId
+            ).catch(err => {
+              console.error('Failed to send satisfaction survey:', err)
+            })
+          }, 30 * 60 * 1000) // 30 minutos
+        }
+      }
     }
 
     return NextResponse.json(order)
