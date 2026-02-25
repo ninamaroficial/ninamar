@@ -18,7 +18,7 @@ const HowItWorksSection = dynamic(() => import("@/components/home/HowItWorksSect
 
 export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
-  description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.',
+  description: 'Descubre accesorios únicos y personalizados hechos a mano con amor en Popayán, Colombia. Collares, aretes y más. Cada pieza cuenta tu historia.',
   keywords: [
     'accesorios personalizadas',
     'joyas artesanales',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   ].join(', '),
   openGraph: {
     title: 'Niñamar - Accesorios Artesanales Hechos a Mano',
-    description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor en Popayán, Colombia. Collares, pulseras, aretes y más. Cada pieza cuenta tu historia.',
+    description: 'Descubre accesorios únicos y personalizados hechos a mano con amor en Popayán, Colombia. Collares, aretes y más. Cada pieza cuenta tu historia.',
     url: 'https://niñamar.com',
     siteName: 'Niñamar',
     images: [
