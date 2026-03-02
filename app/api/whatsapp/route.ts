@@ -31,6 +31,10 @@ export async function GET(request: NextRequest) {
 const processedMessages = new Set<string>()
 const MAX_CACHE_SIZE = 500
 
+function isBotEnabled(): boolean {
+  return process.env.WHATSAPP_BOT_ENABLED !== 'false'
+}
+
 function isProcessed(messageId: string): boolean {
   if (processedMessages.has(messageId)) return true
   if (processedMessages.size >= MAX_CACHE_SIZE) {
@@ -45,8 +49,12 @@ function isProcessed(messageId: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const botEnabled = isBotEnabled()
     
     console.log('📨 Webhook recibido:', JSON.stringify(body).substring(0, 500))
+    if (!botEnabled) {
+      console.log('⏸️ Bot desactivado por configuración (WHATSAPP_BOT_ENABLED=false).')
+    }
     
     // Validar estructura del webhook
     if (!body.object || body.object !== 'whatsapp_business_account') {
@@ -104,6 +112,13 @@ export async function POST(request: NextRequest) {
             messageMetadata.sha256 = message.document?.sha256
             messageMetadata.filename = filename
           }
+
+          if (message.type === 'audio') {
+            messageText = '[Nota de voz]'
+            messageMetadata.media_id = message.audio?.id
+            messageMetadata.mime_type = message.audio?.mime_type
+            messageMetadata.sha256 = message.audio?.sha256
+          }
           
           console.log(`💾 Guardando mensaje: "${messageText.substring(0, 50)}"`)
           
@@ -124,16 +139,20 @@ export async function POST(request: NextRequest) {
             })
           }
           
-          // Importar dinámicamente para evitar problemas de carga circular
-          const { handleIncomingMessage } = await import('@/lib/whatsapp/handler')
-          
-          // Procesar mensaje y ESPERAR a que termine (evita race conditions)
-          try {
-            console.log(`🤖 Procesando mensaje con handler...`)
-            await handleIncomingMessage(message, contact, value.metadata, isNew)
-            console.log(`✅ Mensaje procesado exitosamente`)
-          } catch (err) {
-            console.error('❌ Error processing WhatsApp message:', err instanceof Error ? err.message : err)
+          if (botEnabled) {
+            // Importar dinámicamente para evitar problemas de carga circular
+            const { handleIncomingMessage } = await import('@/lib/whatsapp/handler')
+            
+            // Procesar mensaje y ESPERAR a que termine (evita race conditions)
+            try {
+              console.log(`🤖 Procesando mensaje con handler...`)
+              await handleIncomingMessage(message, contact, value.metadata, isNew)
+              console.log(`✅ Mensaje procesado exitosamente`)
+            } catch (err) {
+              console.error('❌ Error processing WhatsApp message:', err instanceof Error ? err.message : err)
+            }
+          } else {
+            console.log('⏭️ Mensaje recibido sin respuesta automática (bot desactivado).')
           }
         }
       }

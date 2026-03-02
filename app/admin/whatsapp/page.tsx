@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { MessageCircle, Circle, Bot, User as UserIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { MessageCircle, Circle, Bot, User as UserIcon, Plus, X } from 'lucide-react'
 import styles from './page.module.css'
 
 interface Chat {
@@ -19,9 +20,14 @@ interface Chat {
 }
 
 export default function WhatsAppChatsPage() {
+  const router = useRouter()
   const [chats, setChats] = useState<Chat[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'bot' | 'manual'>('all')
+  const [showNewChatModal, setShowNewChatModal] = useState(false)
+  const [newChatPhone, setNewChatPhone] = useState('')
+  const [newChatName, setNewChatName] = useState('')
+  const [isOpeningChat, setIsOpeningChat] = useState(false)
 
   useEffect(() => {
     loadChats()
@@ -40,6 +46,36 @@ export default function WhatsAppChatsPage() {
       console.error('Error loading chats:', error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleOpenNewChat = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!newChatPhone.trim() || !newChatName.trim()) {
+      alert('Por favor completa el número y el nombre')
+      return
+    }
+
+    const cleanPhone = newChatPhone.replace(/\D/g, '')
+    if (cleanPhone.length < 10) {
+      alert('El número debe tener al menos 10 dígitos')
+      return
+    }
+
+    setIsOpeningChat(true)
+    try {
+      // Navegar al chat
+      router.push(`/admin/whatsapp/${cleanPhone}`)
+      
+      // Reset modal
+      setShowNewChatModal(false)
+      setNewChatPhone('')
+      setNewChatName('')
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al abrir chat')
+      setIsOpeningChat(false)
     }
   }
 
@@ -93,6 +129,15 @@ export default function WhatsAppChatsPage() {
             <h1>Chats de WhatsApp</h1>
             <p>{chats.length} conversaciones</p>
           </div>
+          
+          {/* Botón Plus para nuevo chat */}
+          <button
+            onClick={() => setShowNewChatModal(true)}
+            className={styles.newChatButton}
+            title="Iniciar nuevo chat"
+          >
+            <Plus size={24} />
+          </button>
         </div>
         
         {/* Filtros */}
@@ -117,6 +162,71 @@ export default function WhatsAppChatsPage() {
           </button>
         </div>
       </div>
+
+      {/* Modal para nuevo chat */}
+      {showNewChatModal && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Iniciar Nuevo Chat</h2>
+              <button
+                onClick={() => setShowNewChatModal(false)}
+                className={styles.modalClose}
+                disabled={isOpeningChat}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleOpenNewChat} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label htmlFor="phone">Número de Teléfono</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  placeholder="ej: +57 300 123 4567 o 573001234567"
+                  value={newChatPhone}
+                  onChange={(e) => setNewChatPhone(e.target.value)}
+                  disabled={isOpeningChat}
+                  className={styles.formInput}
+                  autoFocus
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label htmlFor="name">Nombre del Cliente</label>
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="ej: Juan Pérez"
+                  value={newChatName}
+                  onChange={(e) => setNewChatName(e.target.value)}
+                  disabled={isOpeningChat}
+                  className={styles.formInput}
+                />
+              </div>
+              
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  onClick={() => setShowNewChatModal(false)}
+                  className={styles.cancelButton}
+                  disabled={isOpeningChat}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className={styles.submitButton}
+                  disabled={isOpeningChat || !newChatPhone.trim() || !newChatName.trim()}
+                >
+                  {isOpeningChat ? 'Abriendo...' : 'Abrir Chat'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Lista de chats */}
       <div className={styles.chatList}>

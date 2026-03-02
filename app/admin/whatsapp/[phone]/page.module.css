@@ -557,9 +557,15 @@
   background: #f0f2f5;
   padding: 0.75rem 1rem;
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid #d1d7db;
+}
+
+.inputRow {
+  display: flex;
   gap: 0.5rem;
   align-items: center;
-  border-top: 1px solid #d1d7db;
 }
 
 .messageInput {
@@ -581,6 +587,42 @@
 
 .messageInput:disabled {
   background: #f0f2f5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.fileInput {
+  display: none;
+}
+
+.imageButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.imageButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #764ba2 0%, #5a3d82 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.imageButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.imageButton:disabled {
+  background: #d1d7db;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -748,6 +790,81 @@
   opacity: 0.9;
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Preview de imagen antes de enviar */
+.imagePreview {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+  background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+  border-radius: 8px;
+  border: 2px dashed #d1d7db;
+}
+
+.imagePreview img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clearImageButton {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #d32f2f;
+  color: white;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+}
+
+.clearImageButton:hover:not(:disabled) {
+  background: #b71c1c;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.6);
+}
+
+.clearImageButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.clearImageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Audio message player */
+.audioMessage {
+  padding: 0.5rem 0.75rem;
+}
+
+.audioPlayer {
+  width: 100%;
+  max-width: 240px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.audioPlayer::-webkit-media-controls-panel {
+  background: linear-gradient(135deg, #f5f5f5 0%, #f9f9f9 100%);
+}
+
+.audioPlayer::-webkit-media-controls-play-button {
+  background: linear-gradient(135deg, #00a884 0%, #008069 100%);
+  border-radius: 50%;
+  color: white;
 }
 
 /* Modal para expandir imagen */

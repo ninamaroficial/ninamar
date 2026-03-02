@@ -14,7 +14,8 @@ import {
   Phone,
   Info,
   X,
-  RefreshCw
+  RefreshCw,
+  Image as ImageIcon
 } from 'lucide-react'
 import styles from './page.module.css'
 
@@ -50,6 +51,8 @@ export default function WhatsAppConversationPage({
   const [messages, setMessages] = useState<Message[]>([])
   const [session, setSession] = useState<SessionData | null>(null)
   const [newMessage, setNewMessage] = useState('')
+  const [newImageFile, setNewImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isSending, setIsSending] = useState(false)
   const [isValidatingPayment, setIsValidatingPayment] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -61,6 +64,7 @@ export default function WhatsAppConversationPage({
   const [expandedImage, setExpandedImage] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
   const prevMessagesLengthRef = useRef(0)
 
   useEffect(() => {
@@ -253,17 +257,49 @@ export default function WhatsAppConversationPage({
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newMessage.trim() || isSending) return
+    if ((!newMessage.trim() && !newImageFile) || isSending) return
 
     setIsSending(true)
     try {
-      const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}/send`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: newMessage })
-      })
+      // Si hay imagen, enviarla directamente
+      if (newImageFile) {
+        const formData = new FormData()
+        formData.append('file', newImageFile)
+        formData.append('phone', resolvedParams.phone)
+        formData.append('caption', newMessage.trim() || '')
+        
+        const uploadRes = await fetch('/api/admin/whatsapp/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+        
+        if (!uploadRes.ok) {
+          let errorMessage = 'Error al enviar imagen'
+          try {
+            const errorData = await uploadRes.json()
+            errorMessage = errorData.error || errorMessage
+          } catch (e) {
+            // Si no es JSON válido, usar el status text
+            errorMessage = uploadRes.statusText || errorMessage
+            console.error('Response text:', await uploadRes.text())
+          }
+          throw new Error(errorMessage)
+        }
+        
+        setNewImageFile(null)
+        setImagePreview(null)
+      }
+      
+      // Si hay mensaje de texto sin imagen
+      if (newMessage.trim() && !newImageFile) {
+        const res = await fetch(`/api/admin/whatsapp/${resolvedParams.phone}/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: newMessage })
+        })
 
-      if (!res.ok) throw new Error('Failed to send message')
+        if (!res.ok) throw new Error('Failed to send message')
+      }
 
       setNewMessage('')
       // Recargar conversación inmediatamente
@@ -273,9 +309,41 @@ export default function WhatsAppConversationPage({
       setTimeout(() => scrollToBottom(), 100)
     } catch (error) {
       console.error('Error sending message:', error)
-      alert('Error al enviar mensaje')
+      alert('Error al enviar mensaje: ' + (error instanceof Error ? error.message : 'Desconocido'))
     } finally {
       setIsSending(false)
+    }
+  }
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    
+    // Validar que sea imagen
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona una imagen válida')
+      return
+    }
+    
+    // Validar tamaño (máx 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('La imagen debe ser menor a 10MB')
+      return
+    }
+    
+    setNewImageFile(file)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const clearImage = () => {
+    setNewImageFile(null)
+    setImagePreview(null)
+    if (imageInputRef.current) {
+      imageInputRef.current.value = ''
     }
   }
 
@@ -550,12 +618,31 @@ export default function WhatsAppConversationPage({
                       <div>
                         <img
                           src={`/api/admin/whatsapp/media/${msg.metadata.media_id}`}
-                          alt="Comprobante"
+                          alt="Imagen"
                           className={styles.messageImage}
                           onClick={() => setExpandedImage(`/api/admin/whatsapp/media/${msg.metadata.media_id}`)}
                           title="Click para expandir"
                         />
                         {msg.content && <p className={styles.messageText}>{msg.content}</p>}
+                      </div>
+                    ) : msg.message_type === 'image' && msg.metadata?.image_url ? (
+                      <div>
+                        <img
+                          src={msg.metadata.image_url}
+                          alt="Imagen enviada"
+                          className={styles.messageImage}
+                          onClick={() => setExpandedImage(msg.metadata.image_url)}
+                          title="Click para expandir"
+                        />
+                        {msg.content && msg.content !== '[Imagen enviada]' && <p className={styles.messageText}>{msg.content}</p>}
+                      </div>
+                    ) : msg.message_type === 'audio' && msg.metadata?.media_id ? (
+                      <div className={styles.audioMessage}>
+                        <audio
+                          controls
+                          className={styles.audioPlayer}
+                          src={`/api/admin/whatsapp/media/${msg.metadata.media_id}`}
+                        />
                       </div>
                     ) : msg.message_type === 'document' && msg.metadata?.media_id ? (
                       <div>
@@ -588,27 +675,66 @@ export default function WhatsAppConversationPage({
 
           {/* Input de mensaje */}
           <form onSubmit={handleSendMessage} className={styles.inputArea}>
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder={
-                session.mode === 'bot' 
-                  ? '🤖 Bot activo - Cambia a Manual para escribir'
-                  : '💬 Escribe tu mensaje aquí...'
-              }
-              disabled={session.mode === 'bot' || isSending}
-              className={styles.messageInput}
-              autoFocus={session.mode === 'manual'}
-            />
-            <button
-              type="submit"
-              disabled={!newMessage.trim() || session.mode === 'bot' || isSending}
-              className={styles.sendButton}
-              title={session.mode === 'bot' ? 'Cambia a modo manual para enviar' : 'Enviar mensaje'}
-            >
-              <Send size={20} />
-            </button>
+            {/* Preview de imagen */}
+            {imagePreview && (
+              <div className={styles.imagePreview}>
+                <img src={imagePreview} alt="Preview" />
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className={styles.clearImageButton}
+                  disabled={isSending}
+                  title="Eliminar imagen"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            )}
+            
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={
+                  session.mode === 'bot' 
+                    ? '🤖 Bot activo - Cambia a Manual para escribir'
+                    : '💬 Escribe tu mensaje aquí...'
+                }
+                disabled={session.mode === 'bot' || isSending}
+                className={styles.messageInput}
+                autoFocus={session.mode === 'manual'}
+              />
+              
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                disabled={session.mode === 'bot' || isSending}
+                className={styles.fileInput}
+                style={{ display: 'none' }}
+              />
+              
+              <button
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={session.mode === 'bot' || isSending}
+                className={styles.imageButton}
+                title="Adjuntar imagen"
+              >
+                <ImageIcon size={20} />
+              </button>
+              
+              <button
+                type="submit"
+                disabled={(!newMessage.trim() && !newImageFile) || session.mode === 'bot' || isSending}
+                className={styles.sendButton}
+                title={session.mode === 'bot' ? 'Cambia a modo manual para enviar' : 'Enviar mensaje'}
+              >
+                <Send size={20} />
+              </button>
+            </div>
           </form>
           
           {/* Indicador de modo activo */}
