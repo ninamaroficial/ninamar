@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { titleFont, bodyFont } from './fonts'
 import "./globals.css";
 import WhatsAppButton from "@/components/ui/WhatsAppButton"
+import GoogleAnalytics from "@/app/components/GoogleAnalytics"
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://xn--niamar-xwa.com'),
@@ -162,6 +163,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${titleFont.variable} ${bodyFont.variable}`}>
+        <GoogleAnalytics />
         {children}
         <WhatsAppButton />
       </body>

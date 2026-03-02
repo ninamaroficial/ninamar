@@ -5,11 +5,22 @@ import { useSearchParams } from "next/navigation"
 import Container from "@/components/ui/Container"
 import Link from "next/link"
 import { CheckCircle, Package, Mail } from "lucide-react"
+import PurchaseTracking from "@/app/components/PurchaseTracking"
 import styles from "./page.module.css"
 
+type OrderItem = {
+  product_id: string
+  product_name: string
+  quantity: number
+  unit_price: number
+}
+
 type Order = {
+  id?: string
   order_number?: string
   customer_email?: string
+  total?: number
+  items?: OrderItem[]
 }
 
 export default function SuccessClient() {
@@ -40,6 +51,14 @@ export default function SuccessClient() {
 
   return (
     <div className={styles.page}>
+      {orderId && order?.id && order?.total && order?.items ? (
+        <PurchaseTracking
+          orderId={orderId}
+          orderNumber={order.order_number || orderId}
+          total={order.total}
+          items={order.items}
+        />
+      ) : null}
       <Container>
         <div className={styles.content}>
           <div className={styles.iconWrapper}>
