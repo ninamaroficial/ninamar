@@ -82,7 +82,16 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       <article className={styles.card}>
         {/* VERSIÓN MÓVIL: Carrusel con scroll */}
         {isMobile ? (
-          <div className={styles.imageCarousel}>
+          <Link 
+            href={`/productos/${product.slug}/personalizar`}
+            className={styles.imageCarousel}
+            aria-disabled={product.stock === 0}
+            onClick={(e) => {
+              if (product.stock === 0) {
+                e.preventDefault()
+              }
+            }}
+          >
             <div className={styles.imagesWrapper} ref={scrollRef}>
               {images.length > 0 ? (
                 images.map((image, idx) => (
@@ -116,7 +125,9 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                   <button
                     key={idx}
                     className={styles.indicator}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
                       if (scrollRef.current) {
                         scrollRef.current.scrollTo({
                           left: scrollRef.current.offsetWidth * idx,
@@ -142,7 +153,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 Agotado
               </div>
             )}
-          </div>
+          </Link>
         ) : (
           /* VERSIÓN DESKTOP: Imagen con hover y modal */
           <div 

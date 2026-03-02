@@ -104,13 +104,13 @@ export default function AdminNav() {
             Newsletter
           </Link>
 
-          <Link
+          {/* <Link
             href="/admin/whatsapp"
             className={`${styles.navLink} ${pathname?.startsWith('/admin/whatsapp') ? styles.navLinkActive : ''}`}
           >
             <MessageCircle size={20} />
             Chats WhatsApp
-          </Link>
+          </Link> */}
 
           <Link 
             href="/admin/settings" 

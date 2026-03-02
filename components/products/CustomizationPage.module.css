@@ -842,8 +842,10 @@
     z-index: 10001;
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 70vh;
-    overflow-y: auto;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .mobileDrawerOpen {
@@ -907,13 +909,16 @@
 
   .mobileDrawerContent {
     padding: 1.5rem;
+    padding-bottom: 2rem;
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobileDrawerList {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1.5rem;
   }
 
   .mobileDrawerItem {
@@ -977,6 +982,7 @@
     background: linear-gradient(135deg, #ffdb31 0%, #ffc107 100%);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    margin-top: 1rem;
   }
 
   .mobileDrawerTotalRow {
@@ -1056,5 +1062,14 @@
   .mobileDetailsButton {
     padding: 0.625rem 1rem;
     font-size: 0.8125rem;
+  }
+
+  /* Asegurar que el drawer tenga espacio suficiente en pantallas pequeñas */
+  .mobileDrawerContent {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobileDrawer {
+    max-height: 90vh;
   }
 }

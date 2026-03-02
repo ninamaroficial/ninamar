@@ -67,6 +67,10 @@
   position: relative;
   width: 100%;
   background: #f3f4f6;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .imagesWrapper {
