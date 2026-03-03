@@ -14,10 +14,19 @@ interface PurchaseTrackingProps {
   }>
 }
 
+// Declaración de tipos para gtag
+declare global {
+  interface Window {
+    gtag?: (command: string, ...args: any[]) => void;
+  }
+}
+
 export default function PurchaseTracking({ orderId, orderNumber, total, items }: PurchaseTrackingProps) {
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.dataLayer) {
-      // Evento de purchase para Google Ads y GA4
+    if (typeof window === 'undefined') return
+
+    // Evento para Google Tag Manager
+    if (window.dataLayer) {
       window.dataLayer.push({
         event: 'purchase',
         transaction_id: orderId,
@@ -31,10 +40,25 @@ export default function PurchaseTracking({ orderId, orderNumber, total, items }:
         })),
       })
 
-      console.log('✅ Purchase event tracked:', {
+      console.log('✅ GTM Purchase event tracked:', {
         transaction_id: orderId,
         value: total,
         items_count: items.length,
+      })
+    }
+
+    // Evento de conversión para Google Ads
+    if (window.gtag) {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-17848799423',
+        'value': total,
+        'currency': 'COP',
+        'transaction_id': orderId
+      })
+
+      console.log('✅ Google Ads conversion tracked:', {
+        transaction_id: orderId,
+        value: total,
       })
     }
   }, [orderId, total, items])
