@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { X, Plus, Minus, ShoppingCart, ChevronRight, Check, ChevronLeft, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -39,6 +39,7 @@ export default function CustomizationPage({
   const [currentStep, setCurrentStep] = useState(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false) // ✅ Nuevo estado
+  const [isFooterVisible, setIsFooterVisible] = useState(false)
 
   const totalSteps = options.length + 1
 
@@ -134,6 +135,22 @@ export default function CustomizationPage({
 
   const openMobileDrawer = () => setIsDrawerOpen(true)
   const closeMobileDrawer = () => setIsDrawerOpen(false)
+
+  useEffect(() => {
+    const footer = document.querySelector('footer')
+    if (!footer) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting)
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(footer)
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className={styles.page}>
@@ -441,7 +458,12 @@ export default function CustomizationPage({
         </div>
 
  {/* ✅ NUEVO: Resumen flotante móvil */}
-        <div className={styles.mobileSummary} onClick={openMobileDrawer} role="button" aria-label="Ver detalles de personalización">
+        <div
+          className={`${styles.mobileSummary} ${isFooterVisible ? styles.mobileSummaryHidden : ''}`}
+          onClick={openMobileDrawer}
+          role="button"
+          aria-label="Ver detalles de personalización"
+        >
           <div className={styles.mobileSummaryContent}>
             <div className={styles.mobilePriceInfo}>
               <div className={styles.mobilePriceLabel}>Total</div>
