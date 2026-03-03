@@ -137,19 +137,30 @@ export default function CustomizationPage({
   const closeMobileDrawer = () => setIsDrawerOpen(false)
 
   useEffect(() => {
-    const footer = document.querySelector('footer')
-    if (!footer) return
+    const updateMobileSummaryVisibility = () => {
+      const scrollBottom = window.scrollY + window.innerHeight
+      const documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      )
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFooterVisible(entry.isIntersecting)
-      },
-      { threshold: 0.1 }
-    )
+      const isNearBottom = documentHeight - scrollBottom <= 260
+      setIsFooterVisible(isNearBottom)
 
-    observer.observe(footer)
+      if (isNearBottom) {
+        setIsDrawerOpen(false)
+      }
+    }
 
-    return () => observer.disconnect()
+    updateMobileSummaryVisibility()
+
+    window.addEventListener('scroll', updateMobileSummaryVisibility, { passive: true })
+    window.addEventListener('resize', updateMobileSummaryVisibility)
+
+    return () => {
+      window.removeEventListener('scroll', updateMobileSummaryVisibility)
+      window.removeEventListener('resize', updateMobileSummaryVisibility)
+    }
   }, [])
 
   return (
