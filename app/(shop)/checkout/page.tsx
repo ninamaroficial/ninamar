@@ -303,7 +303,25 @@ export default function CheckoutPage() {
       })
 
       if (!preferenceResponse.ok) {
-        throw new Error('Error al crear la preferencia de pago')
+        let errorMessage = 'Error al crear la preferencia de pago'
+        let errorDetails = ''
+
+        try {
+          const errorData = await preferenceResponse.json()
+          if (errorData?.details) {
+            errorMessage = errorData.details
+          } else if (errorData?.error) {
+            errorMessage = errorData.error
+          }
+
+          if (errorData?.validationErrors) {
+            errorDetails = JSON.stringify(errorData.validationErrors)
+          }
+        } catch {
+          errorMessage = `Error HTTP ${preferenceResponse.status} al crear la preferencia de pago`
+        }
+
+        throw new Error(errorDetails ? `${errorMessage} | Validaciones: ${errorDetails}` : errorMessage)
       }
 
       const { initPoint } = await preferenceResponse.json()
@@ -328,7 +346,8 @@ export default function CheckoutPage() {
       console.error('Error processing checkout:', error)
       setIsProcessing(false)
       setIsRedirecting(false)
-      alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.')
+      const message = error instanceof Error ? error.message : 'Hubo un error al procesar tu pedido. Por favor intenta de nuevo.'
+      alert(`No se pudo procesar el pago: ${message}`)
     }
   }
 
