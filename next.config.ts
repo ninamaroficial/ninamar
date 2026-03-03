@@ -85,7 +85,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://vitals.vercel-insights.com https://api.resend.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://googleads.g.doubleclick.net blob:",
+              "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://vitals.vercel-insights.com https://api.resend.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.google.com https://*.google.com blob:",
               "frame-src 'self' https://www.mercadopago.com",
               "object-src 'none'",
               "base-uri 'self'",
