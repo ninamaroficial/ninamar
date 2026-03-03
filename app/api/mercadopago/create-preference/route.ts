@@ -20,6 +20,13 @@ export async function POST(request: NextRequest) {
       throw new Error('SITE_URL no está configurado')
     }
 
+    // 🔍 DIAGNÓSTICO: Verificar si son credenciales de TEST o PRODUCCIÓN
+    const isTestMode = process.env.MERCADOPAGO_ACCESS_TOKEN.startsWith('TEST-')
+    const publicKeyIsTest = process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY?.startsWith('TEST-')
+    console.log('🔑 MODO DE CREDENCIALES:', isTestMode ? '⚠️ TEST (NO FUNCIONA EN PRODUCCIÓN)' : '✅ PRODUCCIÓN')
+    console.log('🔑 Public Key:', publicKeyIsTest ? '⚠️ TEST' : '✅ PRODUCCIÓN')
+    console.log('🌐 SITE_URL:', process.env.SITE_URL)
+
     // Configurar MercadoPago
     const client = new MercadoPagoConfig({ 
       accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
