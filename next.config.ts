@@ -81,11 +81,11 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self' blob:",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://sdk.mercadopago.com https://www.mercadopago.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://www.googletagmanager.com https://googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.google.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://sdk.mercadopago.com https://www.mercadopago.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://www.googletagmanager.com https://googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.google.com https://googleads.g.doubleclick.net https://www.googleadservices.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://vitals.vercel-insights.com https://api.resend.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.google.com https://*.google.com blob:",
+              "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://vitals.vercel-insights.com https://api.resend.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.google.com https://*.google.com https://www.googleadservices.com blob:",
               "frame-src 'self' https://www.mercadopago.com",
               "object-src 'none'",
               "base-uri 'self'",
