@@ -1,12 +1,22 @@
 import { createAdminClient } from './admin'
 
+// Calcular gastos de MercadoPago (3.29% + $800 COP por compra)
+function calculateMercadoPagoFees(subtotal: number): number {
+  return subtotal * 0.0329 + 800
+}
+
+// Calcular ingreso neto (después de gastos de MercadoPago)
+function calculateNetRevenue(subtotal: number): number {
+  return subtotal - calculateMercadoPagoFees(subtotal)
+}
+
 export async function getOrderStats() {
   const supabase = createAdminClient()
 
-  // Total de órdenes por estado
+  // Total de órdenes por estado - Traer subtotal para cálculos precisos
   const { data: orders } = await supabase
     .from('orders')
-    .select('status, payment_status, total, created_at')
+    .select('status, payment_status, subtotal, shipping_cost, payment_method, created_at')
 
   if (!orders) {
     return {
@@ -17,13 +27,40 @@ export async function getOrderStats() {
       shipped_orders: 0,
       delivered_orders: 0,
       total_revenue: 0,
+      net_revenue: 0,
+      mercadopago_fees: 0,
+      shipping_revenue: 0,
       today_orders: 0,
-      today_revenue: 0
+      today_revenue: 0,
+      today_net_revenue: 0
     }
   }
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  // Filtrar órdenes pagadas
+  const paidOrders = orders.filter(o => o.payment_status === 'approved')
+  const paidOrdersToday = orders.filter(o => 
+    o.payment_status === 'approved' && 
+    new Date(o.created_at) >= today
+  )
+
+  // Calcular ingresos brutos (subtotal = precio de productos)
+  const totalGrossRevenue = paidOrders.reduce((sum, o) => sum + Number(o.subtotal || 0), 0)
+  const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => sum + Number(o.subtotal || 0), 0)
+
+  // Calcular gastos de MercadoPago
+  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => sum + calculateMercadoPagoFees(Number(o.subtotal || 0)), 0)
+  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => sum + calculateMercadoPagoFees(Number(o.subtotal || 0)), 0)
+
+  // Calcular ingresos netos (después de comisiones MP)
+  const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees
+  const todayNetRevenue = todayGrossRevenue - todayMercadoPagoFees
+
+  // Calcular ingresos por envío
+  const shippingRevenue = paidOrders.reduce((sum, o) => sum + Number(o.shipping_cost || 0), 0)
+  const todayShippingRevenue = paidOrdersToday.reduce((sum, o) => sum + Number(o.shipping_cost || 0), 0)
 
   const stats = {
     total_orders: orders.length,
@@ -32,16 +69,20 @@ export async function getOrderStats() {
     processing_orders: orders.filter(o => o.status === 'processing').length,
     shipped_orders: orders.filter(o => o.status === 'shipped').length,
     delivered_orders: orders.filter(o => o.status === 'delivered').length,
-    total_revenue: orders
-      .filter(o => o.payment_status === 'approved')
-      .reduce((sum, o) => sum + Number(o.total), 0),
+    
+    // Ingresos totales (lo que el cliente pagó)
+    total_revenue: totalGrossRevenue + shippingRevenue,
+    
+    // Ingreso neto (ingresos - comisiones MP)
+    net_revenue: totalNetRevenue + shippingRevenue,
+    
+    // Desglose de gastos
+    mercadopago_fees: totalMercadoPagoFees,
+    shipping_revenue: shippingRevenue,
+    
     today_orders: orders.filter(o => new Date(o.created_at) >= today).length,
-    today_revenue: orders
-      .filter(o => 
-        o.payment_status === 'approved' && 
-        new Date(o.created_at) >= today
-      )
-      .reduce((sum, o) => sum + Number(o.total), 0)
+    today_revenue: todayGrossRevenue + todayShippingRevenue,
+    today_net_revenue: todayNetRevenue + todayShippingRevenue
   }
 
   return stats

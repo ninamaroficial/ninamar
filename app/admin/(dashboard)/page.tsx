@@ -29,8 +29,12 @@ interface Stats {
   shipped_orders: number
   delivered_orders: number
   total_revenue: number
+  net_revenue: number
+  mercadopago_fees: number
+  shipping_revenue: number
   today_orders: number
   today_revenue: number
+  today_net_revenue: number
 }
 
 interface Order {
@@ -161,9 +165,15 @@ export default function AdminDashboardPage() {
                 <DollarSign size={24} />
               </div>
               <div className={styles.statContent}>
-                <p className={styles.statLabel}>Ingresos Totales</p>
-                <h3 className={styles.statValue}>{formatPrice(stats.total_revenue)}</h3>
-                <p className={styles.statSubtext}>Hoy: {formatPrice(stats.today_revenue)}</p>
+                <p className={styles.statLabel}>Ingresos Netos</p>
+                <h3 className={styles.statValue}>{formatPrice(stats.net_revenue)}</h3>
+                <p className={styles.statSubtext}>
+                  Hoy: {formatPrice(stats.today_net_revenue)}
+                  <br />
+                  <span style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px', display: 'block' }}>
+                    Gastos MP totales: {formatPrice(stats.mercadopago_fees)}
+                  </span>
+                </p>
               </div>
             </div>
 
@@ -172,9 +182,21 @@ export default function AdminDashboardPage() {
                 <Clock size={24} />
               </div>
               <div className={styles.statContent}>
-                <p className={styles.statLabel}>Pendientes</p>
-                <h3 className={styles.statValue}>{stats.pending_orders}</h3>
-                <p className={styles.statSubtext}>Por procesar</p>
+                <p className={styles.statLabel}>Desglose de Ingresos</p>
+                <div style={{ fontSize: '0.85rem', lineHeight: '1.6', marginTop: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <span>Brutos:</span>
+                    <span style={{ fontWeight: 500 }}>{formatPrice(stats.total_revenue)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>
+                    <span>- MP (3.29% + $800):</span>
+                    <span style={{ fontWeight: 500 }}>-{formatPrice(stats.mercadopago_fees)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981', paddingTop: '4px', borderTop: '1px solid #e5e7eb' }}>
+                    <span>= Neto:</span>
+                    <span style={{ fontWeight: 600 }}>{formatPrice(stats.net_revenue)}</span>
+                  </div>
+                </div>
               </div>
             </div>
 
