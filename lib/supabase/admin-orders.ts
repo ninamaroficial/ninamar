@@ -1,13 +1,23 @@
 import { createAdminClient } from './admin'
 
-// Calcular gastos de MercadoPago (3.29% + $800 COP por compra)
-function calculateMercadoPagoFees(subtotal: number): number {
-  return subtotal * 0.0329 + 800
+// Métodos de pago manuales que NO tienen comisión de MercadoPago
+const MANUAL_PAYMENT_METHODS = ['efectivo', 'nequi', 'transferencia', 'daviplata', 'otro']
+
+// Verificar si un método de pago es manual (sin comisión MP)
+function isManualPayment(paymentMethod?: string): boolean {
+  if (!paymentMethod) return false
+  return MANUAL_PAYMENT_METHODS.includes(paymentMethod.toLowerCase())
 }
 
-// Calcular ingreso neto (después de gastos de MercadoPago)
-function calculateNetRevenue(subtotal: number): number {
-  return subtotal - calculateMercadoPagoFees(subtotal)
+// Calcular gastos de MercadoPago (3.29% + $800 COP por compra)
+// Solo aplica para pagos procesados por MercadoPago (tarjetas, PSE, etc.)
+function calculateMercadoPagoFees(subtotal: number, paymentMethod?: string): number {
+  // Si es pago manual (efectivo, nequi, etc.), no hay comisión
+  if (isManualPayment(paymentMethod)) {
+    return 0
+  }
+  // Si es pago por MercadoPago, aplicar comisión
+  return subtotal * 0.0329 + 800
 }
 
 // Obtener subtotal seguro (manejar datos legacy)
@@ -76,9 +86,13 @@ export async function getOrderStats() {
   const totalGrossRevenue = paidOrders.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
   const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
 
-  // Calcular gastos de MercadoPago
-  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => sum + calculateMercadoPagoFees(getSafeSubtotal(o)), 0)
-  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => sum + calculateMercadoPagoFees(getSafeSubtotal(o)), 0)
+  // Calcular gastos de MercadoPago (solo para pagos NO manuales)
+  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => 
+    sum + calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method), 0
+  )
+  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => 
+    sum + calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method), 0
+  )
 
   // Calcular ingresos netos (después de comisiones MP)
   const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees
