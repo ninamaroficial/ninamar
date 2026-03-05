@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: 'Niñamar - Accesorios Personalizados Hechos a Mano | Popayán, Colombia',
   description: 'Descubre accesorios únicos y personalizados hechos a mano con amor en Popayán, Colombia. Collares, aretes y más. Cada pieza cuenta tu historia.',
   keywords: [
-    'accesorios personalizadas',
+    'accesorios personalizados',
     'joyas artesanales',
     'accesorios artesanales',
     'accesorios popayán',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Niñamar - Accesorios Personalizados',
-    description: 'Descubre accesorios únicos y personalizadas hechas a mano con amor.',
+    description: 'Descubre accesorios únicos y personalizados hechos a mano con amor.',
     images: ['https://niñamar.com/icon.png'],
   },
   alternates: {

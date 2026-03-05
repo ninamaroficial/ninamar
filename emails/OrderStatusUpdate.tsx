@@ -226,7 +226,7 @@ export default function OrderStatusUpdateEmail({
           {/* Footer */}
           <Section style={footer}>
             <Text style={footerText}>
-              <strong>Niña Mar</strong> - Joyería Personalizada
+              <strong>Niña Mar</strong> - Accesorios Personalizados
             </Text>
             <Text style={footerText}>
               Popayán, Cauca, Colombia

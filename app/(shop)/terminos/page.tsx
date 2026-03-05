@@ -30,7 +30,7 @@ export default function TerminosPage() {
           <section className={styles.section}>
             <h2 className={styles.heading}>2. Sobre Niñamar</h2>
             <p className={styles.text}>
-              Niñamar es una marca de joyería artesanal personalizada con sede en Popayán, Cauca, Colombia. 
+              Niñamar es una marca de accesorios artesanales personalizados con sede en Popayán, Cauca, Colombia. 
               Nos especializamos en la creación de accesorios únicos hechos a mano.
             </p>
             <div className={styles.contactInfo}>

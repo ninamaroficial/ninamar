@@ -166,7 +166,7 @@ const decorativeImages: DecoItem[] = footerImages.slice(0, DECOR_COUNT).map((src
               </Link>
 
               <p className={styles.brandDescription}>
-                Creando accesorios únicas y personalizadas que cuentan tu historia.
+                Creando accesorios únicos y personalizados que cuentan tu historia.
                 Cada pieza es una obra de arte hecha con amor y dedicación.
               </p>
 

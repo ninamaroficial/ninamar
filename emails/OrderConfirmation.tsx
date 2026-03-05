@@ -74,7 +74,7 @@ export default function OrderConfirmationEmail({
               style={logo}
             />
             <Heading style={headerTitle}>Niña Mar</Heading>
-            <Text style={headerSubtitle}>Joyería Personalizada</Text>
+            <Text style={headerSubtitle}>Accesorios Personalizados</Text>
           </Section>
 
           {/* Confirmación Badge */}
@@ -237,7 +237,7 @@ export default function OrderConfirmationEmail({
           <Section style={footer}>
             <Hr style={footerDivider} />
             <Text style={footerText}>
-              <strong>Niña Mar</strong> - Joyería Personalizada
+              <strong>Niña Mar</strong> - Accesorios Personalizados
             </Text>
             <Text style={footerText}>
               Popayán, Cauca, Colombia

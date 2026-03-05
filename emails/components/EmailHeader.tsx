@@ -21,7 +21,7 @@ export const EmailHeader = ({
           />
         )}
         <h1 style={title}>Niñamar</h1>
-        <p style={subtitle}>accesorios Personalizadas</p>
+        <p style={subtitle}>accesorios Personalizados</p>
       </Column>
     </Section>
   )
