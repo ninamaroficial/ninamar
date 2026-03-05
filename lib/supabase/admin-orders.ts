@@ -65,7 +65,7 @@ export async function getOrderStats() {
       total_revenue: 0,
       net_revenue: 0,
       mercadopago_fees: 0,
-      shipping_revenue: 0,
+      shipping_costs: 0,
       today_orders: 0,
       today_revenue: 0,
       today_net_revenue: 0
@@ -94,13 +94,13 @@ export async function getOrderStats() {
     sum + calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method), 0
   )
 
-  // Calcular ingresos netos (después de comisiones MP)
-  const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees
-  const todayNetRevenue = todayGrossRevenue - todayMercadoPagoFees
+  // Calcular gastos de envío (NO es ingreso, es costo que pagas a transportadora)
+  const shippingCosts = paidOrders.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
+  const todayShippingCosts = paidOrdersToday.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
 
-  // Calcular ingresos por envío
-  const shippingRevenue = paidOrders.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
-  const todayShippingRevenue = paidOrdersToday.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
+  // Calcular ingresos netos (después de comisiones MP y costos de envío)
+  const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees - shippingCosts
+  const todayNetRevenue = todayGrossRevenue - todayMercadoPagoFees - todayShippingCosts
 
   const stats = {
     total_orders: orders.length,
@@ -110,19 +110,19 @@ export async function getOrderStats() {
     shipped_orders: orders.filter(o => o.status === 'shipped').length,
     delivered_orders: orders.filter(o => o.status === 'delivered').length,
     
-    // Ingresos totales (lo que el cliente pagó)
-    total_revenue: totalGrossRevenue + shippingRevenue,
+    // Ingresos brutos (solo productos, sin envíos)
+    total_revenue: totalGrossRevenue,
     
-    // Ingreso neto (ingresos - comisiones MP)
-    net_revenue: totalNetRevenue + shippingRevenue,
+    // Ingreso neto (ingresos - comisiones MP - costos de envío)
+    net_revenue: totalNetRevenue,
     
     // Desglose de gastos
     mercadopago_fees: totalMercadoPagoFees,
-    shipping_revenue: shippingRevenue,
+    shipping_costs: shippingCosts,
     
     today_orders: orders.filter(o => new Date(o.created_at) >= today).length,
-    today_revenue: todayGrossRevenue + todayShippingRevenue,
-    today_net_revenue: todayNetRevenue + todayShippingRevenue
+    today_revenue: todayGrossRevenue,
+    today_net_revenue: todayNetRevenue
   }
 
   return stats

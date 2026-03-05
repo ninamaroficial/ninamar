@@ -31,7 +31,7 @@ interface Stats {
   total_revenue: number
   net_revenue: number
   mercadopago_fees: number
-  shipping_revenue: number
+  shipping_costs: number
   today_orders: number
   today_revenue: number
   today_net_revenue: number
@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
                   Hoy: {formatPrice(stats.today_net_revenue)}
                   <br />
                   <span style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px', display: 'block' }}>
-                    Gastos MP totales: {formatPrice(stats.mercadopago_fees)}
+                    Después de gastos MP + envíos
                   </span>
                 </p>
               </div>
@@ -185,12 +185,16 @@ export default function AdminDashboardPage() {
                 <p className={styles.statLabel}>Desglose de Ingresos</p>
                 <div style={{ fontSize: '0.85rem', lineHeight: '1.6', marginTop: '6px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span>Brutos:</span>
+                    <span>Brutos (productos):</span>
                     <span style={{ fontWeight: 500 }}>{formatPrice(stats.total_revenue)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>
                     <span>- MP (3.29% + $800):</span>
                     <span style={{ fontWeight: 500 }}>-{formatPrice(stats.mercadopago_fees)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>
+                    <span>- Envíos:</span>
+                    <span style={{ fontWeight: 500 }}>-{formatPrice(stats.shipping_costs)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981', paddingTop: '4px', borderTop: '1px solid #e5e7eb' }}>
                     <span>= Neto:</span>
