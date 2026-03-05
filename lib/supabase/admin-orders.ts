@@ -83,20 +83,34 @@ export async function getOrderStats() {
   )
 
   // Calcular ingresos brutos (subtotal = precio de productos)
-  const totalGrossRevenue = paidOrders.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
-  const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
+  const totalGrossRevenue = paidOrders.reduce((sum, o) => {
+    const value = getSafeSubtotal(o)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
+  const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => {
+    const value = getSafeSubtotal(o)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
 
   // Calcular gastos de MercadoPago (solo para pagos NO manuales)
-  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => 
-    sum + calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method), 0
-  )
-  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => 
-    sum + calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method), 0
-  )
+  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => {
+    const value = calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
+  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => {
+    const value = calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
 
   // Calcular gastos de envío (NO es ingreso, es costo que pagas a transportadora)
-  const shippingCosts = paidOrders.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
-  const todayShippingCosts = paidOrdersToday.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
+  const shippingCosts = paidOrders.reduce((sum, o) => {
+    const value = getSafeShippingCost(o)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
+  const todayShippingCosts = paidOrdersToday.reduce((sum, o) => {
+    const value = getSafeShippingCost(o)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
 
   // Calcular ingresos netos (después de comisiones MP y costos de envío)
   const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees - shippingCosts
