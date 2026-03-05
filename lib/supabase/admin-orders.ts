@@ -10,13 +10,39 @@ function calculateNetRevenue(subtotal: number): number {
   return subtotal - calculateMercadoPagoFees(subtotal)
 }
 
+// Obtener subtotal seguro (manejar datos legacy)
+function getSafeSubtotal(order: any): number {
+  // Si existe subtotal, usarlo
+  if (order.subtotal != null && !isNaN(Number(order.subtotal))) {
+    return Number(order.subtotal)
+  }
+  
+  // Si no existe subtotal pero sí shipping_cost, calcular: total - shipping
+  if (order.shipping_cost != null && !isNaN(Number(order.shipping_cost))) {
+    const total = Number(order.total) || 0
+    const shipping = Number(order.shipping_cost)
+    return Math.max(0, total - shipping)
+  }
+  
+  // Si no hay shipping_cost, asumir que todo el total es subtotal
+  return Number(order.total) || 0
+}
+
+// Obtener shipping cost seguro
+function getSafeShippingCost(order: any): number {
+  if (order.shipping_cost != null && !isNaN(Number(order.shipping_cost))) {
+    return Number(order.shipping_cost)
+  }
+  return 0
+}
+
 export async function getOrderStats() {
   const supabase = createAdminClient()
 
-  // Total de órdenes por estado - Traer subtotal para cálculos precisos
+  // Total de órdenes por estado - Traer todos los campos necesarios
   const { data: orders } = await supabase
     .from('orders')
-    .select('status, payment_status, subtotal, shipping_cost, payment_method, created_at')
+    .select('status, payment_status, total, subtotal, shipping_cost, payment_method, created_at')
 
   if (!orders) {
     return {
@@ -47,20 +73,20 @@ export async function getOrderStats() {
   )
 
   // Calcular ingresos brutos (subtotal = precio de productos)
-  const totalGrossRevenue = paidOrders.reduce((sum, o) => sum + Number(o.subtotal || 0), 0)
-  const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => sum + Number(o.subtotal || 0), 0)
+  const totalGrossRevenue = paidOrders.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
+  const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => sum + getSafeSubtotal(o), 0)
 
   // Calcular gastos de MercadoPago
-  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => sum + calculateMercadoPagoFees(Number(o.subtotal || 0)), 0)
-  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => sum + calculateMercadoPagoFees(Number(o.subtotal || 0)), 0)
+  const totalMercadoPagoFees = paidOrders.reduce((sum, o) => sum + calculateMercadoPagoFees(getSafeSubtotal(o)), 0)
+  const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => sum + calculateMercadoPagoFees(getSafeSubtotal(o)), 0)
 
   // Calcular ingresos netos (después de comisiones MP)
   const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees
   const todayNetRevenue = todayGrossRevenue - todayMercadoPagoFees
 
   // Calcular ingresos por envío
-  const shippingRevenue = paidOrders.reduce((sum, o) => sum + Number(o.shipping_cost || 0), 0)
-  const todayShippingRevenue = paidOrdersToday.reduce((sum, o) => sum + Number(o.shipping_cost || 0), 0)
+  const shippingRevenue = paidOrders.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
+  const todayShippingRevenue = paidOrdersToday.reduce((sum, o) => sum + getSafeShippingCost(o), 0)
 
   const stats = {
     total_orders: orders.length,
