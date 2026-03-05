@@ -190,7 +190,7 @@ export default function AdminDashboardPage() {
                     <span style={{ fontWeight: 500 }}>{formatPrice(stats.total_revenue)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>
-                    <span>- MP (3.29% + $800):</span>
+                    <span>- MP (3.29% + IVA + $952):</span>
                     <span style={{ fontWeight: 500 }}>-{formatPrice(stats.mercadopago_fees)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>

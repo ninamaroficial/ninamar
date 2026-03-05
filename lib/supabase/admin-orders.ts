@@ -9,15 +9,18 @@ function isManualPayment(paymentMethod?: string): boolean {
   return MANUAL_PAYMENT_METHODS.includes(paymentMethod.toLowerCase())
 }
 
-// Calcular gastos de MercadoPago (3.29% + $800 COP por compra)
+// Calcular gastos de MercadoPago (3.29% + IVA 19% + $952 fijo)
 // Solo aplica para pagos procesados por MercadoPago (tarjetas, PSE, etc.)
-function calculateMercadoPagoFees(subtotal: number, paymentMethod?: string): number {
+// La comisión se calcula sobre el TOTAL (productos + envío)
+// Fórmula: (Total × 3.29% × 1.19) + $952 = (Total × 0.039151) + $952
+function calculateMercadoPagoFees(total: number, paymentMethod?: string): number {
   // Si es pago manual (efectivo, nequi, etc.), no hay comisión
   if (isManualPayment(paymentMethod)) {
     return 0
   }
-  // Si es pago por MercadoPago, aplicar comisión
-  return subtotal * 0.0329 + 800
+  // Si es pago por MercadoPago, aplicar comisión sobre el total
+  // 3.29% + IVA (19%) + cargo fijo de $952
+  return (total * 0.0329 * 1.19) + 952
 }
 
 // Obtener subtotal seguro (manejar datos legacy)
@@ -96,13 +99,19 @@ export async function getOrderStats() {
     return sum + (isNaN(total) ? 0 : total)
   }, 0)
 
-  // Calcular gastos de MercadoPago (solo para pagos NO manuales, sobre el subtotal)
+  // Calcular gastos de MercadoPago (solo para pagos NO manuales, sobre el TOTAL)
   const totalMercadoPagoFees = paidOrders.reduce((sum, o) => {
-    const value = calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method)
+    const subtotal = getSafeSubtotal(o)
+    const shipping = getSafeShippingCost(o)
+    const total = subtotal + shipping
+    const value = calculateMercadoPagoFees(total, o.payment_method)
     return sum + (isNaN(value) ? 0 : value)
   }, 0)
   const todayMercadoPagoFees = paidOrdersToday.reduce((sum, o) => {
-    const value = calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method)
+    const subtotal = getSafeSubtotal(o)
+    const shipping = getSafeShippingCost(o)
+    const total = subtotal + shipping
+    const value = calculateMercadoPagoFees(total, o.payment_method)
     return sum + (isNaN(value) ? 0 : value)
   }, 0)
 
