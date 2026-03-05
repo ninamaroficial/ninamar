@@ -82,17 +82,21 @@ export async function getOrderStats() {
     new Date(o.created_at) >= today
   )
 
-  // Calcular ingresos brutos (subtotal = precio de productos)
+  // Calcular ingresos brutos (total facturado = productos + envío)
   const totalGrossRevenue = paidOrders.reduce((sum, o) => {
-    const value = getSafeSubtotal(o)
-    return sum + (isNaN(value) ? 0 : value)
+    const subtotal = getSafeSubtotal(o)
+    const shipping = getSafeShippingCost(o)
+    const total = subtotal + shipping
+    return sum + (isNaN(total) ? 0 : total)
   }, 0)
   const todayGrossRevenue = paidOrdersToday.reduce((sum, o) => {
-    const value = getSafeSubtotal(o)
-    return sum + (isNaN(value) ? 0 : value)
+    const subtotal = getSafeSubtotal(o)
+    const shipping = getSafeShippingCost(o)
+    const total = subtotal + shipping
+    return sum + (isNaN(total) ? 0 : total)
   }, 0)
 
-  // Calcular gastos de MercadoPago (solo para pagos NO manuales)
+  // Calcular gastos de MercadoPago (solo para pagos NO manuales, sobre el subtotal)
   const totalMercadoPagoFees = paidOrders.reduce((sum, o) => {
     const value = calculateMercadoPagoFees(getSafeSubtotal(o), o.payment_method)
     return sum + (isNaN(value) ? 0 : value)
@@ -102,7 +106,7 @@ export async function getOrderStats() {
     return sum + (isNaN(value) ? 0 : value)
   }, 0)
 
-  // Calcular gastos de envío (NO es ingreso, es costo que pagas a transportadora)
+  // Calcular gastos de envío (costo que pagas a transportadora)
   const shippingCosts = paidOrders.reduce((sum, o) => {
     const value = getSafeShippingCost(o)
     return sum + (isNaN(value) ? 0 : value)
@@ -112,7 +116,8 @@ export async function getOrderStats() {
     return sum + (isNaN(value) ? 0 : value)
   }, 0)
 
-  // Calcular ingresos netos (después de comisiones MP y costos de envío)
+  // Calcular ingresos netos (lo que realmente ganas)
+  // Neto = Brutos - MP fees - Envíos
   const totalNetRevenue = totalGrossRevenue - totalMercadoPagoFees - shippingCosts
   const todayNetRevenue = todayGrossRevenue - todayMercadoPagoFees - todayShippingCosts
 
@@ -124,10 +129,10 @@ export async function getOrderStats() {
     shipped_orders: orders.filter(o => o.status === 'shipped').length,
     delivered_orders: orders.filter(o => o.status === 'delivered').length,
     
-    // Ingresos brutos (solo productos, sin envíos)
+    // Ingresos brutos (total facturado = productos + envío)
     total_revenue: totalGrossRevenue,
     
-    // Ingreso neto (ingresos - comisiones MP - costos de envío)
+    // Ingreso neto (lo que realmente ganas después de gastos)
     net_revenue: totalNetRevenue,
     
     // Desglose de gastos

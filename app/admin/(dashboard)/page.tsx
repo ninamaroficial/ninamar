@@ -185,7 +185,7 @@ export default function AdminDashboardPage() {
                 <p className={styles.statLabel}>Desglose de Ingresos</p>
                 <div style={{ fontSize: '0.85rem', lineHeight: '1.6', marginTop: '6px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span>Brutos (productos):</span>
+                    <span>Brutos (total facturado):</span>
                     <span style={{ fontWeight: 500 }}>{formatPrice(stats.total_revenue)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#d97706', marginBottom: '4px' }}>
