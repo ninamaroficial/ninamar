@@ -51,7 +51,6 @@ export default function CustomizationPage({
       ? [{ image_url: product.image_url, alt_text: product.name, is_primary: true }]
       : []
 
-  const hasSizeOption = options.some((opt) => opt.type?.toLowerCase() === 'size')
   const sizeGuideImage = images.length > 0 ? images[images.length - 1] : null
 
   const calculateTotalPrice = () => {
@@ -328,7 +327,7 @@ export default function CustomizationPage({
           })}
         </div>
 
-        {hasSizeOption && sizeGuideImage && (
+        {currentOption?.type?.toLowerCase() === 'size' && sizeGuideImage && (
           <button
             type="button"
             className={styles.sizeGuideLink}
