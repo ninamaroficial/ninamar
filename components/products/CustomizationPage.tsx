@@ -244,7 +244,7 @@ export default function CustomizationPage({
                         alt={image.alt_text || `${product.name} - Imagen ${index + 1}`}
                         fill
                         className={styles.thumbnailImage}
-                        sizes="100px"
+                        sizes="(max-width: 1024px) 72px, 140px"
                       />
                     </button>
                   ))}
