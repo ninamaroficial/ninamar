@@ -308,6 +308,101 @@
   gap: 1rem;
 }
 
+.sizeGuideLink {
+  margin-top: 1rem;
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: #0f766e;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.sizeGuideLink:hover {
+  opacity: 0.8;
+}
+
+.sizeGuideModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 10000;
+  padding: 5.5rem 1rem 1rem;
+  overflow: auto;
+}
+
+.sizeGuideModal {
+  width: min(1100px, 100%);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  max-height: calc(100dvh - 6.5rem);
+  display: flex;
+  flex-direction: column;
+  transform: none;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .sizeGuideModalOverlay {
+    display: block;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .sizeGuideModal {
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(96vw, 760px);
+    max-height: calc(100dvh - 1.5rem);
+  }
+
+  .sizeGuideImageWrapper {
+    max-height: calc(100dvh - 2rem);
+  }
+}
+
+.sizeGuideModalClose {
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  background: rgba(15, 23, 42, 0.72);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+
+.sizeGuideImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: calc(100vh - 180px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.sizeGuideImage {
+  object-fit: contain;
+}
+
 .optionCard {
   position: relative;
   display: flex;

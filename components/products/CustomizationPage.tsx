@@ -40,6 +40,7 @@ export default function CustomizationPage({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false) // ✅ Nuevo estado
   const [isFooterVisible, setIsFooterVisible] = useState(false)
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false)
 
   const totalSteps = options.length + 1
 
@@ -49,6 +50,9 @@ export default function CustomizationPage({
     : product.image_url
       ? [{ image_url: product.image_url, alt_text: product.name, is_primary: true }]
       : []
+
+  const hasSizeOption = options.some((opt) => opt.type?.toLowerCase() === 'size')
+  const sizeGuideImage = images.length > 0 ? images[images.length - 1] : null
 
   const calculateTotalPrice = () => {
     let total = product.price
@@ -323,6 +327,16 @@ export default function CustomizationPage({
             )
           })}
         </div>
+
+        {hasSizeOption && sizeGuideImage && (
+          <button
+            type="button"
+            className={styles.sizeGuideLink}
+            onClick={() => setIsSizeGuideOpen(true)}
+          >
+            Ver guía de tallas
+          </button>
+        )}
       </div>
     ) : (
       // Paso final: Cantidad
@@ -585,6 +599,46 @@ export default function CustomizationPage({
             </div>
           </div>
         </>
+
+        {isSizeGuideOpen && sizeGuideImage && (
+          <div
+            className={styles.sizeGuideModalOverlay}
+            onClick={() => setIsSizeGuideOpen(false)}
+            role="button"
+            tabIndex={0}
+            aria-label="Cerrar guia de tallas"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                setIsSizeGuideOpen(false)
+              }
+            }}
+          >
+            <div
+              className={styles.sizeGuideModal}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className={styles.sizeGuideModalClose}
+                onClick={() => setIsSizeGuideOpen(false)}
+                aria-label="Cerrar"
+              >
+                <X size={20} />
+              </button>
+
+              <div className={styles.sizeGuideImageWrapper}>
+                <Image
+                  src={sizeGuideImage.image_url}
+                  alt={sizeGuideImage.alt_text || `Guia de tallas de ${product.name}`}
+                  fill
+                  className={styles.sizeGuideImage}
+                  sizes="(max-width: 768px) 92vw, 60vw"
+                  priority
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
       </Container>
 
