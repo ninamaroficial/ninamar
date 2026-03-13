@@ -73,17 +73,44 @@ export default function OrderSatisfactionSurveyEmail({
           </Section>
 
           <Section style={footer}>
-            <Text style={footerText}>Síguenos</Text>
-            <Text style={footerText}>
-              <Link href="https://www.instagram.com/ninamar_oficial" style={socialLink}>Instagram</Link>
-              {'  '}
-              <Link href="https://www.facebook.com/profile.php?id=61585970772454" style={socialLink}>Facebook</Link>
-            </Text>
-            <Text style={footerText}>📧 ninamar.oficial@gmail.com</Text>
-            <Text style={footerText}>📍 Popayán, Cauca, Colombia</Text>
-            <Text style={footerText}>
-              © {new Date().getFullYear()} Niñamar. Todos los derechos reservados.
-            </Text>
+            <Section style={footerPanel}>
+              <Text style={footerTitle}>Síguenos</Text>
+              <Section style={socialSection}>
+                <table style={socialTable}>
+                  <tr>
+                    <td style={socialCell}>
+                      <Link href="https://www.instagram.com/ninamar_oficial/" style={socialIconLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"
+                          alt="Instagram"
+                          width="28"
+                          height="28"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                    <td style={socialCell}>
+                      <Link href="https://www.facebook.com/profile.php?id=61585970772454" style={socialIconLink}>
+                        <Img
+                          src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+                          alt="Facebook"
+                          width="28"
+                          height="28"
+                          style={socialIcon}
+                        />
+                      </Link>
+                    </td>
+                  </tr>
+                </table>
+              </Section>
+              <Text style={footerContact}>Instagram</Text>
+              <Text style={footerContact}>Facebook</Text>
+              <Text style={footerContact}>📧 ninamar.oficial@gmail.com</Text>
+              <Text style={footerContact}>📍 Popayán, Cauca, Colombia</Text>
+              <Text style={footerCopyright}>
+                © {new Date().getFullYear()} Niñamar. Todos los derechos reservados.
+              </Text>
+            </Section>
           </Section>
         </Container>
       </Body>
@@ -210,13 +237,53 @@ const footer = {
   padding: '20px 32px 28px',
 }
 
-const footerText = {
-  margin: '0 0 6px',
-  color: '#7a655d',
-  fontSize: '13px',
+const footerPanel = {
+  background: 'linear-gradient(135deg, rgba(255, 234, 253, 0.75) 0%, rgba(211, 170, 207, 0.3) 55%, rgba(110, 193, 188, 0.24) 100%)',
+  borderRadius: '20px',
+  padding: '24px 20px',
+  textAlign: 'center' as const,
 }
 
-const socialLink = {
-  color: '#1f6f63',
+const footerTitle = {
+  fontSize: '15px',
+  color: '#111111',
+  margin: '0 0 14px',
+  lineHeight: '1.4',
+  fontWeight: '700',
+}
+
+const socialSection = {
+  textAlign: 'center' as const,
+  margin: '0 0 10px',
+}
+
+const socialTable = {
+  margin: '0 auto',
+}
+
+const socialCell = {
+  padding: '0 8px',
+}
+
+const socialIconLink = {
   textDecoration: 'none',
+}
+
+const socialIcon = {
+  display: 'block',
+  margin: '0 auto',
+}
+
+const footerContact = {
+  margin: '0 0 8px',
+  color: '#111111',
+  fontSize: '13px',
+  lineHeight: '1.6',
+}
+
+const footerCopyright = {
+  margin: '14px 0 0',
+  color: '#111111',
+  fontSize: '13px',
+  lineHeight: '1.6',
 }
