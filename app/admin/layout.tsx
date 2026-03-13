@@ -15,9 +15,10 @@ export default function AdminLayout({
   // Rutas que NO deben mostrar el header con navegación
   const authRoutes = ['/admin/login', '/admin/register']
   const isAuthRoute = authRoutes.includes(pathname || '')
+  const isOrderGuideRoute = /^\/admin\/orders\/[^/]+\/guia$/.test(pathname || '')
 
-  // Si es ruta de autenticación, solo renderizar children
-  if (isAuthRoute) {
+  // Si es ruta de autenticación o guía imprimible, solo renderizar children
+  if (isAuthRoute || isOrderGuideRoute) {
     return <>{children}</>
   }
 

@@ -1,13 +1,18 @@
 "use client"
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, use, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import OrderGuideSheet from '@/components/admin/OrderGuideSheet'
 import ShipmentModal from '@/components/admin/ShipmentModal' // ← IMPORTAR
+import { copyElementAsImage } from '@/lib/copy-element-as-image'
 import {
   ArrowLeft,
   Package,
+  Copy,
+  Check,
+  FileDown,
   User,
   MapPin,
   CreditCard,
@@ -71,6 +76,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
   const canUpdateStatus = order?.payment_status === 'approved'
   const [isShipmentModalOpen, setIsShipmentModalOpen] = useState(false) // ← AGREGAR
   const [pendingStatus, setPendingStatus] = useState<string | null>(null) 
+  const [isCopyingGuide, setIsCopyingGuide] = useState(false)
+  const [copyGuideSuccess, setCopyGuideSuccess] = useState(false)
+  const [isSendingSurvey, setIsSendingSurvey] = useState(false)
+  const guideCaptureRef = useRef<HTMLElement | null>(null)
   
   useEffect(() => {
     loadOrder()
@@ -157,6 +166,35 @@ const handleUpdatePaymentStatus = async () => {
   }
 }
 
+const handleSendSurvey = async () => {
+  if (!order || order.status !== 'delivered' || isSendingSurvey) return
+
+  if (!confirm(`¿Enviar encuesta de satisfacción a ${order.customer_email}?`)) {
+    return
+  }
+
+  setIsSendingSurvey(true)
+
+  try {
+    const response = await fetch(`/api/admin/orders/${resolvedParams.orderId}/survey`, {
+      method: 'POST',
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'No se pudo enviar la encuesta')
+    }
+
+    alert('Encuesta enviada correctamente al cliente')
+  } catch (error: any) {
+    console.error('Error sending survey:', error)
+    alert(error.message || 'No se pudo enviar la encuesta')
+  } finally {
+    setIsSendingSurvey(false)
+  }
+}
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -175,6 +213,24 @@ const handleUpdatePaymentStatus = async () => {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  const handleCopyGuide = async () => {
+    if (!guideCaptureRef.current || isCopyingGuide) return
+
+    setIsCopyingGuide(true)
+    setCopyGuideSuccess(false)
+
+    try {
+      await copyElementAsImage(guideCaptureRef.current, { expandContent: true })
+      setCopyGuideSuccess(true)
+      window.setTimeout(() => setCopyGuideSuccess(false), 2200)
+    } catch (error: any) {
+      console.error('Error copying guide:', error)
+      alert(error.message || 'No se pudo copiar la guía')
+    } finally {
+      setIsCopyingGuide(false)
+    }
   }
 
   const handleStatusChange = async (newStatus: string) => {
@@ -299,10 +355,30 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <Link href="/admin" className={styles.backButton}>
-            <ArrowLeft size={20} />
-            Volver al Dashboard
-          </Link>
+          <div className={styles.headerActions}>
+            <Link href="/admin" className={styles.backButton}>
+              <ArrowLeft size={20} />
+              Volver al Dashboard
+            </Link>
+            <button
+              type="button"
+              onClick={handleCopyGuide}
+              className={styles.copyGuideButton}
+              disabled={isCopyingGuide}
+            >
+              {copyGuideSuccess ? <Check size={18} /> : <Copy size={18} />}
+              {copyGuideSuccess ? 'Guía copiada' : isCopyingGuide ? 'Copiando...' : 'Copiar guía'}
+            </button>
+            {/* <Link
+              href={`/admin/orders/${order.id}/guia`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.guideButton}
+            >
+              <FileDown size={18} />
+              Descargar guía
+            </Link> */}
+          </div>
           <div className={styles.headerInfo}>
             <h1 className={styles.orderNumber}>Orden {order.order_number}</h1>
             {getStatusBadge(order.status)}
@@ -311,6 +387,9 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
       </div>
 
       <div className={styles.container}>
+        <div className={styles.hiddenGuideCapture} aria-hidden="true">
+          <OrderGuideSheet ref={guideCaptureRef} order={order} />
+        </div>
         <div className={styles.layout}>
           {/* Main Content */}
           <div className={styles.mainContent}>
@@ -401,6 +480,30 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
                 </div>
               )}
             </div>
+
+            {order.status === 'delivered' && (
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <Mail size={20} />
+                  <h2 className={styles.cardTitle}>Encuesta de Satisfacción</h2>
+                </div>
+                <div className={styles.surveyCardBody}>
+                  <p className={styles.surveyText}>
+                    Envía manualmente un correo al cliente con una encuesta alojada en la web para calificar su pedido.
+                  </p>
+                  <p className={styles.surveyHint}>
+                    Si la calificación es alta, al finalizar se le mostrará el enlace para dejar reseña en Google.
+                  </p>
+                  <button
+                    onClick={handleSendSurvey}
+                    disabled={isSendingSurvey || !order.customer_email}
+                    className={styles.surveyButton}
+                  >
+                    {isSendingSurvey ? 'Enviando encuesta...' : 'Enviar encuesta por correo'}
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Timeline */}
             <div className={styles.card}>

@@ -2,6 +2,8 @@ import { Resend } from 'resend'
 import OrderConfirmationEmail from '@/emails/OrderConfirmation'
 import NewOrderAdminEmail from '@/emails/NewOrderAdmin'
 import OrderStatusUpdateEmail from '@/emails/OrderStatusUpdate'
+import OrderSatisfactionSurveyEmail from '@/emails/OrderSatisfactionSurvey'
+import { buildSurveyUrl } from '@/lib/reviews/survey-token'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -392,6 +394,52 @@ export async function sendOrderStatusUpdateEmail(
     console.log(`✅ Status update email sent to ${customerEmail}`)
   } catch (error) {
     console.error('Error sending status update email:', error)
+    throw error
+  }
+}
+
+export async function sendOrderSatisfactionSurveyEmail(data: {
+  orderId: string
+  orderNumber: string
+  customerName: string
+  customerEmail: string
+}) {
+  try {
+    const surveyUrl = buildSurveyUrl(data.orderId, data.customerEmail)
+    const text = [
+      `Hola ${data.customerName},`,
+      '',
+      `Queremos confirmar cómo fue tu experiencia con el pedido ${data.orderNumber}.`,
+      'La encuesta toma menos de un minuto.',
+      '',
+      `Responder encuesta: ${surveyUrl}`,
+    ].join('\n')
+
+    const { data: emailData, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.customerEmail,
+      replyTo: ADMIN_EMAIL,
+      subject: `Cuéntanos cómo recibiste tu pedido ${data.orderNumber}`,
+      react: OrderSatisfactionSurveyEmail({
+        customerName: data.customerName,
+        orderNumber: data.orderNumber,
+        surveyUrl,
+      }),
+      text,
+      headers: {
+        'X-Entity-Ref-ID': `survey-${data.orderNumber}`,
+      },
+    })
+
+    if (error) {
+      console.error('❌ Error sending satisfaction survey email:', error)
+      throw error
+    }
+
+    console.log('✅ Satisfaction survey email sent:', emailData?.id)
+    return emailData
+  } catch (error) {
+    console.error('❌ Failed to send satisfaction survey email:', error)
     throw error
   }
 }

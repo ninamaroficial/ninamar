@@ -3,11 +3,18 @@ CREATE TABLE IF NOT EXISTS order_reviews (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
   order_number TEXT NOT NULL,
-  customer_phone TEXT NOT NULL,
+  customer_phone TEXT,
+  customer_email TEXT,
   customer_name TEXT,
   
   -- Calificación general (1-5 estrellas)
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+
+  -- Calificación del producto (1-5 estrellas)
+  product_rating INTEGER CHECK (product_rating >= 1 AND product_rating <= 5),
+
+  -- Calificación de la entrega (1-5 estrellas)
+  delivery_rating INTEGER CHECK (delivery_rating >= 1 AND delivery_rating <= 5),
   
   -- Comentario opcional del cliente
   comment TEXT,
@@ -31,6 +38,9 @@ CREATE TABLE IF NOT EXISTS order_reviews (
 
 -- Índice para búsquedas por teléfono
 CREATE INDEX idx_reviews_phone ON order_reviews(customer_phone);
+
+-- Índice para búsquedas por email
+CREATE INDEX idx_reviews_email ON order_reviews(customer_email);
 
 -- Índice para búsquedas por calificación
 CREATE INDEX idx_reviews_rating ON order_reviews(rating);

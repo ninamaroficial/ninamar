@@ -8,9 +8,12 @@ export interface OrderReview {
   id: string
   order_id: string
   order_number: string
-  customer_phone: string
+  customer_phone: string | null
+  customer_email: string | null
   customer_name: string | null
   rating: number
+  product_rating: number | null
+  delivery_rating: number | null
   comment: string | null
   would_recommend: boolean | null
   liked_most: string | null
@@ -22,9 +25,12 @@ export interface OrderReview {
 export interface CreateReviewData {
   order_id: string
   order_number: string
-  customer_phone: string
+  customer_phone?: string | null
+  customer_email?: string | null
   customer_name?: string
   rating: number
+  product_rating?: number
+  delivery_rating?: number
   comment?: string
   would_recommend?: boolean
   liked_most?: string
@@ -37,21 +43,48 @@ export interface CreateReviewData {
 export async function createOrderReview(data: CreateReviewData) {
   const supabase = createAdminClient()
 
-  const { data: review, error } = await supabase
+  if (!data.customer_phone && !data.customer_email) {
+    throw new Error('Se requiere al menos un teléfono o email para guardar la encuesta')
+  }
+
+  const baseInsert = {
+    order_id: data.order_id,
+    order_number: data.order_number,
+    customer_phone: data.customer_phone || null,
+    customer_email: data.customer_email || null,
+    customer_name: data.customer_name || null,
+    rating: data.rating,
+    comment: data.comment || null,
+    would_recommend: data.would_recommend ?? null,
+    liked_most: data.liked_most || null,
+    improvement_suggestion: data.improvement_suggestion || null,
+  }
+
+  const withDetailedRatings = {
+    ...baseInsert,
+    product_rating: data.product_rating ?? null,
+    delivery_rating: data.delivery_rating ?? null,
+  }
+
+  let { data: review, error } = await supabase
     .from('order_reviews')
-    .insert({
-      order_id: data.order_id,
-      order_number: data.order_number,
-      customer_phone: data.customer_phone,
-      customer_name: data.customer_name || null,
-      rating: data.rating,
-      comment: data.comment || null,
-      would_recommend: data.would_recommend ?? null,
-      liked_most: data.liked_most || null,
-      improvement_suggestion: data.improvement_suggestion || null,
-    })
+    .insert(withDetailedRatings)
     .select()
     .single()
+
+  // Backward compatibility when DB schema hasn't been migrated yet.
+  if (error && error.code === 'PGRST204' && /product_rating|delivery_rating/i.test(error.message || '')) {
+    console.warn('order_reviews schema is missing detailed rating columns. Retrying without them.')
+
+    const fallbackResult = await supabase
+      .from('order_reviews')
+      .insert(baseInsert)
+      .select()
+      .single()
+
+    review = fallbackResult.data
+    error = fallbackResult.error
+  }
 
   if (error) {
     console.error('Error creating review:', error)

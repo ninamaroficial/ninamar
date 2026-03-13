@@ -18,6 +18,14 @@
   padding: 1.25rem 2rem;
 }
 
+.headerActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
 .backButton {
   display: inline-flex;
   align-items: center;
@@ -31,13 +39,69 @@
   font-size: 0.9375rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .backButton:hover {
   background: #f9fafb;
   border-color: #667eea;
   color: #667eea;
+}
+
+.guideButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.copyGuideButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.copyGuideButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(219, 39, 119, 0.28);
+}
+
+.copyGuideButton:disabled {
+  opacity: 0.75;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
+.guideButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28);
+}
+
+.hiddenGuideCapture {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 8in;
+  pointer-events: none;
+  opacity: 0;
 }
 
 .headerInfo {
@@ -150,6 +214,45 @@
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+.surveyCardBody {
+  padding: 1.5rem;
+}
+
+.surveyText {
+  margin: 0 0 0.75rem;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.surveyHint {
+  margin: 0 0 1.25rem;
+  color: #6b7280;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.surveyButton {
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.surveyButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.28);
+}
+
+.surveyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Timeline */
