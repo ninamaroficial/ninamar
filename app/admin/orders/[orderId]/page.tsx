@@ -97,7 +97,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
     } catch (error) {
       console.error('Error loading order:', error)
       alert('Error al cargar la orden')
-      router.push('/admin')
+      router.push('/admin/orders')
     } finally {
       setIsLoading(false)
     }
@@ -356,9 +356,9 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerActions}>
-            <Link href="/admin" className={styles.backButton}>
+            <Link href="/admin/orders" className={styles.backButton}>
               <ArrowLeft size={20} />
-              Volver al Dashboard
+              Volver a pedidos
             </Link>
             <button
               type="button"

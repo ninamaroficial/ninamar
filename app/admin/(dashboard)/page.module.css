@@ -486,6 +486,201 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  color: #111827;
+  font-family: var(--font-title);
+}
+
+.subtitle {
+  margin: 0.4rem 0 0;
+  color: #6b7280;
+}
+
+.primaryLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1f6f63 0%, #15574e 100%);
+  padding: 0.7rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.analyticsSection {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.chartCard {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+}
+
+.rankHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.rankHeader h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.rankIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #111827;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monthChart {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 0.9rem;
+  align-items: end;
+  z-index: 1;
+}
+
+.monthColumn {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: center;
+}
+
+.monthChartWrap {
+  position: relative;
+  border-radius: 18px;
+  padding: 1rem 0.75rem 0.9rem;
+  overflow: hidden;
+}
+
+.monthChartBackdrop {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(211, 170, 207, 0.16) 0%, rgba(110, 193, 188, 0.14) 100%),
+    repeating-linear-gradient(
+      to top,
+      rgba(17, 24, 39, 0.05) 0,
+      rgba(17, 24, 39, 0.05) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+}
+
+.monthBarTrackVertical {
+  height: 160px;
+  width: 58px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.monthBarFillVertical {
+  width: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffeafd 0%, #d3aacf 35%, #6ec1bc 72%, #1f6f63 100%);
+  box-shadow: 0 -4px 16px rgba(31, 111, 99, 0.35);
+}
+
+.monthColumnLabel {
+  font-size: 0.76rem;
+  color: #1f2937;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.monthColumnValue {
+  font-size: 0.69rem;
+  color: #0f172a;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  padding: 0.22rem 0.48rem;
+  white-space: nowrap;
+}
+
+.rankGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.rankCard {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+.rankList {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.rankRow {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.rankLabelRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.rankLabel {
+  color: #1f2937;
+  font-size: 0.86rem;
+}
+
+.rankValue {
+  color: #4b5563;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.rankTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.rankFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d3aacf 0%, #6ec1bc 100%);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .container {
@@ -512,6 +707,28 @@
 }
 
 @media (max-width: 768px) {
+  .heading {
+    flex-direction: column;
+  }
+
+  .primaryLink {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .rankGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .monthChart {
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  }
+
+  .monthBarTrackVertical {
+    height: 120px;
+    width: 48px;
+  }
+
   .headerContent {
     padding: 1rem 1.5rem;
     flex-direction: column;

@@ -33,8 +33,8 @@ export default function AdminLoginPage() {
         return
       }
 
-      // Redirigir al dashboard
-      router.push('/admin')
+      // Redirigir a pedidos (pantalla principal operativa)
+      router.push('/admin/orders')
     } catch (error) {
       setError('Error de conexión')
       setIsLoading(false)

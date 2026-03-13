@@ -226,6 +226,169 @@ export async function getOrdersList(filters?: {
   }
 }
 
+interface AnalyticsPoint {
+  label: string
+  value: number
+}
+
+interface OrderAnalytics {
+  monthly_revenue: AnalyticsPoint[]
+  top_products: AnalyticsPoint[]
+  top_product_types: AnalyticsPoint[]
+  top_states: AnalyticsPoint[]
+  top_cities: AnalyticsPoint[]
+}
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function slugifyFallback(value: string): string {
+  return normalizeText(value)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
+function classifyProductType(productName: string, productSlug?: string): string {
+  const slug = normalizeText(productSlug || '')
+  const name = normalizeText(productName)
+
+  // Primero intentamos detectar por slug, porque suele tener el tipo explícito.
+  if (slug.includes('arete') || slug.includes('pendiente') || slug.includes('candonga') || slug.includes('topo')) return 'Aretes'
+  if (slug.includes('collar') || slug.includes('gargantilla') || slug.includes('choker')) return 'Collares'
+  if (slug.includes('pulsera') || slug.includes('manilla') || slug.includes('brazalete')) return 'Pulseras'
+  if (slug.includes('anillo') || slug.includes('sortija')) return 'Anillos'
+  if (slug.includes('tobillera')) return 'Tobilleras'
+  if (slug.includes('set') || slug.includes('combo') || slug.includes('kit')) return 'Sets / Combos'
+  if (slug.includes('llavero')) return 'Llaveros'
+
+  if (
+    name.includes('arete') ||
+    name.includes('pendiente') ||
+    name.includes('candonga') ||
+    name.includes('topo')
+  ) {
+    return 'Aretes'
+  }
+
+  if (
+    name.includes('collar') ||
+    name.includes('gargantilla') ||
+    name.includes('choker')
+  ) {
+    return 'Collares'
+  }
+
+  if (name.includes('pulsera') || name.includes('manilla') || name.includes('brazalete')) return 'Pulseras'
+  if (name.includes('anillo') || name.includes('sortija')) return 'Anillos'
+  if (name.includes('tobillera')) return 'Tobilleras'
+  if (name.includes('set') || name.includes('combo') || name.includes('kit')) return 'Sets / Combos'
+  if (name.includes('llavero')) return 'Llaveros'
+
+  return 'Otros'
+}
+
+export async function getOrdersAnalytics(): Promise<OrderAnalytics> {
+  const supabase = createAdminClient()
+
+  const { data: orders, error } = await supabase
+    .from('orders')
+    .select('id, created_at, payment_status, status, total, shipping_city, shipping_state')
+
+  const { data: paidItems, error: paidItemsError } = await supabase
+    .from('order_items')
+    .select('product_name, product_slug, quantity, orders!inner(payment_status)')
+    .eq('orders.payment_status', 'approved')
+
+  if (error || !orders || paidItemsError) {
+    console.error('Error fetching analytics:', error)
+    if (paidItemsError) {
+      console.error('Error fetching paid order items for analytics:', paidItemsError)
+    }
+    return {
+      monthly_revenue: [],
+      top_products: [],
+      top_product_types: [],
+      top_states: [],
+      top_cities: [],
+    }
+  }
+
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth()
+
+  const monthSlots = Array.from({ length: currentMonth + 1 }, (_, idx) => {
+    const d = new Date(currentYear, idx, 1)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    const label = d.toLocaleDateString('es-CO', { month: 'short' })
+    return { key, label }
+  })
+
+  const monthRevenueMap = new Map<string, number>(monthSlots.map((m) => [m.key, 0]))
+  const productQtyMap = new Map<string, number>()
+  const productTypeQtyMap = new Map<string, number>()
+  const stateCountMap = new Map<string, number>()
+  const cityCountMap = new Map<string, number>()
+
+  for (const order of orders as any[]) {
+    const createdAt = new Date(order.created_at)
+    const monthKey = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, '0')}`
+    const total = Number(order.total) || 0
+
+    // Ingresos mensuales: solo órdenes pagadas.
+    if (order.payment_status === 'approved' && monthRevenueMap.has(monthKey)) {
+      monthRevenueMap.set(monthKey, (monthRevenueMap.get(monthKey) || 0) + total)
+    }
+
+    // Destinos: solo órdenes que sí se enviaron.
+    if (order.status === 'shipped' || order.status === 'delivered') {
+      const state = (order.shipping_state || 'Sin departamento').trim()
+      const city = (order.shipping_city || 'Sin ciudad').trim()
+      stateCountMap.set(state, (stateCountMap.get(state) || 0) + 1)
+      cityCountMap.set(city, (cityCountMap.get(city) || 0) + 1)
+    }
+
+  }
+
+  for (const item of (paidItems || []) as any[]) {
+    const name = String(item?.product_name || 'Producto sin nombre').trim()
+    const slug = String(item?.product_slug || '').trim()
+    const qty = Number(item?.quantity) || 0
+    if (qty <= 0) continue
+
+    const productKey = slug || slugifyFallback(name) || 'producto-sin-slug'
+    productQtyMap.set(productKey, (productQtyMap.get(productKey) || 0) + qty)
+
+    const type = classifyProductType(name, item?.product_slug)
+    productTypeQtyMap.set(type, (productTypeQtyMap.get(type) || 0) + qty)
+  }
+
+  const monthly_revenue = monthSlots.map((slot) => ({
+    label: slot.label,
+    value: Math.round(monthRevenueMap.get(slot.key) || 0),
+  }))
+
+  const toTopList = (map: Map<string, number>, limit = 8): AnalyticsPoint[] => {
+    return [...map.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([label, value]) => ({ label, value }))
+  }
+
+  return {
+    monthly_revenue,
+    top_products: toTopList(productQtyMap, 10),
+    top_product_types: toTopList(productTypeQtyMap, 8),
+    top_states: toTopList(stateCountMap, 8),
+    top_cities: toTopList(cityCountMap, 10),
+  }
+}
+
 export async function getOrderDetails(orderId: string) {
   const supabase = createAdminClient()
 

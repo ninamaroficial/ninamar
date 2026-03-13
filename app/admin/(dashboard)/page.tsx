@@ -1,25 +1,9 @@
 "use client"
-import { Settings } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+
 import Link from 'next/link'
-import CreateOrderModal from '@/components/admin/CreateOrderModal'
-import { Plus } from 'lucide-react'
-import {
-  ShoppingBag,
-  DollarSign,
-  Package,
-  TrendingUp,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Truck,
-  Search,
-  LogOut,
-  Filter
-} from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { BarChart3, DollarSign, MapPin, Package, Truck } from 'lucide-react'
 import styles from './page.module.css'
-import AdminNav from '@/components/admin/AdminNav'
 
 interface Stats {
   total_orders: number
@@ -37,66 +21,46 @@ interface Stats {
   today_net_revenue: number
 }
 
-interface Order {
-  id: string
-  order_number: string
-  customer_name: string
-  customer_email: string
-  total: number
-  status: string
-  payment_status: string
-  payment_method?: string
-  created_at: string
-  items_count: number
+interface AnalyticsPoint {
+  label: string
+  value: number
+}
+
+interface OrderAnalytics {
+  monthly_revenue: AnalyticsPoint[]
+  top_products: AnalyticsPoint[]
+  top_product_types: AnalyticsPoint[]
+  top_states: AnalyticsPoint[]
+  top_cities: AnalyticsPoint[]
 }
 
 export default function AdminDashboardPage() {
-  const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
-  const [orders, setOrders] = useState<Order[]>([])
+  const [analytics, setAnalytics] = useState<OrderAnalytics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [paymentFilter, setPaymentFilter] = useState('')
-  const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
     loadData()
-  }, [statusFilter, paymentFilter])
+  }, [])
 
   const loadData = async () => {
     setIsLoading(true)
     try {
-      // Cargar estadísticas
-      const statsRes = await fetch('/api/admin/stats')
+      const [statsRes, analyticsRes] = await Promise.all([
+        fetch('/api/admin/stats', { cache: 'no-store' }),
+        fetch('/api/admin/orders/analytics', { cache: 'no-store' }),
+      ])
+
       const statsData = await statsRes.json()
+      const analyticsData = await analyticsRes.json()
+
       setStats(statsData)
-
-      // Cargar órdenes
-      const params = new URLSearchParams()
-      if (statusFilter) params.append('status', statusFilter)
-      if (paymentFilter) params.append('payment_status', paymentFilter)
-      if (searchQuery) params.append('search', searchQuery)
-      params.append('limit', '20')
-
-      const ordersRes = await fetch(`/api/admin/orders?${params}`)
-      const ordersData = await ordersRes.json()
-      setOrders(ordersData.orders)
+      setAnalytics(analyticsData)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    loadData()
-  }
-
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' })
-    router.push('/admin/login')
   }
 
   const formatPrice = (price: number) => {
@@ -108,51 +72,63 @@ export default function AdminDashboardPage() {
     }).format(price)
   }
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('es-CO', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
+  const maxMonthlyRevenue = useMemo(() => {
+    return Math.max(1, ...(analytics?.monthly_revenue?.map((p) => p.value) || [1]))
+  }, [analytics])
 
-  const getStatusBadge = (status: string) => {
-    const badges: Record<string, { label: string; className: string }> = {
-      pending: { label: 'Pendiente', className: styles.statusPending },
-      paid: { label: 'Pagado', className: styles.statusPaid },
-      processing: { label: 'Procesando', className: styles.statusProcessing },
-      shipped: { label: 'Enviado', className: styles.statusShipped },
-      delivered: { label: 'Entregado', className: styles.statusDelivered },
-      cancelled: { label: 'Cancelado', className: styles.statusCancelled }
-    }
-    const badge = badges[status] || { label: status, className: '' }
-    return <span className={`${styles.badge} ${badge.className}`}>{badge.label}</span>
-  }
+  const renderRanking = (title: string, rows: AnalyticsPoint[], icon: React.ReactNode, suffix = '') => (
+    <section className={styles.rankCard}>
+      <div className={styles.rankHeader}>
+        <span className={styles.rankIcon}>{icon}</span>
+        <h3>{title}</h3>
+      </div>
 
-  const getPaymentBadge = (status: string) => {
-    const badges: Record<string, { label: string; className: string }> = {
-      pending: { label: 'Pendiente', className: styles.paymentPending },
-      approved: { label: 'Aprobado', className: styles.paymentApproved },
-      rejected: { label: 'Rechazado', className: styles.paymentRejected }
-    }
-    const badge = badges[status] || { label: status, className: '' }
-    return <span className={`${styles.badge} ${badge.className}`}>{badge.label}</span>
-  }
+      {rows.length === 0 ? (
+        <p className={styles.emptyText}>Sin datos todavía.</p>
+      ) : (
+        <div className={styles.rankList}>
+          {rows.map((row, index) => {
+            const max = Math.max(rows[0]?.value || 1, 1)
+            const width = Math.max(6, Math.round((row.value / max) * 100))
+
+            return (
+              <div className={styles.rankRow} key={`${title}-${row.label}-${index}`}>
+                <div className={styles.rankLabelRow}>
+                  <span className={styles.rankLabel}>{row.label}</span>
+                  <span className={styles.rankValue}>
+                    {row.value.toLocaleString('es-CO')}
+                    {suffix}
+                  </span>
+                </div>
+                <div className={styles.rankTrack}>
+                  <div className={styles.rankFill} style={{ width: `${width}%` }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </section>
+  )
 
   return (
     <div className={styles.page}>
-
       <div className={styles.container}>
-        {/* Stats Cards */}
+        <div className={styles.heading}>
+          <div>
+            <h1 className={styles.title}>Dashboard</h1>
+            <p className={styles.subtitle}>Analítica de pedidos, ingresos y destinos de envío.</p>
+          </div>
+        </div>
+
         {isLoading && !stats ? (
           <div className={styles.loading}>Cargando estadísticas...</div>
-        ) : stats && (
+        ) : stats ? (
+          <>
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
-              <div className={styles.statIcon} style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                <ShoppingBag size={24} />
+              <div className={styles.statIcon} style={{ background: 'linear-gradient(135deg, #1f6f63 0%, #15574e 100%)' }}>
+                <Package size={24} />
               </div>
               <div className={styles.statContent}>
                 <p className={styles.statLabel}>Total Órdenes</p>
@@ -180,7 +156,7 @@ export default function AdminDashboardPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon} style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>
-                <Clock size={24} />
+                <BarChart3 size={24} />
               </div>
               <div className={styles.statContent}>
                 <p className={styles.statLabel}>Desglose de Ingresos</p>
@@ -206,8 +182,8 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className={styles.statCard}>
-              <div className={styles.statIcon} style={{ background: '#ffdb31' }}>
-                <Package size={24} />
+              <div className={styles.statIcon} style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)' }}>
+                <Truck size={24} />
               </div>
               <div className={styles.statContent}>
                 <p className={styles.statLabel}>En Proceso</p>
@@ -216,168 +192,48 @@ export default function AdminDashboardPage() {
               </div>
             </div>
           </div>
-        )}
+          <div className={styles.analyticsSection}>
+            <section className={styles.chartCard}>
+              <div className={styles.rankHeader}>
+                <span className={styles.rankIcon}><BarChart3 size={18} /></span>
+                <h3>Ingresos por mes (desde enero)</h3>
+              </div>
 
-        {/* Filters and Search */}
-        <div className={styles.filtersSection}>
-          <form onSubmit={handleSearch} className={styles.searchForm}>
-            <div className={styles.searchWrapper}>
-              <Search className={styles.searchIcon} size={20} />
-              <input
-                type="text"
-                placeholder="Buscar por número de orden, nombre o email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
-            </div>
-            <button type="submit" className={styles.searchButton}>
-              Buscar
-            </button>
-          </form>
-
-          <div className={styles.filters}>
-            <div className={styles.filterGroup}>
-              <Filter size={18} />
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className={styles.filterSelect}
-              >
-                <option value="">Todos los estados</option>
-                <option value="pending">Pendiente</option>
-                <option value="paid">Pagado</option>
-                <option value="processing">Procesando</option>
-                <option value="shipped">Enviado</option>
-                <option value="delivered">Entregado</option>
-                <option value="cancelled">Cancelado</option>
-              </select>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <Filter size={18} />
-              <select
-                value={paymentFilter}
-                onChange={(e) => setPaymentFilter(e.target.value)}
-                className={styles.filterSelect}
-              >
-                <option value="">Todos los pagos</option>
-                <option value="pending">Pendiente</option>
-                <option value="approved">Aprobado</option>
-                <option value="rejected">Rechazado</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Orders Table */}
-        <div className={styles.tableSection}>
-          <div className={styles.tableHeader}>
-            <div>
-              <h2 className={styles.tableTitle}>Órdenes Recientes</h2>
-              <p className={styles.tableSubtitle}>
-                {orders.length} órdenes encontradas
-              </p>
-            </div>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className={styles.createButton}
-            >
-              <Plus size={20} />
-              Crear Orden Manual
-            </button>
-          </div>
-
-          {isLoading ? (
-            <div className={styles.loading}>Cargando órdenes...</div>
-          ) : orders.length === 0 ? (
-            <div className={styles.emptyState}>
-              <Package size={48} className={styles.emptyIcon} />
-              <p className={styles.emptyText}>No se encontraron órdenes</p>
-            </div>
-          ) : (
-            <div className={styles.tableWrapper}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Número de Orden</th>
-                    <th>Cliente</th>
-                    <th>Total</th>
-                    <th>Items</th>
-                    <th>Estado</th>
-                    <th>Pago</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td>
-                        <span className={styles.orderNumber}>
-                          {order.order_number}
-                        </span>
-                      </td>
-                      <td>
-                        <div className={styles.customerInfo}>
-                          <p className={styles.customerName}>{order.customer_name}</p>
-                          <p className={styles.customerEmail}>{order.customer_email}</p>
+              {!analytics?.monthly_revenue?.length ? (
+                <p className={styles.emptyText}>Sin datos todavía.</p>
+              ) : (
+                <div className={styles.monthChartWrap}>
+                  <div className={styles.monthChartBackdrop} />
+                  <div className={styles.monthChart}>
+                  {analytics.monthly_revenue.map((point, idx) => {
+                    const height = Math.max(8, Math.round((point.value / maxMonthlyRevenue) * 100))
+                    return (
+                      <div className={styles.monthColumn} key={`${point.label}-${idx}`}>
+                        <span className={styles.monthColumnValue}>{formatPrice(point.value)}</span>
+                        <div className={styles.monthBarTrackVertical}>
+                          <div className={styles.monthBarFillVertical} style={{ height: `${height}%` }} />
                         </div>
-                      </td>
-                      <td>
-                        <span className={styles.orderTotal}>
-                          {formatPrice(Number(order.total))}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={styles.itemsCount}>
-                          {order.items_count} {order.items_count === 1 ? 'item' : 'items'}
-                        </span>
-                      </td>
-                      <td>{getStatusBadge(order.status)}</td>
-                      <td>{getPaymentBadge(order.payment_status)}</td>
-                      <td>
-                        <span className={styles.orderDate}>
-                          {formatDate(order.created_at)}
-                        </span>
-                      </td>
-                      <td>
-                        {order.payment_status === 'approved' ? (
-                          <Link
-                            href={`/admin/orders/${order.id}`}
-                            className={styles.viewButton}
-                          >
-                            Ver Detalles
-                          </Link>
-                        ) : (
-                          <Link
-                            href={`/admin/orders/${order.id}`}
-                            className={`${styles.viewButton} ${styles.viewButtonDisabled}`}
-                          >
-                            Ver Detalles
-                          </Link>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <span className={styles.monthColumnLabel}>{point.label}</span>
+                      </div>
+                    )
+                  })}
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <div className={styles.rankGrid}>
+              {renderRanking('Artículos más pedidos (slug)', analytics?.top_products || [], <Package size={18} />, ' uds')}
+              {renderRanking('Tipos de artículos más pedidos', analytics?.top_product_types || [], <Package size={18} />, ' uds')}
+              {renderRanking('Departamentos con más envíos', analytics?.top_states || [], <MapPin size={18} />, ' envíos')}
+              {renderRanking('Ciudades con más envíos', analytics?.top_cities || [], <MapPin size={18} />, ' envíos')}
             </div>
-          )}
-        </div>
+          </div>
+          </>
+        ) : (
+          <div className={styles.loading}>No se pudo cargar la información.</div>
+        )}
       </div>
-
-      <CreateOrderModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onSuccess={() => {
-          setShowCreateModal(false)
-          loadData()
-        }}
-      />
     </div>
-
-    
   )
-
 }

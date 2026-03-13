@@ -84,6 +84,32 @@ export async function sendNewOrderAdminEmail(data: OrderEmailData) {
   }
 }
 
+// ─── URLs de rastreo por transportadora ──────────────────────────────────────
+// Agrega o edita aquí las transportadoras que uses.
+// {tracking_number} se reemplaza automáticamente con el número de guía.
+const CARRIER_TRACKING_URLS: Record<string, string> = {
+  'coordinadora':    'https://www.coordinadora.com/portafolio-de-servicios/servicios-en-linea/rastrear-guias/?guia={tracking_number}',
+  'servientrega':    'https://www.servientrega.com/wps/portal/rastreo-envio',
+  'interrapidisimo': 'https://interrapidisimo.com/sigue-tu-envio',
+  'envia':           'https://envia.co',
+  'tcc':             'https://www.tcc.com.co/portal/rastreoenvio?guia={tracking_number}',
+  'deprisa':         'https://www.deprisa.com/es',
+  'fedex':           'https://www.fedex.com/fedextrack/?trknbr={tracking_number}',
+  'dhl':             'https://www.dhl.com/co-es/home/tracking.html?tracking-id={tracking_number}',
+  'tempo':           'https://tempoenvios.com/rastrear?guia={tracking_number}',
+  '472':             'https://www.472.com.co/rastreo?guia={tracking_number}',
+}
+
+function buildCarrierTrackingUrl(carrier: string, trackingNumber: string, orderNumber: string): string {
+  const key = carrier.toLowerCase().trim()
+  const template = Object.entries(CARRIER_TRACKING_URLS).find(([k]) => key.includes(k))?.[1]
+  if (template) {
+    return template.replace('{tracking_number}', encodeURIComponent(trackingNumber))
+  }
+  return `${process.env.NEXT_PUBLIC_URL}/seguimiento?order=${encodeURIComponent(orderNumber)}`
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function sendOrderStatusUpdateEmail(
   orderNumber: string,
   customerName: string,
@@ -287,7 +313,7 @@ export async function sendOrderStatusUpdateEmail(
                     <table cellpadding="0" cellspacing="0">
                       <tr>
                         <td style=" background-color: #ffb3f9; border-radius: 50px; box-shadow: 0 8px 20px rgba(166, 232, 228, 0.4);">
-                          <a href="${process.env.NEXT_PUBLIC_URL}/seguimiento?order=${orderNumber}" 
+                          <a href="${shipmentData ? buildCarrierTrackingUrl(shipmentData.carrier, shipmentData.tracking_number, orderNumber) : `${process.env.NEXT_PUBLIC_URL}/seguimiento?order=${encodeURIComponent(orderNumber)}`}" 
                              style="display: block; color: #0f172a; text-decoration: none; padding: 18px 50px; font-weight: 700; font-size: 17px; letter-spacing: 0.5px;">
                             🔍 Rastrear Pedido
                           </a>
@@ -345,7 +371,7 @@ export async function sendOrderStatusUpdateEmail(
                         
           <!-- Facebook -->
           <td style="padding: 0 8px;">
-            <a href="https://www.facebook.com/profile.php?id=61585522993204" style="display: inline-block; text-decoration: none;">
+            <a href="https://www.facebook.com/profile.php?id=61585970772454" style="display: inline-block; text-decoration: none;">
               <table cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="background: rgba(255,255,255,0.1); border-radius: 50%; padding: 10px;">

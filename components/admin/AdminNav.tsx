@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { 
   LayoutDashboard, 
   Package, 
+  ShoppingBag,
   Mail, 
   Settings, 
   Sliders, 
@@ -48,7 +49,7 @@ export default function AdminNav() {
     <>
       <div className={styles.navWrap}>
         <div className={styles.brandRow}>
-          <Link href="/admin" className={styles.brand}>
+          <Link href="/admin/orders" className={styles.brand}>
             <img src="/logo.png" alt="Niñamar" className={styles.brandLogo} />
           </Link>
           
@@ -64,6 +65,14 @@ export default function AdminNav() {
 
         {/* Navegación desktop y móvil */}
         <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+          <Link 
+            href="/admin/orders" 
+            className={`${styles.navLink} ${pathname?.startsWith('/admin/orders') ? styles.navLinkActive : ''}`}
+          >
+            <ShoppingBag size={20} />
+            Pedidos
+          </Link>
+
           <Link 
             href="/admin" 
             className={`${styles.navLink} ${pathname === '/admin' ? styles.navLinkActive : ''}`}
