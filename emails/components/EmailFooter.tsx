@@ -13,7 +13,7 @@ export const EmailFooter = ({ unsubscribeUrl }: EmailFooterProps) => {
       <Text style={socialLinks}>
         <Link href="https://www.instagram.com/ninamar_oficial" style={link}>Instagram</Link>
         {' · '}
-        <Link href="https://www.facebook.com/profile.php?id=61585522993204" style={link}>Facebook</Link>
+        <Link href="https://www.facebook.com/profile.php?id=61585970772454" style={link}>Facebook</Link>
       </Text>
       <Text style={copyright}>
         © {new Date().getFullYear()} Niñamar. Popayán, Cauca, Colombia

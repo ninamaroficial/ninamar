@@ -236,23 +236,16 @@ export default function OrderConfirmationEmail({
           {/* Footer */}
           <Section style={footer}>
             <Hr style={footerDivider} />
-            <Text style={footerText}>
-              <strong>Niña Mar</strong> - Accesorios Personalizados
-            </Text>
-            <Text style={footerText}>
-              Popayán, Cauca, Colombia
-            </Text>
-            <Text style={footerText}>
-              © {new Date().getFullYear()} Niña Mar. Todos los derechos reservados.
-            </Text>
+            <Text style={footerText}>Síguenos</Text>
             <Text style={footerLink}>
-              <Link href={`${process.env.NEXT_PUBLIC_URL}`} style={link}>
-                Visitar tienda
-              </Link>
-              {' · '}
-              <Link href={`${process.env.NEXT_PUBLIC_URL}/seguimiento`} style={link}>
-                Rastrear pedido
-              </Link>
+              <Link href="https://www.instagram.com/ninamar_oficial" style={socialLink}>Instagram</Link>
+              {'  '}
+              <Link href="https://www.facebook.com/profile.php?id=61585970772454" style={socialLink}>Facebook</Link>
+            </Text>
+            <Text style={footerText}>📧 ninamar.oficial@gmail.com</Text>
+            <Text style={footerText}>📍 Popayán, Cauca, Colombia</Text>
+            <Text style={footerText}>
+              © {new Date().getFullYear()} Niñamar. Todos los derechos reservados.
             </Text>
           </Section>
         </Container>
@@ -702,6 +695,11 @@ const footerText = {
 const footerLink = {
   fontSize: '13px',
   margin: '16px 0 0',
+}
+
+const socialLink = {
+  color: '#1f6f63',
+  textDecoration: 'none',
 }
 
 const link = {

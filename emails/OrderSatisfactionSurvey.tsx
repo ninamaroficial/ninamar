@@ -72,8 +72,17 @@ export default function OrderSatisfactionSurveyEmail({
           </Section>
 
           <Section style={footer}>
-            <Text style={footerText}>Gracias por confiar en Niña Mar.</Text>
-            <Text style={footerText}>Popayán, Cauca, Colombia</Text>
+            <Text style={footerText}>Síguenos</Text>
+            <Text style={footerText}>
+              <Link href="https://www.instagram.com/ninamar_oficial" style={socialLink}>Instagram</Link>
+              {'  '}
+              <Link href="https://www.facebook.com/profile.php?id=61585970772454" style={socialLink}>Facebook</Link>
+            </Text>
+            <Text style={footerText}>📧 ninamar.oficial@gmail.com</Text>
+            <Text style={footerText}>📍 Popayán, Cauca, Colombia</Text>
+            <Text style={footerText}>
+              © {new Date().getFullYear()} Niñamar. Todos los derechos reservados.
+            </Text>
           </Section>
         </Container>
       </Body>
@@ -204,4 +213,9 @@ const footerText = {
   margin: '0 0 6px',
   color: '#7a655d',
   fontSize: '13px',
+}
+
+const socialLink = {
+  color: '#1f6f63',
+  textDecoration: 'none',
 }
