@@ -255,8 +255,6 @@ export default function OrderStatusUpdateEmail({
                   </tr>
                 </table>
               </Section>
-              <Text style={footerContact}>Instagram</Text>
-              <Text style={footerContact}>Facebook</Text>
               <Text style={footerContact}>📧 ninamar.oficial@gmail.com</Text>
               <Text style={footerContact}>📍 Popayán, Cauca, Colombia</Text>
               <Text style={footerCopyright}>
