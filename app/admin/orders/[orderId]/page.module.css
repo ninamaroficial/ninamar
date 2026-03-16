@@ -90,6 +90,33 @@
   box-shadow: none;
 }
 
+.trackingButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.trackingButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(21, 128, 61, 0.28);
+}
+
+.trackingButton:disabled {
+  opacity: 0.75;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
 .guideButton:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28);

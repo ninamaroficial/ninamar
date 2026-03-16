@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getOrderDetails, updateOrderStatus } from '@/lib/supabase/admin-orders'
-import { createShipment } from '@/lib/supabase/shipments'
+import { createShipment, getShipmentsByOrderId } from '@/lib/supabase/shipments'
 import { sendOrderStatusUpdateEmail } from '@/lib/email/resend'
 import { sendOrderStatusNotification } from '@/lib/whatsapp/notifications'
 
@@ -20,7 +20,18 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(order)
+    let latestShipment: any = null
+    try {
+      const shipments = await getShipmentsByOrderId(orderId)
+      latestShipment = shipments?.[0] || null
+    } catch (shipmentError) {
+      console.error('Error fetching order shipments:', shipmentError)
+    }
+
+    return NextResponse.json({
+      ...order,
+      latest_shipment: latestShipment,
+    })
   } catch (error) {
     console.error('Error fetching order:', error)
     return NextResponse.json(

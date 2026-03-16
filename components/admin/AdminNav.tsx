@@ -7,6 +7,7 @@ import {
   LayoutDashboard, 
   Package, 
   ShoppingBag,
+  Star,
   Mail, 
   Settings, 
   Sliders, 
@@ -79,6 +80,14 @@ export default function AdminNav() {
           >
             <LayoutDashboard size={20} />
             Dashboard
+          </Link>
+
+          <Link
+            href="/admin/reviews"
+            className={`${styles.navLink} ${pathname?.startsWith('/admin/reviews') ? styles.navLinkActive : ''}`}
+          >
+            <Star size={20} />
+            Opiniones
           </Link>
 
           <Link 

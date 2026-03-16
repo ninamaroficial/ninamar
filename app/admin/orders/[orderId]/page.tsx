@@ -12,6 +12,7 @@ import {
   Package,
   Copy,
   Check,
+  ExternalLink,
   FileDown,
   User,
   MapPin,
@@ -61,7 +62,39 @@ interface Order {
   processing_at?: string  // ← Agregar
   shipped_at?: string
   delivered_at?: string
+  latest_shipment?: {
+    carrier: string
+    tracking_number: string
+  } | null
   order_items: OrderItem[]
+}
+
+const CARRIER_TRACKING_URLS: Record<string, string> = {
+  'coordinadora': 'https://www.coordinadora.com/portafolio-de-servicios/servicios-en-linea/rastrear-guias/?guia={tracking_number}',
+  'servientrega': 'https://www.servientrega.com/wps/portal/rastreo-envio',
+  'interrapidisimo': 'https://www.interrapidisimo.com/rastreo/?guia={tracking_number}',
+  'envia': 'https://www.envia.co/herramienta/rastreo?guia={tracking_number}',
+  'tcc': 'https://www.tcc.com.co/portal/rastreoenvio?guia={tracking_number}',
+  'deprisa': 'https://www.deprisa.com/es/rastrear/?codigo={tracking_number}',
+  'fedex': 'https://www.fedex.com/fedextrack/?trknbr={tracking_number}',
+  'dhl': 'https://www.dhl.com/co-es/home/tracking.html?tracking-id={tracking_number}',
+  'tempo': 'https://tempoenvios.com/rastrear?guia={tracking_number}',
+  '472': 'https://www.472.com.co/rastreo?guia={tracking_number}',
+}
+
+function buildCarrierTrackingUrl(carrier: string, trackingNumber: string): string {
+  const key = carrier.toLowerCase().trim()
+  const template = Object.entries(CARRIER_TRACKING_URLS).find(([k]) => key.includes(k))?.[1]
+
+  if (!template) {
+    return '/seguimiento'
+  }
+
+  if (template.includes('{tracking_number}')) {
+    return template.replace('{tracking_number}', encodeURIComponent(trackingNumber))
+  }
+
+  return template
 }
 
 export default function OrderDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -79,6 +112,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
   const [isCopyingGuide, setIsCopyingGuide] = useState(false)
   const [copyGuideSuccess, setCopyGuideSuccess] = useState(false)
   const [isSendingSurvey, setIsSendingSurvey] = useState(false)
+  const [isOpeningTracking, setIsOpeningTracking] = useState(false)
+  const [trackingCopied, setTrackingCopied] = useState(false)
   const guideCaptureRef = useRef<HTMLElement | null>(null)
   
   useEffect(() => {
@@ -193,6 +228,25 @@ const handleSendSurvey = async () => {
   } finally {
     setIsSendingSurvey(false)
   }
+}
+
+const handleOpenTracking = async () => {
+  const shipment = order?.latest_shipment
+  if (!shipment || isOpeningTracking) return
+
+  setIsOpeningTracking(true)
+
+  try {
+    await copyTextToClipboard(shipment.tracking_number)
+    setTrackingCopied(true)
+    window.setTimeout(() => setTrackingCopied(false), 2200)
+  } catch (error) {
+    console.error('Error copying tracking number:', error)
+  }
+
+  const trackingUrl = buildCarrierTrackingUrl(shipment.carrier, shipment.tracking_number)
+  window.open(trackingUrl, '_blank', 'noopener,noreferrer')
+  setIsOpeningTracking(false)
 }
 
   const formatPrice = (price: number) => {
@@ -369,6 +423,18 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
               {copyGuideSuccess ? <Check size={18} /> : <Copy size={18} />}
               {copyGuideSuccess ? 'Guía copiada' : isCopyingGuide ? 'Copiando...' : 'Copiar guía'}
             </button>
+            {order?.latest_shipment?.tracking_number && (
+              <button
+                type="button"
+                onClick={handleOpenTracking}
+                className={styles.trackingButton}
+                disabled={isOpeningTracking}
+                title={`Abre rastreo de ${order.latest_shipment.carrier} y copia la guía`}
+              >
+                {trackingCopied ? <Check size={18} /> : <ExternalLink size={18} />}
+                {trackingCopied ? 'Guía copiada' : isOpeningTracking ? 'Abriendo...' : 'Seguimiento proveedor'}
+              </button>
+            )}
             {/* <Link
               href={`/admin/orders/${order.id}/guia`}
               target="_blank"
@@ -831,4 +897,21 @@ const updateStatus = async (newStatus: string, shipmentData?: any) => {
       />
     </div>
   )
+}
+
+const copyTextToClipboard = async (text: string) => {
+  if (navigator?.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  textArea.style.position = 'fixed'
+  textArea.style.left = '-99999px'
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+  document.execCommand('copy')
+  textArea.remove()
 }
