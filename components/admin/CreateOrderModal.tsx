@@ -33,6 +33,50 @@ interface CreateOrderModalProps {
   onSuccess: () => void
 }
 
+const DEFAULT_SHIPPING_STATE = 'Cauca'
+const DEFAULT_SHIPPING_CITY = 'Popayán'
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function getProductTypeSingular(productName: string, productSlug?: string): string {
+  const slug = normalizeText(productSlug || '')
+  const name = normalizeText(productName)
+
+  if (slug.includes('arete') || slug.includes('pendiente') || slug.includes('candonga') || slug.includes('topo')) return 'arete'
+  if (slug.includes('collar') || slug.includes('gargantilla') || slug.includes('choker')) return 'collar'
+  if (slug.includes('pulsera') || slug.includes('manilla') || slug.includes('brazalete')) return 'pulsera'
+  if (slug.includes('anillo') || slug.includes('sortija')) return 'anillo'
+  if (slug.includes('tobillera')) return 'tobillera'
+  if (slug.includes('set') || slug.includes('combo') || slug.includes('kit')) return 'set'
+  if (slug.includes('llavero')) return 'llavero'
+
+  if (name.includes('arete') || name.includes('pendiente') || name.includes('candonga') || name.includes('topo')) return 'arete'
+  if (name.includes('collar') || name.includes('gargantilla') || name.includes('choker')) return 'collar'
+  if (name.includes('pulsera') || name.includes('manilla') || name.includes('brazalete')) return 'pulsera'
+  if (name.includes('anillo') || name.includes('sortija')) return 'anillo'
+  if (name.includes('tobillera')) return 'tobillera'
+  if (name.includes('set') || name.includes('combo') || name.includes('kit')) return 'set'
+  if (name.includes('llavero')) return 'llavero'
+
+  return 'accesorio'
+}
+
+function getProductDisplayLabel(product: Product): string {
+  const typeLabel = getProductTypeSingular(product.name, product.slug)
+  const normalizedName = normalizeText(product.name)
+
+  if (normalizedName.startsWith(typeLabel)) {
+    return product.name
+  }
+
+  return `${typeLabel} ${product.name}`
+}
+
 export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModalProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoadingProducts, setIsLoadingProducts] = useState(true)
@@ -46,8 +90,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
   
   // Dirección de envío
   const [shippingAddress, setShippingAddress] = useState('')
-  const [selectedState, setSelectedState] = useState('')
-  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedState, setSelectedState] = useState(DEFAULT_SHIPPING_STATE)
+  const [selectedCity, setSelectedCity] = useState(DEFAULT_SHIPPING_CITY)
   const [shippingZip, setShippingZip] = useState('')
   
   // Items de la orden
@@ -208,8 +252,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
     setCustomerPhone('')
     setCustomerDocument('')
     setShippingAddress('')
-    setSelectedState('')
-    setSelectedCity('')
+    setSelectedState(DEFAULT_SHIPPING_STATE)
+    setSelectedCity(DEFAULT_SHIPPING_CITY)
     setShippingZip('')
     setOrderItems([])
     setPaymentMethod('')
@@ -367,7 +411,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateO
                         onChange={(e) => handleUpdateItem(index, 'product_id', e.target.value)}
                       >
                         {products.map(p => (
-                          <option key={p.id} value={p.id}>{p.name}</option>
+                          <option key={p.id} value={p.id}>{getProductDisplayLabel(p)}</option>
                         ))}
                       </select>
                     </div>
